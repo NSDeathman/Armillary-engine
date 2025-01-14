@@ -89,20 +89,19 @@ HRESULT InitGeometry()
     LPD3DXBUFFER pD3DXMtrlBuffer;
 
     // Load the mesh from the specified file
-    if (FAILED(D3DXLoadMeshFromX(L"Tiger.x", D3DXMESH_SYSTEMMEM,
-        g_pd3dDevice, NULL,
-        &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials,
-        &g_pMesh)))
+    HRESULT hresult = E_FAIL;
+
+    hresult = D3DXLoadMeshFromX(L"..\\GameResources\\Tiger.x", 
+                                D3DXMESH_SYSTEMMEM,
+                                g_pd3dDevice, NULL,
+                                &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials,
+                                &g_pMesh);
+
+    if (FAILED(hresult))
     {
-        // If model is not in current folder, try parent folder
-        if (FAILED(D3DXLoadMeshFromX(L"..\\Tiger.x", D3DXMESH_SYSTEMMEM,
-            g_pd3dDevice, NULL,
-            &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials,
-            &g_pMesh)))
-        {
-            MessageBox(NULL, L"Could not find tiger.x", L"Meshes.exe", MB_OK);
-            return E_FAIL;
-        }
+        // If model is not in current folder
+        MessageBox(NULL, L"Could not find tiger.x", L"Meshes.exe", MB_OK);
+        return E_FAIL;
     }
 
     // We need to extract the material properties and texture names from the 
@@ -133,7 +132,7 @@ HRESULT InitGeometry()
                 &g_pMeshTextures[i])))
             {
                 // If texture is not in current folder, try parent folder
-                const CHAR* strPrefix = "..\\";
+                const CHAR* strPrefix = "..\\GameResources\\";
                 CHAR strTexture[MAX_PATH];
                 strcpy_s(strTexture, MAX_PATH, strPrefix);
                 strcat_s(strTexture, MAX_PATH, d3dxMaterials[i].pTextureFilename);

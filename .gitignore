@@ -30,7 +30,7 @@
 *.exe
 *.out
 *.app
-EngineCode/.vs/Test engine/v16/Browse.VC.db
-EngineCode/.vs/Test engine/v16/Browse.VC.db-shm
-EngineCode/.vs/Test engine/v16/Browse.VC.db-wal
-EngineCode/.vs/Test engine/v16/Browse.VC.opendb
+
+intermediate/*
+bin/*
+.vs/*
