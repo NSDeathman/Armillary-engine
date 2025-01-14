@@ -264,7 +264,7 @@ VOID Render()
 // Name: MsgProc()
 // Desc: The window's message handler
 //-----------------------------------------------------------------------------
-LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI xMsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {

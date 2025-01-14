@@ -75,11 +75,15 @@
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -113,7 +117,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
@@ -161,15 +165,20 @@
   <ItemGroup>
     <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="render_backend_DX9.cpp" />
-    <ClCompile Include="render_DX9.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="log.cpp" />
+    <ClCompile Include="render_backend.cpp" />
+    <ClCompile Include="render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="render_backend_DX9.h" />
-    <ClInclude Include="render_DX9.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="render_backend.h" />
+    <ClInclude Include="render.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -10,11 +10,17 @@
 class CApplication
 {
 private:
+	
 
 public:
+	void Start();
+	void OnFrame();
 	void EventLoop();
+	void Destroy();
 
 	CApplication() = default;
 	~CApplication() = default;
 };
+///////////////////////////////////////////////////////////////
+extern CApplication* App;
 ///////////////////////////////////////////////////////////////
