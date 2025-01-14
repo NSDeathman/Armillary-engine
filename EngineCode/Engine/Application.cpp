@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "render.h"
 #include "log.h"
+#include "build_identification_helper.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CLog* Log = NULL;
@@ -21,6 +22,20 @@ void CApplication::Destroy()
 void CApplication::Start()
 {
 	Log = new(CLog);
+
+	Log->Print("Atlas engine");
+
+	u32 BuildID = compute_build_id();
+	Log->Print("BuildID %d", BuildID);
+
+#ifdef _DEBUG
+	Log->Print("Build type: Debug");
+#else
+	Log->Print("Build type: Release");
+#endif
+
+	Log->Print("\n");
+
 	Log->Print("Starting Application...");
 
 	Render = new(CRender);
@@ -30,6 +45,10 @@ void CApplication::Start()
 
 void CApplication::OnFrame()
 {
+	OPTICK_THREAD("Atlas primary thread")
+	OPTICK_FRAME("CApplication::OnFrame")
+	OPTICK_EVENT("CApplication::OnFrame")
+
 	Render->RenderFrame();
 }
 

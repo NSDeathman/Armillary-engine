@@ -36,6 +36,9 @@
     <ClInclude Include="types.h">
       <Filter>Kernel</Filter>
     </ClInclude>
+    <ClInclude Include="build_identification_helper.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Application">
@@ -58,6 +61,9 @@
     </Filter>
     <Filter Include="Log">
       <UniqueIdentifier>{2317b261-7bed-4dd9-8250-cb988031028e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{398cebd4-5ed6-45c0-aa59-350137dcba14}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
