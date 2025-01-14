@@ -34,3 +34,5 @@
 intermediate/*
 bin/*
 .vs/*
+
+EngineCode/.vs/*
