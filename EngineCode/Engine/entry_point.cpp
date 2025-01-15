@@ -20,7 +20,7 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-INT WINAPI main(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
+INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 {
     UNREFERENCED_PARAMETER(hInst);
 
