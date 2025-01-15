@@ -40,7 +40,7 @@
       <Filter>Helpers</Filter>
     </ClInclude>
     <ClInclude Include="threading.h">
-      <Filter>Treading</Filter>
+      <Filter>Threading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -68,7 +68,7 @@
     <Filter Include="Helpers">
       <UniqueIdentifier>{398cebd4-5ed6-45c0-aa59-350137dcba14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Treading">
+    <Filter Include="Threading">
       <UniqueIdentifier>{d9c2cbd1-daa3-41da-9954-c4463d30902a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
