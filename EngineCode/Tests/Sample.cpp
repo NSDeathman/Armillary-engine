@@ -16,6 +16,7 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
+#include "stdafx.h"
 #include <Windows.h>
 #include <mmsystem.h>
 #include <d3dx9.h>
@@ -264,7 +265,7 @@ VOID Render()
 // Name: MsgProc()
 // Desc: The window's message handler
 //-----------------------------------------------------------------------------
-LRESULT WINAPI xMsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
@@ -284,7 +285,7 @@ LRESULT WINAPI xMsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 // Name: WinMain()
 // Desc: The application's entry point
 //-----------------------------------------------------------------------------
-INT WINAPI main(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
+INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 {
     UNREFERENCED_PARAMETER(hInst);
 
