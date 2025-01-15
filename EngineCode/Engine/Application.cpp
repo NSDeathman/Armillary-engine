@@ -73,8 +73,9 @@ void CApplication::Process()
 
 	Log->Print("Atlas engine");
 
-	u32 BuildID = compute_build_id();
-	Log->Print("BuildID %d", BuildID);
+	u32 MajorBuildID = compute_build_id_major();
+	u32 MinorBuildID = compute_build_id_minor();
+	Log->Print("BuildID: %d.%d", MajorBuildID, MinorBuildID);
 
 #ifdef _DEBUG
 	Log->Print("Build type: Debug");

@@ -28,18 +28,20 @@ static int days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 static int start_day = 14;
 static int start_month = 1;
 static int start_year = 2025;
+static int start_hour = 23;
+static int start_minut = 57;
 ////////////////////////////////////////////////////////////////////////////////
-u32 compute_build_id()
+u32 compute_build_id_major()
 {
 	LPCSTR build_date = __DATE__;
 
-	int days;
+	int days = 0;
 	int months = 0;
-	int years;
+	int years = 0;
 	string16 month;
-	string256 buffer;
-	strcpy_s(buffer, __DATE__);
-	(void)sscanf(buffer, "%s %d %d", month, &days, &years);
+	string256 date_buffer;
+	strcpy_s(date_buffer, build_date);
+	(void)sscanf(date_buffer, "%s %d %d", month, &days, &years);
 
 	for (int i = 0; i < 12; i++)
 	{
@@ -50,7 +52,7 @@ u32 compute_build_id()
 		break;
 	}
 
-	u32 build_id = (years - start_year) * 365 + days - start_day;
+	u32 build_id = (years - start_year) * 365 + (days - start_day);
 
 	for (int i = 0; i < months; ++i)
 	{			
@@ -67,5 +69,19 @@ u32 compute_build_id()
 		build_id -= days_in_month[i];
 
 	return build_id;
+}
+
+u32 compute_build_id_minor()
+{
+	LPCSTR build_time = __TIME__;
+
+	int hour = 0;
+	int minut = 0;
+	int second = 0;
+	string256 time_buffer;
+	strcpy_s(time_buffer, build_time);
+	(void)sscanf(time_buffer, "%d %d %d", &hour, &minut, &second);
+
+	return abs(hour - start_hour) + abs(minut - start_minut);
 }
 ////////////////////////////////////////////////////////////////////////////////
