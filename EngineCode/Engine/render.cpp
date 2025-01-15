@@ -57,6 +57,13 @@ void CRender::CreateMainWindow()
 
     // Create the application's window
     m_hWindow = CreateWindow(L"ATLAS", L"Main window", WS_OVERLAPPEDWINDOW, 100, 100, 300, 300, NULL, NULL, wc.hInstance, NULL);
+
+	GetLastError();
+
+	if(GetLastError())
+	{
+		Log->Print("Creating window error");
+	}
 }
 
 void CRender::InitializeDirect3D()
@@ -89,6 +96,9 @@ void CRender::InitializeDirect3D()
     {
         Log->Print("Direct3D created successfuly");
     }
+
+	ShowWindow(m_hWindow, SW_SHOWDEFAULT);
+	UpdateWindow(m_hWindow);
 
     // Turn on the zbuffer
     m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
@@ -151,8 +161,7 @@ void CRender::RenderFrame()
 		// Setup the world, view, and projection matrices
 		CreateMatrices();
 
-		// Meshes are divided into subsets, one for each material. Render them in
-		// a loop
+		// Meshes are divided into subsets, one for each material. Render them in a loop
 		for (DWORD i = 0; i < m_dwNumMaterials; i++)
 		{
 			// Set the material and texture for this subset
