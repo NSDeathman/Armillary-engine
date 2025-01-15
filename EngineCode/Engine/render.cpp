@@ -6,6 +6,7 @@
 #include "render.h"
 #include "Log.h"
 #include "filesystem.h"
+#include "resource.h"
 ///////////////////////////////////////////////////////////////
 extern LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 ///////////////////////////////////////////////////////////////
@@ -48,19 +49,34 @@ void CRender::CreateMainWindow()
 {
 	Log->Print("Creating window...");
 
-	// Register the window class
-	WNDCLASSEX wc = {sizeof(WNDCLASSEX), 
-					CS_CLASSDC, 
-					MsgProc, 
-					0L, 
-					0L, 
-					GetModuleHandle(NULL), 
-					NULL, 
-					NULL, 
-					NULL, 
-					NULL, 
-					"Atlas", 
-					NULL};
+	WNDCLASSEX wc;
+	// The window class. This has to be filled BEFORE the window can be WNDCLASSEX wc;
+	//Flags[Redraw on width / height change from resize / movement] 
+	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	// Pointer to the window processing function for handling messages from this window
+	wc.lpfnWndProc = MsgProc;
+	// Number of extra bytes to allocate following the window-class structure
+	wc.cbClsExtra = 0;
+	// Number of extra bytes to allocate following the window instance
+	wc.cbWndExtra = 0;
+
+	// Handle to the instance that contains the window procedure
+	wc.hInstance = GetModuleHandle(NULL);
+	// Handle to the class icon. Must be a handle to an Icon resource
+	wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
+	// Handle to the small icon for the class
+	wc.hIconSm = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
+	// Handle to the class cursor. If null, an application must explicitly set the cursor shape whenever the mouse moves
+	// into the application window
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	// Handle to the class background brush for the window's background colour. When NULL an application must paint its
+	// own background colour
+	wc.hbrBackground = NULL;
+	// Pointer to a null-terminated string for the menu
+	wc.lpszMenuName = NULL;
+	// Pointer to null-terminated string of our class name
+	wc.lpszClassName = "Atlas";
+	wc.cbSize = sizeof(WNDCLASSEX);
 
 	RegisterClassEx(&wc);
 
