@@ -27,7 +27,7 @@ void CApplication::Start()
     Render->Initialize();
 }
 
-void ThreadWork()
+void CApplication::ThreadWork()
 {
 	OPTICK_THREAD("Atlas worker thread")
 	OPTICK_FRAME("ThreadWork")
@@ -42,9 +42,16 @@ void CApplication::OnFrame()
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
+	//Scheduler.Add(ThreadWork);
+	concurrency::task_group task_secondary;
+	task_secondary.run([&]() 
+		{ 
+			ThreadWork();
+		});
+
 	Render->RenderFrame();
 
-	Scheduler.Add(ThreadWork);
+	task_secondary.wait();
 }
 
 void CApplication::EventLoop()
@@ -70,6 +77,10 @@ void CApplication::EventLoop()
 void CApplication::Process()
 {
 	Log = new (CLog);
+
+#ifdef _DEBUG
+	Log->CreateConsole();
+#endif
 
 	Log->Print("Atlas engine");
 

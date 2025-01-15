@@ -13,6 +13,7 @@ private:
 
 public:
 	void Start();
+	void ThreadWork();
 	void OnFrame();
 	void EventLoop();
 	void Destroy();
