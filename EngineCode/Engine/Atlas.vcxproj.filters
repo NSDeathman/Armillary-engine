@@ -42,6 +42,12 @@
     <ClInclude Include="threading.h">
       <Filter>Threading</Filter>
     </ClInclude>
+    <ClInclude Include="filesystem.h">
+      <Filter>Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Application">
@@ -70,6 +76,9 @@
     </Filter>
     <Filter Include="Threading">
       <UniqueIdentifier>{d9c2cbd1-daa3-41da-9954-c4463d30902a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filesystem">
+      <UniqueIdentifier>{0deecb8c-381f-47ec-a335-f339a87c9832}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

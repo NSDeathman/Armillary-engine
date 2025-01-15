@@ -177,6 +177,8 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="build_identification_helper.h" />
+    <ClInclude Include="defines.h" />
+    <ClInclude Include="filesystem.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="render_backend.h" />
     <ClInclude Include="render.h" />
