@@ -27,7 +27,8 @@ void CRender::Destroy()
 
 	if (!m_pMeshTextures.empty())
 	{
-		concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator) {
+		concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator) 
+		{
 			if (m_pMeshTextures[iterator])
 				m_pMeshTextures[iterator]->Release();
 		});
@@ -38,9 +39,9 @@ void CRender::Destroy()
 	if (!m_pMeshMaterials.empty())
 		m_pMeshMaterials.clear();
 
-	_RELEASE(m_pDirect3dDevice);
+	RELEASE(m_pDirect3dDevice);
 
-	_RELEASE(m_pDirect3D);
+	RELEASE(m_pDirect3D);
 }
 
 void CRender::CreateMainWindow()
@@ -105,7 +106,7 @@ void CRender::InitializeDirect3D()
 												&Direct3DPresentParams, 
 												&m_pDirect3dDevice);
 
-	ASSERT(SUCCEEDED(hresult), "Fail while creating Direct3D");
+	ASSERT(SUCCEEDED(hresult), "An error occurred while creating the Direct3D");
 
 	if (SUCCEEDED(hresult))
 		Log->Print("Direct3D created successfully");
@@ -175,7 +176,6 @@ void CRender::RenderFrame()
 		CreateMatrices();
 
 		// Meshes are divided into subsets, one for each material. Render them in a loop
-
 		concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator)
 		{
 			// Set the material and texture for this subset
@@ -225,7 +225,8 @@ void CRender::LoadScene()
 
 	ASSERT(!m_pMeshTextures.empty(), "Can`t load mesh textures")
 
-	concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [&](u32 iterator) {
+	concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [&](u32 iterator) 
+	{
 		// Copy the material
 		m_pMeshMaterials[iterator] = d3dxMaterials[iterator].MatD3D;
 

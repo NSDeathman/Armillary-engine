@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 
-#define _RELEASE(x)			\
+#define RELEASE(x)			\
 	{						\
 		if (x)				\
 		{					\
