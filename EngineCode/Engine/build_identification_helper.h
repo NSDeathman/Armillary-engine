@@ -25,11 +25,11 @@ static const char* month_id[12] =
 
 static int days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-static int start_day = 14;
+static int start_day = 15;
 static int start_month = 1;
 static int start_year = 2025;
-static int start_hour = 23;
-static int start_minut = 57;
+static int start_hour = 0;
+static int start_minut = 0;
 ////////////////////////////////////////////////////////////////////////////////
 u32 compute_build_id_major()
 {
@@ -82,6 +82,6 @@ u32 compute_build_id_minor()
 	strcpy_s(time_buffer, build_time);
 	(void)sscanf(time_buffer, "%d %d %d", &hour, &minut, &second);
 
-	return abs(hour - start_hour) + abs(minut - start_minut);
+	return hour + minut;
 }
 ////////////////////////////////////////////////////////////////////////////////
