@@ -31,7 +31,16 @@ void ThreadWork0()
 	OPTICK_THREAD("Atlas worker thread")
 	OPTICK_FRAME("ThreadWork")
 	OPTICK_EVENT("ThreadWork")
-	//Sleep(10);
+	Sleep(10);
+}
+
+void RenderThreadTask()
+{
+	OPTICK_THREAD("Atlas render thread")
+	OPTICK_FRAME("RenderThreadTask")
+	OPTICK_EVENT("RenderThreadTask")
+
+	Render->RenderFrame();
 }
 
 void CApplication::OnFrame()
@@ -45,7 +54,7 @@ void CApplication::OnFrame()
 	concurrency::task_group task_render;
 	task_render.run([&]() 
 	{ 
-		Render->RenderFrame();
+		RenderThreadTask();
 	});
 
 	//ThreadWork();
