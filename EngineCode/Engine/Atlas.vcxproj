@@ -176,6 +176,7 @@
     <ClInclude Include="render_backend.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="threading.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>

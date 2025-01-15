@@ -7,6 +7,7 @@
 #include "render.h"
 #include "log.h"
 #include "build_identification_helper.h"
+#include "threading.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CLog* Log = NULL;
@@ -43,6 +44,15 @@ void CApplication::Start()
     Render->Initialize();
 }
 
+void ThreadWork()
+{
+	OPTICK_THREAD("Atlas worker thread")
+	OPTICK_FRAME("ThreadWork")
+	OPTICK_EVENT("ThreadWork")
+	Sleep(200);
+	Log->Print("Worker is free");
+}
+
 void CApplication::OnFrame()
 {
 	OPTICK_THREAD("Atlas primary thread")
@@ -50,6 +60,8 @@ void CApplication::OnFrame()
 	OPTICK_EVENT("CApplication::OnFrame")
 
 	Render->RenderFrame();
+
+	Scheduler.Add(ThreadWork);
 }
 
 void CApplication::EventLoop()

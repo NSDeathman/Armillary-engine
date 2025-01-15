@@ -10,7 +10,6 @@
 class CApplication
 {
 private:
-	
 
 public:
 	void Start();
