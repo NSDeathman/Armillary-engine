@@ -66,12 +66,12 @@ void CRender::CreateMainWindow()
 
 	// Create the application's window
 	m_hWindow = CreateWindow("ATLAS", 
-							 "Main window", 
+							 "Atlas engine", 
 							 WS_OVERLAPPEDWINDOW, 
 							 100,	
 							 100, 
-							 300, 
-							 300, 
+							 640, 
+							 480, 
 							 NULL, 
 							 NULL, 
 							 wc.hInstance, 

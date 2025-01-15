@@ -140,6 +140,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,6 +164,8 @@ copy /Y "$(SolutionDir)\Third-Party\Executable\Optick.exe" "$(OutDir)Optick.exe"
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -177,6 +181,7 @@ copy /Y "$(SolutionDir)\Third-Party\Executable\Optick.exe" "$(OutDir)Optick.exe"
     <ClCompile Include="log.cpp" />
     <ClCompile Include="render_backend.cpp" />
     <ClCompile Include="render.cpp" />
+    <ClCompile Include="splash_screen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -186,12 +191,22 @@ copy /Y "$(SolutionDir)\Third-Party\Executable\Optick.exe" "$(OutDir)Optick.exe"
     <ClInclude Include="log.h" />
     <ClInclude Include="render_backend.h" />
     <ClInclude Include="render.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="splash_screen.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="threading.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="bitmap1.bmp" />
+    <Image Include="bitmap2.bmp" />
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

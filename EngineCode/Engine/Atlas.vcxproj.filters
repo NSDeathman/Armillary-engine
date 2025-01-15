@@ -16,6 +16,9 @@
     <ClCompile Include="log.cpp">
       <Filter>Log</Filter>
     </ClCompile>
+    <ClCompile Include="splash_screen.cpp">
+      <Filter>SplashScreen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -47,6 +50,12 @@
     </ClInclude>
     <ClInclude Include="defines.h">
       <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="splash_screen.h">
+      <Filter>SplashScreen</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Application resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -80,8 +89,24 @@
     <Filter Include="Filesystem">
       <UniqueIdentifier>{0deecb8c-381f-47ec-a335-f339a87c9832}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SplashScreen">
+      <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application resources">
+      <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc">
+      <Filter>Application resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="bitmap1.bmp" />
+    <Image Include="bitmap2.bmp" />
+    <Image Include="icon1.ico" />
   </ItemGroup>
 </Project>

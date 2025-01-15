@@ -4,8 +4,11 @@
 //Application entry point
 ///////////////////////////////////////////////////////////////
 #include "Application.h"
+#include "splash_screen.h"
 ///////////////////////////////////////////////////////////////
+CSplashScreen* SplashScreen = NULL;
 CApplication* App = NULL;
+HWND g_splash_screen_window = NULL;
 ///////////////////////////////////////////////////////////////
 LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -20,9 +23,28 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-INT WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
+static INT_PTR CALLBACK SplashScreenDlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp)
 {
-    UNREFERENCED_PARAMETER(hInst);
+	switch (msg)
+	{
+	case WM_DESTROY:
+		break;
+	case WM_CLOSE:
+		DestroyWindow(hw);
+		break;
+	case WM_COMMAND:
+		if (LOWORD(wp) == IDCANCEL)
+			DestroyWindow(hw);
+		break;
+	default:
+		return FALSE;
+	}
+	return TRUE;
+}
+
+INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, INT)
+{
+	UNREFERENCED_PARAMETER(hInstance);
 
 	App = new(CApplication);
 

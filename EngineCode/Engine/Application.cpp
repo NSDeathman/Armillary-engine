@@ -4,6 +4,7 @@
 //CApplication class realization
 ///////////////////////////////////////////////////////////////
 #include "Application.h"
+#include "splash_screen.h"
 #include "render.h"
 #include "log.h"
 #include "build_identification_helper.h"
@@ -26,14 +27,6 @@ void CApplication::Start()
     Render->Initialize();
 }
 
-void ThreadWork0()
-{
-	OPTICK_THREAD("Atlas worker thread")
-	OPTICK_FRAME("ThreadWork")
-	OPTICK_EVENT("ThreadWork")
-	Sleep(10);
-}
-
 void RenderThreadTask()
 {
 	OPTICK_THREAD("Atlas render thread")
@@ -49,15 +42,13 @@ void CApplication::OnFrame()
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
-	Scheduler.Add(ThreadWork0);
+	//Scheduler.Add(ThreadWork0);
 
 	concurrency::task_group task_render;
 	task_render.run([&]() 
 	{ 
 		RenderThreadTask();
 	});
-
-	//ThreadWork();
 
 	task_render.wait();
 }
@@ -84,6 +75,7 @@ void CApplication::EventLoop()
 
 void CApplication::Process()
 {
+	SplashScreen = new (CSplashScreen);
 	Log = new (CLog);
 
 	Log->Print("Atlas engine");
@@ -102,6 +94,8 @@ void CApplication::Process()
 	Log->Print("Starting Application...");
 
 	App->Start();
+
+	delete (SplashScreen);
 
 	Log->Print("Application started successfully");
 	Log->Print("\n");
