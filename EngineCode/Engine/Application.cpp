@@ -31,8 +31,7 @@ void ThreadWork0()
 	OPTICK_THREAD("Atlas worker thread")
 	OPTICK_FRAME("ThreadWork")
 	OPTICK_EVENT("ThreadWork")
-	//Render->RenderFrame();
-	Sleep(10);
+	//Sleep(10);
 }
 
 void CApplication::OnFrame()
@@ -41,19 +40,17 @@ void CApplication::OnFrame()
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
-	//Scheduler.Add(ThreadWork0);
+	Scheduler.Add(ThreadWork0);
 
-	//Sleep(10);
-
-	//concurrency::task_group task_secondary;
-	//task_secondary.run([&]() 
-	//	{ 
-			Render->RenderFrame();
-	//	});
+	concurrency::task_group task_render;
+	task_render.run([&]() 
+	{ 
+		Render->RenderFrame();
+	});
 
 	//ThreadWork();
 
-	//task_secondary.wait();
+	task_render.wait();
 }
 
 void CApplication::EventLoop()
