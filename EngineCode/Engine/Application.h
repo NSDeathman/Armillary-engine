@@ -16,6 +16,7 @@ public:
 	void OnFrame();
 	void EventLoop();
 	void Destroy();
+	void Process();
 
 	CApplication() = default;
 	~CApplication() = default;

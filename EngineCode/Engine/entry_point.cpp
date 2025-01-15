@@ -26,13 +26,8 @@ INT WINAPI main(HINSTANCE hInst, HINSTANCE, LPWSTR, INT)
 
 	App = new(CApplication);
 
-    App->Start();
+    App->Process();
 
-	App->EventLoop();
-
-    App->Destroy();
-
-    //UnregisterClass(&wndclassname, wc.hInstance);
     return 0;
 }
 ///////////////////////////////////////////////////////////////

@@ -22,23 +22,6 @@ void CApplication::Destroy()
 
 void CApplication::Start()
 {
-	Log = new(CLog);
-
-	Log->Print("Atlas engine");
-
-	u32 BuildID = compute_build_id();
-	Log->Print("BuildID %d", BuildID);
-
-#ifdef _DEBUG
-	Log->Print("Build type: Debug");
-#else
-	Log->Print("Build type: Release");
-#endif
-
-	Log->Print("\n");
-
-	Log->Print("Starting Application...");
-
 	Render = new(CRender);
 
     Render->Initialize();
@@ -82,5 +65,36 @@ void CApplication::EventLoop()
 			OnFrame();
 		}
 	}
+}
+
+void CApplication::Process()
+{
+	Log = new (CLog);
+
+	Log->Print("Atlas engine");
+
+	u32 BuildID = compute_build_id();
+	Log->Print("BuildID %d", BuildID);
+
+#ifdef _DEBUG
+	Log->Print("Build type: Debug");
+#else
+	Log->Print("Build type: Release");
+#endif
+
+	Log->Print("\n");
+
+	Log->Print("Starting Application...");
+
+	App->Start();
+
+	Log->Print("Application started successfully");
+	Log->Print("\n");
+
+	App->EventLoop();
+
+	Log->Print("Destroying Application...");
+
+	App->Destroy();
 }
 ///////////////////////////////////////////////////////////////
