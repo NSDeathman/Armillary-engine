@@ -5,6 +5,14 @@
 ///////////////////////////////////////////////////////////////
 #include "log.h"
 ///////////////////////////////////////////////////////////////
+CLog::CLog()
+{
+#ifdef NDEBUG
+	if (strstr((LPCSTR)GetCommandLine(), "-external_console_log"))
+#endif
+		CreateConsole();
+}
+
 void __cdecl CLog::Print(LPCSTR format, ...)
 {
 	va_list mark;

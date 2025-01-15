@@ -16,8 +16,8 @@ void CApplication::Destroy()
 {
 	Log->Print("Destroying application...");
 
-	delete(Render);
-	delete(Log);
+	delete (Render);
+	delete (Log);
 }
 
 void CApplication::Start()
@@ -27,13 +27,13 @@ void CApplication::Start()
     Render->Initialize();
 }
 
-void CApplication::ThreadWork()
+void ThreadWork0()
 {
 	OPTICK_THREAD("Atlas worker thread")
 	OPTICK_FRAME("ThreadWork")
 	OPTICK_EVENT("ThreadWork")
-	Sleep(200);
-	Log->Print("Worker is free");
+	//Render->RenderFrame();
+	Sleep(10);
 }
 
 void CApplication::OnFrame()
@@ -42,16 +42,19 @@ void CApplication::OnFrame()
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
-	//Scheduler.Add(ThreadWork);
-	concurrency::task_group task_secondary;
-	task_secondary.run([&]() 
-		{ 
-			ThreadWork();
-		});
+	//Scheduler.Add(ThreadWork0);
 
-	Render->RenderFrame();
+	//Sleep(10);
 
-	task_secondary.wait();
+	//concurrency::task_group task_secondary;
+	//task_secondary.run([&]() 
+	//	{ 
+			Render->RenderFrame();
+	//	});
+
+	//ThreadWork();
+
+	//task_secondary.wait();
 }
 
 void CApplication::EventLoop()
@@ -78,10 +81,6 @@ void CApplication::Process()
 {
 	Log = new (CLog);
 
-#ifdef _DEBUG
-	Log->CreateConsole();
-#endif
-
 	Log->Print("Atlas engine");
 
 	u32 MajorBuildID = compute_build_id_major();
@@ -95,7 +94,6 @@ void CApplication::Process()
 #endif
 
 	Log->Print("\n");
-
 	Log->Print("Starting Application...");
 
 	App->Start();

@@ -15,6 +15,9 @@ public:
 	void CreateConsole();
 	void __cdecl Print(LPCSTR format, ...);
 	void __cdecl Debug_Print(LPCSTR format, ...);
+
+	CLog();
+	~CLog() = default;
 };
 ///////////////////////////////////////////////////////////////
 extern CLog* Log;
