@@ -27,11 +27,11 @@ void CRender::Destroy()
 
 	if (!m_pMeshTextures.empty())
 	{
-		for (DWORD i = 0; i < m_dwNumMaterials; i++)
-		{
-			if (m_pMeshTextures[i])
-				m_pMeshTextures[i]->Release();
-		}
+		concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator) {
+			if (m_pMeshTextures[iterator])
+				m_pMeshTextures[iterator]->Release();
+		});
+
 		m_pMeshTextures.clear();
 	}
 
@@ -182,15 +182,16 @@ void CRender::RenderFrame()
 		CreateMatrices();
 
 		// Meshes are divided into subsets, one for each material. Render them in a loop
-		for (DWORD i = 0; i < m_dwNumMaterials; i++)
+
+		concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator)
 		{
 			// Set the material and texture for this subset
-			m_pDirect3dDevice->SetMaterial(&m_pMeshMaterials[i]);
-			m_pDirect3dDevice->SetTexture(0, m_pMeshTextures[i]);
+			m_pDirect3dDevice->SetMaterial(&m_pMeshMaterials[iterator]);
+			m_pDirect3dDevice->SetTexture(0, m_pMeshTextures[iterator]);
 
 			// Draw the mesh subset
-			m_pMesh->DrawSubset(i);
-		}
+			m_pMesh->DrawSubset(iterator);
+		});
 
 		// End the scene
 		m_pDirect3dDevice->EndScene();
@@ -234,39 +235,35 @@ void CRender::LoadScene()
 	if (m_pMeshTextures.empty())
 		Log->Print("Can`t load mesh textures");
 
-	for (DWORD i = 0; i < m_dwNumMaterials; i++)
-	{
+	concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [&](u32 iterator) {
 		// Copy the material
-		m_pMeshMaterials[i] = d3dxMaterials[i].MatD3D;
+		m_pMeshMaterials[iterator] = d3dxMaterials[iterator].MatD3D;
 
 		// Set the ambient color for the material (D3DX does not do this)
-		m_pMeshMaterials[i].Ambient = m_pMeshMaterials[i].Diffuse;
+		m_pMeshMaterials[iterator].Ambient = m_pMeshMaterials[iterator].Diffuse;
 
-		m_pMeshTextures[i] = NULL;
-		if (d3dxMaterials[i].pTextureFilename != NULL && lstrlenA(d3dxMaterials[i].pTextureFilename) > 0)
+		m_pMeshTextures[iterator] = NULL;
+		if (d3dxMaterials[iterator].pTextureFilename != NULL && lstrlenA(d3dxMaterials[iterator].pTextureFilename) > 0)
 		{
+			HRESULT hresult = E_FAIL;
+
+			// Create texture path
+			CHAR strTexture[MAX_PATH];
+			strcpy_s(strTexture, MAX_PATH, GAME_RESOURCES);
+			strcat_s(strTexture, MAX_PATH, d3dxMaterials[iterator].pTextureFilename);
+
 			// Create the texture
-			if (FAILED(D3DXCreateTextureFromFileA(m_pDirect3dDevice, d3dxMaterials[i].pTextureFilename,
-												  &m_pMeshTextures[i])))
-			{
-				// If texture is not in current folder, try parent folder
-				const CHAR* strPrefix = "..\\GameResources\\";
-				CHAR strTexture[MAX_PATH];
-				strcpy_s(strTexture, MAX_PATH, strPrefix);
-				strcat_s(strTexture, MAX_PATH, d3dxMaterials[i].pTextureFilename);
-				// If texture is not in current folder, try parent folder
-				if (FAILED(D3DXCreateTextureFromFileA(m_pDirect3dDevice, strTexture, &m_pMeshTextures[i])))
-				{
-					MessageBox(NULL, L"Could not find texture map", L"Meshes.exe", MB_OK);
-				}
-			}
+			hresult = D3DXCreateTextureFromFileA(m_pDirect3dDevice, strTexture, &m_pMeshTextures[iterator]);
+
+			if (FAILED(hresult))
+				MessageBox(NULL, L"Could not find texture map", L"Atlas", MB_OK);
+
 		}
-	}
+	});
 
 	// Done with the material buffer
 	pD3DXMtrlBuffer->Release();
 
 	Log->Print("Scene loaded successfylly");
-	// return S_OK;
 }
 ///////////////////////////////////////////////////////////////
