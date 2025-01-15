@@ -10,7 +10,7 @@
 class CRender
 {
 private:
-	HWND m_hWndow;
+	HWND m_hWindow;
 	LPDIRECT3D9 m_pDirect3D;
 	LPDIRECT3DDEVICE9 m_pDirect3dDevice;
 

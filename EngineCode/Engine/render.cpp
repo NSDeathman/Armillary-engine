@@ -10,7 +10,7 @@ extern LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 ///////////////////////////////////////////////////////////////
 CRender::CRender()
 {
-	m_hWndow = NULL;
+	m_hWindow = NULL;
     m_pDirect3D = NULL;
     m_pDirect3dDevice = NULL;
 }
@@ -38,7 +38,7 @@ void CRender::CreateMainWindow()
     RegisterClassEx(&wc);
 
     // Create the application's window
-    m_hWndow = CreateWindow(L"ATLAS", L"Main window", WS_OVERLAPPEDWINDOW, 100, 100, 300, 300, NULL, NULL, wc.hInstance, NULL);
+    m_hWindow = CreateWindow(L"ATLAS", L"Main window", WS_OVERLAPPEDWINDOW, 100, 100, 300, 300, NULL, NULL, wc.hInstance, NULL);
 }
 
 void CRender::InitializeDirect3D()
@@ -60,7 +60,7 @@ void CRender::InitializeDirect3D()
     Direct3DPresentParams.AutoDepthStencilFormat = D3DFMT_D16;
 
     // Create the D3DDevice
-    HRESULT hresult = m_pDirect3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWndow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &Direct3DPresentParams, &m_pDirect3dDevice);
+    HRESULT hresult = m_pDirect3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &Direct3DPresentParams, &m_pDirect3dDevice);
 
     if (FAILED(hresult))
     {
