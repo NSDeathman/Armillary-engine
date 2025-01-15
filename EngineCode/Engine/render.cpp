@@ -58,14 +58,14 @@ void CRender::CreateMainWindow()
 					NULL, 
 					NULL, 
 					NULL, 
-					L"Atlas", 
+					"Atlas", 
 					NULL};
 
 	RegisterClassEx(&wc);
 
 	// Create the application's window
-	m_hWindow = CreateWindow(L"ATLAS", 
-							 L"Main window", 
+	m_hWindow = CreateWindow("ATLAS", 
+							 "Main window", 
 							 WS_OVERLAPPEDWINDOW, 
 							 100,	
 							 100, 
@@ -76,12 +76,7 @@ void CRender::CreateMainWindow()
 							 wc.hInstance, 
 							 NULL);
 
-	GetLastError();
-
-	if (GetLastError())
-	{
-		Log->Print("Creating window error");
-	}
+	ASSERT(!GetLastError(), "An error occurred while creating the window");
 }
 
 void CRender::InitializeDirect3D()
@@ -103,19 +98,17 @@ void CRender::InitializeDirect3D()
 	Direct3DPresentParams.AutoDepthStencilFormat = D3DFMT_D16;
 
 	// Create the D3DDevice
-	HRESULT hresult =
-		m_pDirect3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-								  &Direct3DPresentParams, &m_pDirect3dDevice);
+	HRESULT hresult = m_pDirect3D->CreateDevice(D3DADAPTER_DEFAULT, 
+												D3DDEVTYPE_HAL, 
+												m_hWindow, 
+												D3DCREATE_HARDWARE_VERTEXPROCESSING,
+												&Direct3DPresentParams, 
+												&m_pDirect3dDevice);
 
-	if (FAILED(hresult))
-	{
-		Log->Print("Fail while creating Direct3D");
-		return;
-	}
-	else
-	{
-		Log->Print("Direct3D created successfuly");
-	}
+	ASSERT(SUCCEEDED(hresult), "Fail while creating Direct3D");
+
+	if (SUCCEEDED(hresult))
+		Log->Print("Direct3D created successfully");
 
 	ShowWindow(m_hWindow, SW_SHOWDEFAULT);
 	UpdateWindow(m_hWindow);
@@ -210,7 +203,7 @@ void CRender::LoadScene()
 	// Load the mesh from the specified file
 	HRESULT hresult = E_FAIL;
 
-	hresult = D3DXLoadMeshFromX(L"..\\GameResources\\Tiger.x", 
+	hresult = D3DXLoadMeshFromX("..\\GameResources\\Tiger.x", 
 								D3DXMESH_SYSTEMMEM, 
 								m_pDirect3dDevice, 
 								NULL,
@@ -220,20 +213,17 @@ void CRender::LoadScene()
 								&m_pMesh);
 
 	// If model is not in current folder
-	if (FAILED(hresult))
-		MessageBox(NULL, L"Could not find tiger.x", L"Atlas", MB_OK);
+	ASSERT(SUCCEEDED(hresult), "Could not find tiger.x")
 
 	// We need to extract the material properties and texture names from the pD3DXMtrlBuffer
 	D3DXMATERIAL* d3dxMaterials = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
 	m_pMeshMaterials.resize(m_dwNumMaterials);
 
-	if (m_pMeshMaterials.empty())
-		Log->Print("Can`t load mesh materials");
+	ASSERT(!m_pMeshMaterials.empty(), "Can`t load mesh materials")
 
 	m_pMeshTextures.resize(m_dwNumMaterials);
 
-	if (m_pMeshTextures.empty())
-		Log->Print("Can`t load mesh textures");
+	ASSERT(!m_pMeshTextures.empty(), "Can`t load mesh textures")
 
 	concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [&](u32 iterator) {
 		// Copy the material
@@ -255,8 +245,7 @@ void CRender::LoadScene()
 			// Create the texture
 			hresult = D3DXCreateTextureFromFileA(m_pDirect3dDevice, strTexture, &m_pMeshTextures[iterator]);
 
-			if (FAILED(hresult))
-				MessageBox(NULL, L"Could not find texture map", L"Atlas", MB_OK);
+			ASSERT(SUCCEEDED(hresult), "Could not find texture map")
 
 		}
 	});
@@ -264,6 +253,6 @@ void CRender::LoadScene()
 	// Done with the material buffer
 	pD3DXMtrlBuffer->Release();
 
-	Log->Print("Scene loaded successfylly");
+	Log->Print("Scene loaded successfully");
 }
 ///////////////////////////////////////////////////////////////
