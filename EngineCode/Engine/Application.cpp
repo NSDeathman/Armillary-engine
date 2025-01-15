@@ -16,8 +16,7 @@ void CApplication::Destroy()
 {
 	Log->Print("Destroying application...");
 
-	delete (Render);
-	delete (Log);
+	Render->Destroy();
 }
 
 void CApplication::Start()

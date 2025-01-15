@@ -15,8 +15,8 @@ private:
 	LPDIRECT3DDEVICE9 m_pDirect3dDevice;
 
 	LPD3DXMESH m_pMesh;
-	D3DMATERIAL9* m_pMeshMaterials;
-	LPDIRECT3DTEXTURE9* m_pMeshTextures;
+	std::vector<D3DMATERIAL9> m_pMeshMaterials;
+	std::vector<LPDIRECT3DTEXTURE9> m_pMeshTextures;
 	DWORD m_dwNumMaterials;
 
 public:
@@ -25,6 +25,7 @@ public:
 	void CreateMatrices();
 	void Initialize();
 	void RenderFrame();
+	void Destroy();
 
 	void LoadGeometry();
 	void LoadMaterials();
@@ -32,7 +33,7 @@ public:
 	void LoadScene();
 
 	CRender();
-	~CRender();
+	~CRender() = default;
 };
 ///////////////////////////////////////////////////////////////
 extern CRender* Render;
