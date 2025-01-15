@@ -36,3 +36,5 @@ bin/*
 .vs/*
 
 EngineCode/.vs/*
+
+*.ink
