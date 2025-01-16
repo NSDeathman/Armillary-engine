@@ -34,4 +34,6 @@ typedef char string512[512];
 typedef char string1024[1024];
 typedef char string2048[2048];
 typedef char string4096[4096];
+
+typedef const char* str_c;
 ///////////////////////////////////////////////////////////////

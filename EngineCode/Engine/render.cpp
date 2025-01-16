@@ -9,6 +9,7 @@
 #include "resource.h"
 #include "render_backend.h"
 #include "imgui_api.h"
+#include "OptickAPI.h"
 ///////////////////////////////////////////////////////////////
 UINT g_ResizeWidth = NULL;
 UINT g_ResizeHeight = NULL;
@@ -31,6 +32,8 @@ CRender::CRender()
 	m_bNeedReset = false;
 
 	m_bWireframe = false;
+
+	m_iFrame = NULL;
 }
 
 void CRender::Destroy()
@@ -252,6 +255,11 @@ void CRender::OnFrameBegin()
 		if (ImGui::Button("Wireframe"))
 			m_bWireframe = !m_bWireframe;
 
+#ifdef DEBUG_BUILD
+		if (ImGui::Button("Optic capture frame"))
+			OptickAPI->StartCapturing(100);
+#endif
+
 		ImGui::End();
 	}
 
@@ -291,6 +299,8 @@ void CRender::OnFrameEnd()
 
 	if (present_result == D3DERR_DEVICELOST)
 		m_bDeviceLost = true;
+
+	m_iFrame++;
 }
 
 void CRender::OnFrame()

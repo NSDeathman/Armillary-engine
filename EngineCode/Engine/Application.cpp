@@ -10,11 +10,13 @@
 #include "log.h"
 #include "build_identification_helper.h"
 #include "imgui_api.h"
+#include "OptickAPI.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CBackend* RenderBackend = NULL;
 CLog* Log = NULL;
 CImguiAPI* Imgui = NULL;
+COptickAPI* OptickAPI = NULL;
 ///////////////////////////////////////////////////////////////
 void CApplication::PrintStartData()
 {
@@ -53,6 +55,26 @@ void CApplication::Start()
 
     Render->Initialize();
 	Imgui->Initialize();
+
+#ifdef DEBUG_BUILD
+	OptickAPI = new (COptickAPI);
+#endif
+}
+
+void CApplication::Destroy()
+{
+	Log->Print("Destroying application...");
+
+	OptickAPI->Destroy();
+	delete (OptickAPI);
+
+	Imgui->Destroy();
+	delete (Imgui);
+
+	Render->Destroy();
+	delete (Render);
+
+	delete (Log);
 }
 
 void RenderThreadTask()
@@ -117,18 +139,5 @@ void CApplication::Process()
 	Log->Print("Destroying Application...");
 
 	App->Destroy();
-}
-
-void CApplication::Destroy()
-{
-	Log->Print("Destroying application...");
-
-	Imgui->Destroy();
-	delete (Imgui);
-
-	Render->Destroy();
-	delete (Render);
-
-	delete (Log);
 }
 ///////////////////////////////////////////////////////////////

@@ -186,11 +186,13 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="imgui_api.cpp" />
     <ClCompile Include="log.cpp" />
+    <ClCompile Include="OptickAPI.cpp" />
     <ClCompile Include="render_backend.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="splash_screen.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="OptickAPI.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="build_identification_helper.h" />
     <ClInclude Include="defines.h" />

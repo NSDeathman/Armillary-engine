@@ -17,10 +17,13 @@
       <Filter>Log</Filter>
     </ClCompile>
     <ClCompile Include="splash_screen.cpp">
-      <Filter>SplashScreen</Filter>
+      <Filter>Splash screen</Filter>
     </ClCompile>
     <ClCompile Include="imgui_api.cpp">
-      <Filter>Imgui implementation</Filter>
+      <Filter>Third-party implementations\Imgui implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="OptickAPI.cpp">
+      <Filter>Third-party implementations\Optick implementation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,13 +58,16 @@
       <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="splash_screen.h">
-      <Filter>SplashScreen</Filter>
+      <Filter>Splash screen</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Application resources</Filter>
     </ClInclude>
     <ClInclude Include="imgui_api.h">
-      <Filter>Imgui implementation</Filter>
+      <Filter>Third-party implementations\Imgui implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="OptickAPI.h">
+      <Filter>Third-party implementations\Optick implementation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,14 +98,20 @@
     <Filter Include="Filesystem">
       <UniqueIdentifier>{0deecb8c-381f-47ec-a335-f339a87c9832}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SplashScreen">
-      <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Application resources">
       <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Imgui implementation">
+    <Filter Include="Splash screen">
+      <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third-party implementations">
+      <UniqueIdentifier>{bac53889-5198-456c-9abf-3782ef11cde1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third-party implementations\Imgui implementation">
       <UniqueIdentifier>{b4ad1769-255a-45d7-a74c-e9a01d43e20d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third-party implementations\Optick implementation">
+      <UniqueIdentifier>{a9c9402a-5026-4c55-92fd-71046794f0b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

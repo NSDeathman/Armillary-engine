@@ -16,6 +16,7 @@ class CRender
 	HWND m_hWindow;
 
 	DWORD MaxSimultaneousTextures;
+	INT m_iFrame;
 	
   private:
 	LPD3DXMESH m_pMesh;
