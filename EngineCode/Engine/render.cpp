@@ -28,6 +28,7 @@ CRender::CRender()
 	m_dwNumMaterials = 0L;
 
 	m_bDeviceLost = false;
+	m_bNeedReset = false;
 }
 
 void CRender::Destroy()
@@ -198,6 +199,8 @@ void CRender::OnResetEnd()
 
 void CRender::Reset()
 {
+	Log->Print("Resetting render...");
+
 	OnResetBegin();
 
 	HRESULT result = m_pDirect3dDevice->Reset(&m_pDirect3DPresentParams);
@@ -230,7 +233,25 @@ void CRender::OnFrameBegin()
 	if (m_bDeviceLost)
 		HandleDeviceLost();
 
+	if (m_bNeedReset)
+	{
+		Reset();
+		m_bNeedReset = false;
+	}
+
 	Imgui->OnFrameBegin();
+
+	{
+		ImGui::Begin("Atlas helper window"); // Create a window called "Hello, world!" and append into it.
+
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+					1000.0f / Imgui->m_pImGuiInputOutputParams.Framerate, Imgui->m_pImGuiInputOutputParams.Framerate);
+
+		if (ImGui::Button("Reset render"))
+			m_bNeedReset = true;
+
+		ImGui::End();
+	}
 
 	// Handle window resize (we don't resize directly in the WM_SIZE handler)
 	if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
@@ -238,7 +259,7 @@ void CRender::OnFrameBegin()
 		m_pDirect3DPresentParams.BackBufferWidth = g_ResizeWidth;
 		m_pDirect3DPresentParams.BackBufferHeight = g_ResizeHeight;
 		g_ResizeWidth = g_ResizeHeight = 0;
-		Reset();
+		m_bNeedReset = true;
 	}
 
 	// Clear the backbuffer and the zbuffer
@@ -280,14 +301,6 @@ void CRender::OnFrame()
 void CRender::RenderFrame()
 {
 	OPTICK_EVENT("CRender::RenderFrame")
-
-	{
-		ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / Imgui->m_pImGuiInputOutputParams.Framerate, Imgui->m_pImGuiInputOutputParams.Framerate);
-
-		ImGui::End();
-	}
 
 	// Turn on the zbuffer
 	m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);

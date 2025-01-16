@@ -24,6 +24,7 @@ class CRender
 	DWORD m_dwNumMaterials;
 
 	BOOL m_bDeviceLost;
+	BOOL m_bNeedReset;
 
   public:
 	void CreateMainWindow();
