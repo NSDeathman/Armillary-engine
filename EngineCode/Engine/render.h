@@ -26,6 +26,8 @@ class CRender
 	BOOL m_bDeviceLost;
 	BOOL m_bNeedReset;
 
+	BOOL m_bWireframe;
+
   public:
 	void CreateMainWindow();
 	void GetCapabilities();

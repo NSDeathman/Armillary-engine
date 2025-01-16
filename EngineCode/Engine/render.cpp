@@ -29,6 +29,8 @@ CRender::CRender()
 
 	m_bDeviceLost = false;
 	m_bNeedReset = false;
+
+	m_bWireframe = false;
 }
 
 void CRender::Destroy()
@@ -242,13 +244,13 @@ void CRender::OnFrameBegin()
 	Imgui->OnFrameBegin();
 
 	{
-		ImGui::Begin("Atlas helper window"); // Create a window called "Hello, world!" and append into it.
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-					1000.0f / Imgui->m_pImGuiInputOutputParams.Framerate, Imgui->m_pImGuiInputOutputParams.Framerate);
+		ImGui::Begin("Atlas helper window");
 
 		if (ImGui::Button("Reset render"))
 			m_bNeedReset = true;
+
+		if (ImGui::Button("Wireframe"))
+			m_bWireframe = !m_bWireframe;
 
 		ImGui::End();
 	}
@@ -308,6 +310,7 @@ void CRender::RenderFrame()
 	RenderBackend->set_CullMode(CBackend::CULL_CCW);
 
 	// Depth prepass
+	if (0)
 	{
 		RenderBackend->set_ZWriteEnable(TRUE);
 
@@ -320,11 +323,17 @@ void CRender::RenderFrame()
 		m_pDirect3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL);
 	}
 
+	if (m_bWireframe)
+		RenderBackend->set_FillMode(CBackend::FILL_WIREFRAME);
+
 	m_pDirect3dDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
 
 	m_pDirect3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_PHONG);
 
 	RenderScene();
+
+	if (m_bWireframe)
+		RenderBackend->set_FillMode(CBackend::FILL_SOLID);
 }
 
 void CRender::LoadScene()
@@ -367,7 +376,7 @@ void CRender::LoadScene()
 		m_pMeshMaterials[iterator].Ambient = m_pMeshMaterials[iterator].Diffuse;
 
 		m_pMeshTextures[iterator] = NULL;
-		if (d3dxMaterials[iterator].pTextureFilename != NULL && lstrlenA(d3dxMaterials[iterator].pTextureFilename) > 0)
+		if (d3dxMaterials[iterator].pTextureFilename != NULL && d3dxMaterials[iterator].pTextureFilename[0] != '\0')
 		{
 			HRESULT hresult = E_FAIL;
 
