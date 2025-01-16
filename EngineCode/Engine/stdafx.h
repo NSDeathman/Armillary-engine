@@ -11,31 +11,34 @@
 
 #include <Windows.h>
 #include <mmsystem.h>
-#include <d3dx9.h>
 
-#pragma warning( disable : 4996 ) // disable deprecated warning 
+#include <vector>
+
+#pragma warning(disable : 4996) // disable deprecated warning
 #include <strsafe.h>
-#pragma warning( default : 4996 )
+#pragma warning(default : 4996)
+///////////////////////////////////////////////////////////////
+#pragma comment(lib, "secur32.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "dmoguids.lib")
+#pragma comment(lib, "wmcodecdspuuid.lib")
+#pragma comment(lib, "msdmo.lib")
+#pragma comment(lib, "Strmiids.lib")
 ///////////////////////////////////////////////////////////////
 #include "defines.h"
 #include "types.h"
+///////////////////////////////////////////////////////////////
+#include <d3dx9.h>
+///////////////////////////////////////////////////////////////
+#pragma comment(lib, "d3d9.lib")
+#pragma comment(lib, "d3dx9.lib")
 ///////////////////////////////////////////////////////////////
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_dx9.h>
 #include <Imgui/backends/imgui_impl_win32.h>
 ///////////////////////////////////////////////////////////////
-#pragma comment(lib, "d3d9.lib")
-#pragma comment(lib, "d3dx9.lib")
-
-# pragma comment(lib, "secur32.lib")
-# pragma comment(lib, "winmm.lib")
-# pragma comment(lib, "dmoguids.lib")
-# pragma comment(lib, "wmcodecdspuuid.lib")
-# pragma comment(lib, "msdmo.lib")
-# pragma comment(lib, "Strmiids.lib")
-
 #include <optick/optick.h>
 #ifdef _DEBUG
-#pragma comment(lib, "OptickCore.lib")
+//#pragma comment(lib, "OptickCore.lib")
 #endif
 ///////////////////////////////////////////////////////////////

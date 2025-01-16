@@ -5,7 +5,7 @@
 ///////////////////////////////////////////////////////////////
 #include "splash_screen.h"
 ///////////////////////////////////////////////////////////////
-static INT_PTR CALLBACK SplashScreenDlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp)
+INT_PTR CALLBACK SplashScreenDlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp)
 {
 	switch (msg)
 	{

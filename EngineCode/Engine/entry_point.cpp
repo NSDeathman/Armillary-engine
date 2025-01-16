@@ -23,25 +23,6 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-static INT_PTR CALLBACK SplashScreenDlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp)
-{
-	switch (msg)
-	{
-	case WM_DESTROY:
-		break;
-	case WM_CLOSE:
-		DestroyWindow(hw);
-		break;
-	case WM_COMMAND:
-		if (LOWORD(wp) == IDCANCEL)
-			DestroyWindow(hw);
-		break;
-	default:
-		return FALSE;
-	}
-	return TRUE;
-}
-
 INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, INT)
 {
 	UNREFERENCED_PARAMETER(hInstance);
