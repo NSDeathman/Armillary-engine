@@ -9,10 +9,13 @@
 ///////////////////////////////////////////////////////////////
 class CRender
 {
+  public:
+	LPDIRECT3DDEVICE9 m_pDirect3dDevice;
+	DWORD MaxSimultaneousTextures;
+
   private:
 	HWND m_hWindow;
 	LPDIRECT3D9 m_pDirect3D;
-	LPDIRECT3DDEVICE9 m_pDirect3dDevice;
 	D3DPRESENT_PARAMETERS m_pDirect3DPresentParams;
 
 	LPD3DXMESH m_pMesh;
@@ -24,6 +27,7 @@ class CRender
 
   public:
 	void CreateMainWindow();
+	void GetCapabilities();
 	void InitializeDirect3D();
 	void CreateMatrices();
 	void Initialize();
@@ -36,6 +40,7 @@ class CRender
 	void LoadMaterials();
 	void LoadTextures();
 	void LoadScene();
+	void RenderScene();
 
 	CRender();
 	~CRender() = default;

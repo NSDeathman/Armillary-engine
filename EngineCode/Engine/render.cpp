@@ -7,6 +7,7 @@
 #include "Log.h"
 #include "filesystem.h"
 #include "resource.h"
+#include "render_backend.h"
 ///////////////////////////////////////////////////////////////
 extern LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 ///////////////////////////////////////////////////////////////
@@ -104,8 +105,9 @@ void CRender::InitializeDirect3D()
 	Log->Print("Initializing Direct3D...");
 
 	// Create the D3D object.
-	if (NULL == (m_pDirect3D = Direct3DCreate9(D3D_SDK_VERSION)))
-		return;
+	m_pDirect3D = Direct3DCreate9(D3D_SDK_VERSION);
+
+	ASSERT(!(m_pDirect3D == NULL), "An error occurred while creating the Direct3D");
 
 	// Set up the structure used to create the D3DDevice. Since we are now
 	// using more complex geometry, we will create a device with a zbuffer.
@@ -132,7 +134,15 @@ void CRender::InitializeDirect3D()
 	ShowWindow(m_hWindow, SW_SHOWDEFAULT);
 	UpdateWindow(m_hWindow);
 
-	return;
+	GetCapabilities();
+}
+
+void CRender::GetCapabilities()
+{
+	D3DCAPS9 Capabilities;
+	m_pDirect3dDevice->GetDeviceCaps(&Capabilities);
+
+	MaxSimultaneousTextures = Capabilities.MaxSimultaneousTextures;
 }
 
 void CRender::CreateMatrices()
@@ -203,36 +213,43 @@ void CRender::RenderFrame()
 		HandleDeviceLost();
 
 	// Clear the backbuffer and the zbuffer
-	m_pDirect3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
+	m_pDirect3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0);
+
+	// Setup the world, view, and projection matrices
+	CreateMatrices();
 
 	// Begin the scene
 	HRESULT hresult = m_pDirect3dDevice->BeginScene();
 
+	if (FAILED(hresult))
+		Log->Print("Failed to begin scene render");
+
 	// Turn on the zbuffer
 	m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
-	// Turn on ambient lighting
+	RenderBackend->set_CullMode(CBackend::CULL_CCW);
+
+	// Depth prepass
+	{
+		RenderBackend->set_ZWriteEnable(TRUE);
+
+		m_pDirect3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+
+		RenderScene();
+
+		RenderBackend->set_ZWriteEnable(FALSE);
+
+		m_pDirect3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL);
+	}
+
 	m_pDirect3dDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
 
-	if (SUCCEEDED(hresult))
-	{
-		// Setup the world, view, and projection matrices
-		CreateMatrices();
+	m_pDirect3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_PHONG);
 
-		// Meshes are divided into subsets, one for each material. Render them in a loop
-		concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator)
-		{
-			// Set the material and texture for this subset
-			m_pDirect3dDevice->SetMaterial(&m_pMeshMaterials[iterator]);
-			m_pDirect3dDevice->SetTexture(0, m_pMeshTextures[iterator]);
+	RenderScene();
 
-			// Draw the mesh subset
-			m_pMesh->DrawSubset(iterator);
-		});
-
-		// End the scene
-		m_pDirect3dDevice->EndScene();
-	}
+	// End the scene
+	m_pDirect3dDevice->EndScene();
 
 	// Present the backbuffer contents to the display
 	HRESULT present_result = m_pDirect3dDevice->Present(NULL, NULL, NULL, NULL);
@@ -294,7 +311,6 @@ void CRender::LoadScene()
 			hresult = D3DXCreateTextureFromFileA(m_pDirect3dDevice, strTexture, &m_pMeshTextures[iterator]);
 
 			ASSERT(SUCCEEDED(hresult), "Could not find texture map")
-
 		}
 	});
 
@@ -302,5 +318,19 @@ void CRender::LoadScene()
 	pD3DXMtrlBuffer->Release();
 
 	Log->Print("Scene loaded successfully");
+}
+
+void CRender::RenderScene()
+{
+	// Meshes are divided into subsets, one for each material. Render them in a loop
+	concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator)
+	{
+		// Set the material and texture for this subset
+		m_pDirect3dDevice->SetMaterial(&m_pMeshMaterials[iterator]);
+		m_pDirect3dDevice->SetTexture(0, m_pMeshTextures[iterator]);
+
+		// Draw the mesh subset
+		m_pMesh->DrawSubset(iterator);
+	});
 }
 ///////////////////////////////////////////////////////////////

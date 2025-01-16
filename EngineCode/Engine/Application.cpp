@@ -6,11 +6,13 @@
 #include "Application.h"
 #include "splash_screen.h"
 #include "render.h"
+#include "render_backend.h"
 #include "log.h"
 #include "build_identification_helper.h"
-#include "threading.h"
+//#include "threading.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
+CBackend* RenderBackend = NULL;
 CLog* Log = NULL;
 ///////////////////////////////////////////////////////////////
 void CApplication::Destroy()
@@ -23,6 +25,7 @@ void CApplication::Destroy()
 void CApplication::Start()
 {
 	Render = new(CRender);
+	RenderBackend = new (CBackend);
 
     Render->Initialize();
 }
@@ -44,13 +47,15 @@ void CApplication::OnFrame()
 
 	//Scheduler.Add(ThreadWork0);
 
-	concurrency::task_group task_render;
-	task_render.run([&]() 
-	{ 
-		RenderThreadTask();
-	});
+	//concurrency::task_group task_render;
+	//task_render.run([&]() 
+	//{ 
+	//	
+	//});
 
-	task_render.wait();
+	RenderThreadTask();
+
+	//task_render.wait();
 }
 
 void CApplication::EventLoop()
