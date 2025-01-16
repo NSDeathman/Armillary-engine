@@ -234,13 +234,10 @@ void CRender::RenderFrame()
 		m_pDirect3dDevice->EndScene();
 	}
 
-
-	HRESULT result = E_FAIL;
-	
 	// Present the backbuffer contents to the display
-	result = m_pDirect3dDevice->Present(NULL, NULL, NULL, NULL);
+	HRESULT present_result = m_pDirect3dDevice->Present(NULL, NULL, NULL, NULL);
 
-	if (result == D3DERR_DEVICELOST)
+	if (present_result == D3DERR_DEVICELOST)
 		m_bDeviceLost = true;
 }
 
