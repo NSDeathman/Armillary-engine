@@ -4,13 +4,46 @@
 //Log realization
 ///////////////////////////////////////////////////////////////
 #include "log.h"
+#include "filesystem.h"
 ///////////////////////////////////////////////////////////////
 CLog::CLog()
 {
+	fs::path dir(LOGS);
+
+	Filesystem->CreateDir(LOGS);
+
+	// Create path to log file
+	std::string filePath = (std::string)LOGS + (std::string) "./armillary_engine" + (string) ".log";
+
+	// Erase text in log file
+	m_LogFileStream.open(filePath.c_str(), std::ofstream::out | std::ofstream::trunc);
+	m_LogFileStream.close();
+
+	// Creating stream
+	m_LogFileStream.open(filePath.c_str(), std::ios_base::out | std::ios_base::app);
+
 #ifdef NDEBUG
 	if (strstr((LPCSTR)GetCommandLine(), "-external_console_log"))
 #endif
 		CreateConsole();
+}
+
+void CLog::Flush()
+{
+	Print("Flushing log...");
+
+	// Saving log file
+	m_LogFileStream.flush();
+}
+
+void CLog::Destroy()
+{
+	Flush();
+
+	Print("Destroying logger...");
+
+	// Closing stream
+	m_LogFileStream.close();
 }
 
 void __cdecl CLog::Print(LPCSTR format, ...)
@@ -25,6 +58,8 @@ void __cdecl CLog::Print(LPCSTR format, ...)
 	{
 		std::cout << (buf);
 		std::cout << "\n";
+
+		m_LogFileStream << buf << '\n';
 	}
 }
 
@@ -39,8 +74,8 @@ void __cdecl CLog::Debug_Print(LPCSTR format, ...)
 	va_end(mark);
 	if (sz)
 	{
-		std::cout << (buf);
-		std::cout << "\n";
+		std::cout << (buf) << "\n";
+		m_LogFileStream << buf << '\n';
 	}
 #endif
 }

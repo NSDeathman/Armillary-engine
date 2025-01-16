@@ -28,6 +28,9 @@
     <ClCompile Include="helper_window.cpp">
       <Filter>Helper window</Filter>
     </ClCompile>
+    <ClCompile Include="filesystem.cpp">
+      <Filter>Filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">

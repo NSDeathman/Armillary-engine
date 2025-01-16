@@ -5,9 +5,12 @@
 ///////////////////////////////////////////////////////////////
 #include "imgui_api.h"
 #include "render.h"
+#include "log.h"
 ///////////////////////////////////////////////////////////////
 void CImguiAPI::Initialize()
 {
+	Log->Print("Initializing ImGuiAPI...");
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -65,16 +68,19 @@ void CImguiAPI::OnFrameEnd()
 
 void CImguiAPI::OnResetBegin()
 {
+	Log->Print("Invalidating ImGuiAPI Device objects...");
 	ImGui_ImplDX9_InvalidateDeviceObjects();
 }
 
 void CImguiAPI::OnResetEnd()
 {
+	Log->Print("Creating ImGuiAPI Device objects...");
 	ImGui_ImplDX9_CreateDeviceObjects();
 }
 
 void CImguiAPI::Destroy()
 {
+	Log->Print("Destroying ImGuiAPI...");
 	ImGui_ImplDX9_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();

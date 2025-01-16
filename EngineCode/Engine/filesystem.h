@@ -1,18 +1,35 @@
 ///////////////////////////////////////////////////////////////
 // Created: 14.01.2025
 // Author: NS_Deathman
-// Application entry point
+// Filesystem implementation
 ///////////////////////////////////////////////////////////////
 #ifndef FILESYSTEM_INCLUDED
 #define FILESYSTEM_INCLUDED
 ///////////////////////////////////////////////////////////////
+#include "stdafx.h"
 #include <filesystem>
 ///////////////////////////////////////////////////////////////
+#define APPLICATION_DATA "..\\appdata\\"
+#define LOGS "..\\appdata\\logs\\"
 #define GAME_RESOURCES "..\\gameresources\\"
 #define TEXTURES "..\\gameresources\\textures\\"
 #define MESHES "..\\gameresources\\meshes\\"
 #define SHADERS "..\\gameresources\\shaders\\"
 #define SOUNDS "..\\gameresources\\sounds\\"
+///////////////////////////////////////////////////////////////
+namespace fs = std::filesystem;
+///////////////////////////////////////////////////////////////
+class CFilesystem
+{
+private:
+	bool CreateDirectoryRecursive(std::string const& dirName, std::error_code& err);
+
+public:
+	void CreateDir(std::string const& dirName);
+
+	CFilesystem() = default;
+	~CFilesystem() = default;
+};
 ///////////////////////////////////////////////////////////////
 /*
 TCHAR GetAbsolutePath(TCHAR file_path)
@@ -25,6 +42,8 @@ TCHAR GetAbsolutePath(TCHAR file_path)
 	return filename;
 }
 */
+///////////////////////////////////////////////////////////////
+extern CFilesystem* Filesystem;
 ///////////////////////////////////////////////////////////////
 #endif //FILESYSTEM_INCLUDED
 ///////////////////////////////////////////////////////////////

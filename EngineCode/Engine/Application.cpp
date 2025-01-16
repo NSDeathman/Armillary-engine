@@ -12,6 +12,7 @@
 #include "imgui_api.h"
 #include "OptickAPI.h"
 #include "helper_window.h"
+#include "filesystem.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CBackend* RenderBackend = NULL;
@@ -19,6 +20,7 @@ CLog* Log = NULL;
 CImguiAPI* Imgui = NULL;
 COptickAPI* OptickAPI = NULL;
 CHelperWindow* HelperWindow = NULL;
+CFilesystem* Filesystem = NULL;
 ///////////////////////////////////////////////////////////////
 void CApplication::PrintStartData()
 {
@@ -34,10 +36,10 @@ void CApplication::PrintStartData()
 	Log->Print("Build type: Release");
 #endif
 
-#ifdef WIN32
-	Log->Print("Build architecture: Win32");
-#else
+#ifdef WIN64
 	Log->Print("Build architecture: Win64");
+#else
+	Log->Print("Build architecture: Win32");
 #endif
 
 	Log->Print("\n");
@@ -45,6 +47,8 @@ void CApplication::PrintStartData()
 
 void CApplication::Start()
 {
+	Filesystem = new (CFilesystem);
+
 	Log = new (CLog);
 
 	PrintStartData();
@@ -63,12 +67,12 @@ void CApplication::Start()
 #ifdef DEBUG_BUILD
 	//OptickAPI = new (COptickAPI);
 #endif
+
+	Render->LoadScene();
 }
 
 void CApplication::Destroy()
 {
-	Log->Print("Destroying application...");
-
 #ifdef DEBUG_BUILD
 	//OptickAPI->Destroy();
 	//delete (OptickAPI);
@@ -82,7 +86,10 @@ void CApplication::Destroy()
 	Render->Destroy();
 	delete (Render);
 
+	Log->Destroy();
 	delete (Log);
+
+	delete (Filesystem);
 }
 
 void RenderThreadTask()

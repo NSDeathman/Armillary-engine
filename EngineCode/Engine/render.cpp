@@ -190,7 +190,6 @@ void CRender::Initialize()
 	Log->Print("Initializing render...");
 	CreateMainWindow();
 	InitializeDirect3D();
-	LoadScene();
 }
 
 void CRender::OnResetBegin()

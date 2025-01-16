@@ -6,6 +6,7 @@
 #include "helper_window.h"
 #include "imgui_api.h"
 #include "render.h"
+#include "log.h"
 ///////////////////////////////////////////////////////////////
 bool g_bNeedRestart = false;
 bool g_bWireframeMode = false;
@@ -19,6 +20,9 @@ void CHelperWindow::Draw()
 
 	if (ImGui::Button("Wireframe"))
 		g_bWireframeMode = !g_bWireframeMode;
+
+	if (ImGui::Button("Flush log"))
+		Log->Flush();
 
 #ifdef DEBUG_BUILD
 		// if (ImGui::Button("Optic capture frame"))
