@@ -9,7 +9,6 @@
 #include "render_backend.h"
 #include "log.h"
 #include "build_identification_helper.h"
-#include "threading.h"
 #include "imgui_api.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
@@ -70,8 +69,6 @@ void CApplication::OnFrame()
 	OPTICK_THREAD("Atlas primary thread")
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
-
-	//Scheduler.Add(ThreadWork0);
 
 	//concurrency::task_group task_render;
 	//task_render.run([&]() 
