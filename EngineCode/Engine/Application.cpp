@@ -11,16 +11,18 @@
 #include "build_identification_helper.h"
 #include "imgui_api.h"
 #include "OptickAPI.h"
+#include "helper_window.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CBackend* RenderBackend = NULL;
 CLog* Log = NULL;
 CImguiAPI* Imgui = NULL;
 COptickAPI* OptickAPI = NULL;
+CHelperWindow* HelperWindow = NULL;
 ///////////////////////////////////////////////////////////////
 void CApplication::PrintStartData()
 {
-	Log->Print("Atlas engine");
+	Log->Print("Armillary engine");
 
 	u32 MajorBuildID = compute_build_id_major();
 	u32 MinorBuildID = compute_build_id_minor();
@@ -56,6 +58,8 @@ void CApplication::Start()
     Render->Initialize();
 	Imgui->Initialize();
 
+	HelperWindow = new (CHelperWindow);
+
 #ifdef DEBUG_BUILD
 	//OptickAPI = new (COptickAPI);
 #endif
@@ -70,6 +74,8 @@ void CApplication::Destroy()
 	//delete (OptickAPI);
 #endif
 
+	delete (HelperWindow);
+
 	Imgui->Destroy();
 	delete (Imgui);
 
@@ -81,7 +87,7 @@ void CApplication::Destroy()
 
 void RenderThreadTask()
 {
-	OPTICK_THREAD("Atlas render thread")
+	OPTICK_THREAD("Armillary engine render thread")
 	OPTICK_FRAME("RenderThreadTask")
 	OPTICK_EVENT("RenderThreadTask")
 
@@ -90,7 +96,7 @@ void RenderThreadTask()
 
 void CApplication::OnFrame()
 {
-	OPTICK_THREAD("Atlas primary thread")
+	OPTICK_THREAD("Armillary engine primary thread")
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 

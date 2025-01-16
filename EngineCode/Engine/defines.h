@@ -16,13 +16,13 @@
 	if (expession == false)												\
 	{																	\
 		Log->Print(error_message);										\
-		MessageBox(NULL, error_message, "Atlas error message", MB_OK);	\
+		MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
 	}																	\
 }																		\
 
 #define ERROR_MESSAGE(error_message)										\
 	{                                                                       \
-			MessageBox(NULL, error_message, "Atlas error message", MB_OK);  \
+			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);  \
 	}																		\
 
 #ifdef _DEBUG
@@ -32,7 +32,7 @@
 		if (expession == false)                                                                                        \
 		{                                                                                                              \
 			Log->Print(error_message);                                                                                 \
-			MessageBox(NULL, error_message, "Atlas error message", MB_OK);                                             \
+			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);                                  \
 		}                                                                                                              \
 	}                                                                                                                  \
 

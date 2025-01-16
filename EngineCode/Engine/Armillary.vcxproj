@@ -24,7 +24,7 @@
     <ProjectGuid>{015B628E-86AE-4D37-97DD-3700EF946707}</ProjectGuid>
     <RootNamespace>Testengine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Atlas</ProjectName>
+    <ProjectName>Armillary</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -184,6 +184,7 @@
   <ItemGroup>
     <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="helper_window.cpp" />
     <ClCompile Include="imgui_api.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="splash_screen.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="helper_window.h" />
     <ClInclude Include="OptickAPI.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="build_identification_helper.h" />

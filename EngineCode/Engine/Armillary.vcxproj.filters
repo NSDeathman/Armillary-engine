@@ -25,6 +25,9 @@
     <ClCompile Include="OptickAPI.cpp">
       <Filter>Third-party implementations\Optick implementation</Filter>
     </ClCompile>
+    <ClCompile Include="helper_window.cpp">
+      <Filter>Helper window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -69,6 +72,9 @@
     <ClInclude Include="OptickAPI.h">
       <Filter>Third-party implementations\Optick implementation</Filter>
     </ClInclude>
+    <ClInclude Include="helper_window.h">
+      <Filter>Helper window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Application">
@@ -112,6 +118,9 @@
     </Filter>
     <Filter Include="Third-party implementations\Optick implementation">
       <UniqueIdentifier>{a9c9402a-5026-4c55-92fd-71046794f0b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helper window">
+      <UniqueIdentifier>{8601af56-afb2-4e10-b351-00d6c367bf60}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

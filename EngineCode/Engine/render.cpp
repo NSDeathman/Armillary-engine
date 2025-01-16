@@ -10,6 +10,7 @@
 #include "render_backend.h"
 #include "imgui_api.h"
 #include "OptickAPI.h"
+#include "helper_window.h"
 ///////////////////////////////////////////////////////////////
 UINT g_ResizeWidth = NULL;
 UINT g_ResizeHeight = NULL;
@@ -89,14 +90,14 @@ void CRender::CreateMainWindow()
 	// Pointer to a null-terminated string for the menu
 	wc.lpszMenuName = NULL;
 	// Pointer to null-terminated string of our class name
-	wc.lpszClassName = "Atlas";
+	wc.lpszClassName = "Armillary engine";
 	wc.cbSize = sizeof(WNDCLASSEX);
 
 	RegisterClassEx(&wc);
 
 	// Create the application's window
-	m_hWindow = CreateWindow("ATLAS", 
-							 "Atlas engine", 
+	m_hWindow = CreateWindow("Armillary engine", 
+							 "Armillary engine", 
 							 WS_OVERLAPPEDWINDOW, 
 							 100,	
 							 100, 
@@ -238,30 +239,16 @@ void CRender::OnFrameBegin()
 	if (m_bDeviceLost)
 		HandleDeviceLost();
 
-	if (m_bNeedReset)
+	if (m_bNeedReset || g_bNeedRestart)
 	{
 		Reset();
 		m_bNeedReset = false;
+		g_bNeedRestart = false;
 	}
 
 	Imgui->OnFrameBegin();
 
-	{
-		ImGui::Begin("Atlas helper window");
-
-		if (ImGui::Button("Reset render"))
-			m_bNeedReset = true;
-
-		if (ImGui::Button("Wireframe"))
-			m_bWireframe = !m_bWireframe;
-
-#ifdef DEBUG_BUILD
-		//if (ImGui::Button("Optic capture frame"))
-		//	OptickAPI->StartCapturing(1);
-#endif
-
-		ImGui::End();
-	}
+	HelperWindow->Draw();
 
 	// Handle window resize (we don't resize directly in the WM_SIZE handler)
 	if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
@@ -333,7 +320,7 @@ void CRender::RenderFrame()
 		m_pDirect3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL);
 	}
 
-	if (m_bWireframe)
+	if (g_bWireframeMode)
 		RenderBackend->set_FillMode(CBackend::FILL_WIREFRAME);
 
 	m_pDirect3dDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
@@ -342,7 +329,7 @@ void CRender::RenderFrame()
 
 	RenderScene();
 
-	if (m_bWireframe)
+	if (g_bWireframeMode)
 		RenderBackend->set_FillMode(CBackend::FILL_SOLID);
 }
 
