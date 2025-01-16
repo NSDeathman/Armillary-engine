@@ -15,11 +15,14 @@ CRender::CRender()
 	m_hWindow = NULL;
 	m_pDirect3D = NULL;
 	m_pDirect3dDevice = NULL;
+	ZeroMemory(&m_pDirect3DPresentParams, sizeof(m_pDirect3DPresentParams));
 
 	m_pMesh = NULL;
 	m_pMeshMaterials.resize(NULL);
 	m_pMeshTextures.resize(NULL);
 	m_dwNumMaterials = 0L;
+
+	m_bDeviceLost = false;
 }
 
 void CRender::Destroy()
@@ -106,20 +109,19 @@ void CRender::InitializeDirect3D()
 
 	// Set up the structure used to create the D3DDevice. Since we are now
 	// using more complex geometry, we will create a device with a zbuffer.
-	D3DPRESENT_PARAMETERS Direct3DPresentParams;
-	ZeroMemory(&Direct3DPresentParams, sizeof(Direct3DPresentParams));
-	Direct3DPresentParams.Windowed = TRUE;
-	Direct3DPresentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	Direct3DPresentParams.BackBufferFormat = D3DFMT_UNKNOWN;
-	Direct3DPresentParams.EnableAutoDepthStencil = TRUE;
-	Direct3DPresentParams.AutoDepthStencilFormat = D3DFMT_D16;
+	ZeroMemory(&m_pDirect3DPresentParams, sizeof(m_pDirect3DPresentParams));
+	m_pDirect3DPresentParams.Windowed = TRUE;
+	m_pDirect3DPresentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	m_pDirect3DPresentParams.BackBufferFormat = D3DFMT_UNKNOWN;
+	m_pDirect3DPresentParams.EnableAutoDepthStencil = TRUE;
+	m_pDirect3DPresentParams.AutoDepthStencilFormat = D3DFMT_D16;
 
 	// Create the D3DDevice
 	HRESULT hresult = m_pDirect3D->CreateDevice(D3DADAPTER_DEFAULT, 
 												D3DDEVTYPE_HAL, 
 												m_hWindow, 
 												D3DCREATE_HARDWARE_VERTEXPROCESSING,
-												&Direct3DPresentParams, 
+												&m_pDirect3DPresentParams, 
 												&m_pDirect3dDevice);
 
 	ASSERT(SUCCEEDED(hresult), "An error occurred while creating the Direct3D");
@@ -170,9 +172,35 @@ void CRender::Initialize()
 	LoadScene();
 }
 
+void CRender::Reset()
+{
+	HRESULT result = m_pDirect3dDevice->Reset(&m_pDirect3DPresentParams);
+
+	if (result == D3DERR_INVALIDCALL)
+		ERROR_MESSAGE("Invalid call while device resetting");
+}
+
+void CRender::HandleDeviceLost()
+{
+	Log->Print("Device was lost, resetting render...");
+
+	HRESULT result = m_pDirect3dDevice->TestCooperativeLevel();
+
+	if (result == D3DERR_DEVICELOST)
+		Sleep(10);
+
+	if (result == D3DERR_DEVICENOTRESET)
+		Reset();
+
+	m_bDeviceLost = false;
+}
+
 void CRender::RenderFrame()
 {
 	OPTICK_EVENT("CRender::RenderFrame")
+
+	if (m_bDeviceLost)
+		HandleDeviceLost();
 
 	// Clear the backbuffer and the zbuffer
 	m_pDirect3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
@@ -206,8 +234,14 @@ void CRender::RenderFrame()
 		m_pDirect3dDevice->EndScene();
 	}
 
+
+	HRESULT result = E_FAIL;
+	
 	// Present the backbuffer contents to the display
-	m_pDirect3dDevice->Present(NULL, NULL, NULL, NULL);
+	result = m_pDirect3dDevice->Present(NULL, NULL, NULL, NULL);
+
+	if (result == D3DERR_DEVICELOST)
+		m_bDeviceLost = true;
 }
 
 void CRender::LoadScene()

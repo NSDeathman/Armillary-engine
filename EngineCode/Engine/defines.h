@@ -20,6 +20,11 @@
 	}																	\
 }																		\
 
+#define ERROR_MESSAGE(error_message)										\
+	{                                                                       \
+			MessageBox(NULL, error_message, "Atlas error message", MB_OK);  \
+	}																		\
+
 #ifdef _DEBUG
 
 #define VERIFY(expession, error_message)                                                                               \
