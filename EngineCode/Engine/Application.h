@@ -13,6 +13,7 @@ private:
 
 public:
 	void Start();
+	 void PrintStartData();
 	void ThreadWork();
 	void OnFrame();
 	void EventLoop();

@@ -10,24 +10,50 @@
 #include "log.h"
 #include "build_identification_helper.h"
 #include "threading.h"
+#include "imgui_api.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CBackend* RenderBackend = NULL;
 CLog* Log = NULL;
+CImguiAPI* Imgui = NULL;
 ///////////////////////////////////////////////////////////////
-void CApplication::Destroy()
+void CApplication::PrintStartData()
 {
-	Log->Print("Destroying application...");
+	Log->Print("Atlas engine");
 
-	Render->Destroy();
+	u32 MajorBuildID = compute_build_id_major();
+	u32 MinorBuildID = compute_build_id_minor();
+	Log->Print("Build ID: %d.%d", MajorBuildID, MinorBuildID);
+
+#ifdef _DEBUG
+	Log->Print("Build type: Debug");
+#else
+	Log->Print("Build type: Release");
+#endif
+
+#ifdef WIN32
+	Log->Print("Build architecture: Win32");
+#else
+	Log->Print("Build architecture: Win64");
+#endif
+
+	Log->Print("\n");
 }
 
 void CApplication::Start()
 {
+	Log = new (CLog);
+
+	PrintStartData();
+	
+	Log->Print("Starting Application...");
+
 	Render = new(CRender);
-	RenderBackend = new (CBackend);
+	RenderBackend = new(CBackend);
+	Imgui = new (CImguiAPI);
 
     Render->Initialize();
+	Imgui->Initialize();
 }
 
 void RenderThreadTask()
@@ -36,7 +62,7 @@ void RenderThreadTask()
 	OPTICK_FRAME("RenderThreadTask")
 	OPTICK_EVENT("RenderThreadTask")
 
-	Render->RenderFrame();
+	Render->OnFrame();
 }
 
 void CApplication::OnFrame()
@@ -81,28 +107,6 @@ void CApplication::EventLoop()
 void CApplication::Process()
 {
 	SplashScreen = new (CSplashScreen);
-	Log = new (CLog);
-
-	Log->Print("Atlas engine");
-
-	u32 MajorBuildID = compute_build_id_major();
-	u32 MinorBuildID = compute_build_id_minor();
-	Log->Print("Build ID: %d.%d", MajorBuildID, MinorBuildID);
-
-#ifdef _DEBUG
-	Log->Print("Build type: Debug");
-#else
-	Log->Print("Build type: Release");
-#endif
-
-#ifdef WIN32
-	Log->Print("Build architecture: Win32");
-#else
-	Log->Print("Build architecture: Win64");
-#endif
-
-	Log->Print("\n");
-	Log->Print("Starting Application...");
 
 	App->Start();
 
@@ -116,5 +120,18 @@ void CApplication::Process()
 	Log->Print("Destroying Application...");
 
 	App->Destroy();
+}
+
+void CApplication::Destroy()
+{
+	Log->Print("Destroying application...");
+
+	Imgui->Destroy();
+	delete (Imgui);
+
+	Render->Destroy();
+	delete (Render);
+
+	delete (Log);
 }
 ///////////////////////////////////////////////////////////////

@@ -11,13 +11,13 @@ class CRender
 {
   public:
 	LPDIRECT3DDEVICE9 m_pDirect3dDevice;
-	DWORD MaxSimultaneousTextures;
-
-  private:
-	HWND m_hWindow;
 	LPDIRECT3D9 m_pDirect3D;
 	D3DPRESENT_PARAMETERS m_pDirect3DPresentParams;
+	HWND m_hWindow;
 
+	DWORD MaxSimultaneousTextures;
+	
+  private:
 	LPD3DXMESH m_pMesh;
 	std::vector<D3DMATERIAL9> m_pMeshMaterials;
 	std::vector<LPDIRECT3DTEXTURE9> m_pMeshTextures;
@@ -25,18 +25,24 @@ class CRender
 
 	BOOL m_bDeviceLost;
 
-	ImGuiIO m_pImGuiInputOutputParams;
-
   public:
 	void CreateMainWindow();
 	void GetCapabilities();
 	void InitializeDirect3D();
 	void CreateMatrices();
 	void Initialize();
-	void RenderFrame();
 	void HandleDeviceLost();
+
+	void OnResetBegin();
 	void Reset();
+	void OnResetEnd();
+
 	void Destroy();
+
+	void OnFrameBegin();
+	void RenderFrame();
+	void OnFrameEnd();
+	void OnFrame();
 
 	void LoadGeometry();
 	void LoadMaterials();
