@@ -26,7 +26,4 @@
 #pragma comment(lib, "wmcodecdspuuid.lib")
 #pragma comment(lib, "msdmo.lib")
 #pragma comment(lib, "Strmiids.lib")
-
-#include <optick.h>
-#pragma comment(lib, "OptickCore.lib")
 ///////////////////////////////////////////////////////////////

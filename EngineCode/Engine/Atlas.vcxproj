@@ -135,7 +135,7 @@
     <ClCompile>
       <WarningLevel>Level2</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -148,8 +148,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-Party\Dll\OptickCore.dll" "$(OutDir)OptickCore.dll"
-copy /Y "$(SolutionDir)\Third-Party\Executable\Optick.exe" "$(OutDir)Optick.exe"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,7 +158,7 @@ copy /Y "$(SolutionDir)\Third-Party\Executable\Optick.exe" "$(OutDir)Optick.exe"
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -176,6 +176,14 @@ copy /Y "$(SolutionDir)\Third-Party\Executable\Optick.exe" "$(OutDir)Optick.exe"
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx9.cpp" />
+    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\Third-Party\Include\Imgui\imgui.cpp" />
+    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="log.cpp" />
@@ -184,6 +192,15 @@ copy /Y "$(SolutionDir)\Third-Party\Executable\Optick.exe" "$(OutDir)Optick.exe"
     <ClCompile Include="splash_screen.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx9.h" />
+    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="..\Third-Party\Include\Imgui\imconfig.h" />
+    <ClInclude Include="..\Third-Party\Include\Imgui\imgui.h" />
+    <ClInclude Include="..\Third-Party\Include\Imgui\imgui_internal.h" />
+    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_textedit.h" />
+    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_truetype.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="build_identification_helper.h" />
     <ClInclude Include="defines.h" />

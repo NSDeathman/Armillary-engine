@@ -20,6 +20,10 @@
 #include "defines.h"
 #include "types.h"
 ///////////////////////////////////////////////////////////////
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_dx9.h>
+#include <Imgui/backends/imgui_impl_win32.h>
+///////////////////////////////////////////////////////////////
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 
@@ -30,6 +34,8 @@
 # pragma comment(lib, "msdmo.lib")
 # pragma comment(lib, "Strmiids.lib")
 
-#include <optick.h>
+#include <optick/optick.h>
+#ifdef _DEBUG
 #pragma comment(lib, "OptickCore.lib")
+#endif
 ///////////////////////////////////////////////////////////////
