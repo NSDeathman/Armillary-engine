@@ -48,7 +48,6 @@ void CApplication::PrintStartData()
 void CApplication::Start()
 {
 	Filesystem = new (CFilesystem);
-
 	Log = new (CLog);
 
 	PrintStartData();

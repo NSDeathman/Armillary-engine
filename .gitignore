@@ -39,4 +39,9 @@ EngineCode/.vs/*
 
 *.ink
 *.exp
+
 *.log
+
+build*
+*.cfg
+*.i
