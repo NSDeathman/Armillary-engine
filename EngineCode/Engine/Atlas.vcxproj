@@ -126,7 +126,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
