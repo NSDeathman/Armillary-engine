@@ -26,6 +26,7 @@ private:
 
 public:
 	void CreateDir(std::string const& dirName);
+	void Destroy();
 
 	CFilesystem() = default;
 	~CFilesystem() = default;

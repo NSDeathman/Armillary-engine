@@ -86,10 +86,11 @@ void CApplication::Destroy()
 	Render->Destroy();
 	delete (Render);
 
+	Filesystem->Destroy();
+	delete (Filesystem);
+
 	Log->Destroy();
 	delete (Log);
-
-	delete (Filesystem);
 }
 
 void RenderThreadTask()

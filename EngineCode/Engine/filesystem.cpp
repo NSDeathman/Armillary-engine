@@ -4,6 +4,7 @@
 // Filesystem implementation
 ///////////////////////////////////////////////////////////////
 #include "filesystem.h"
+#include "log.h"
 ///////////////////////////////////////////////////////////////
 bool CFilesystem::CreateDirectoryRecursive(std::string const& dirName, std::error_code& err)
 {
@@ -29,5 +30,10 @@ void CFilesystem::CreateDir(std::string const& dirName)
 		// Report the error:
 		std::cout << "CreateDirectoryRecursive FAILED, err: " << err.message() << std::endl;
 	}
+}
+
+void CFilesystem::Destroy()
+{
+	Log->Print("Destroying filesystem...");
 }
 ///////////////////////////////////////////////////////////////
