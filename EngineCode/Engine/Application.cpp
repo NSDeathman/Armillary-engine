@@ -57,7 +57,7 @@ void CApplication::Start()
 	Imgui->Initialize();
 
 #ifdef DEBUG_BUILD
-	OptickAPI = new (COptickAPI);
+	//OptickAPI = new (COptickAPI);
 #endif
 }
 
@@ -65,8 +65,10 @@ void CApplication::Destroy()
 {
 	Log->Print("Destroying application...");
 
-	OptickAPI->Destroy();
-	delete (OptickAPI);
+#ifdef DEBUG_BUILD
+	//OptickAPI->Destroy();
+	//delete (OptickAPI);
+#endif
 
 	Imgui->Destroy();
 	delete (Imgui);

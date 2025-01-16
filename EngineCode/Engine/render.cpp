@@ -256,8 +256,8 @@ void CRender::OnFrameBegin()
 			m_bWireframe = !m_bWireframe;
 
 #ifdef DEBUG_BUILD
-		if (ImGui::Button("Optic capture frame"))
-			OptickAPI->StartCapturing(100);
+		//if (ImGui::Button("Optic capture frame"))
+		//	OptickAPI->StartCapturing(1);
 #endif
 
 		ImGui::End();
