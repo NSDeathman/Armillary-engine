@@ -184,6 +184,7 @@
   <ItemGroup>
     <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="imgui_api.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="render_backend.cpp" />
     <ClCompile Include="render.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="build_identification_helper.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="filesystem.h" />
+    <ClInclude Include="imgui_api.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="render_backend.h" />
     <ClInclude Include="render.h" />

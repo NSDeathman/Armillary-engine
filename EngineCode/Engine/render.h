@@ -25,6 +25,8 @@ class CRender
 
 	BOOL m_bDeviceLost;
 
+	ImGuiIO m_pImGuiInputOutputParams;
+
   public:
 	void CreateMainWindow();
 	void GetCapabilities();

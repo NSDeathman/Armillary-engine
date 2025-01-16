@@ -19,6 +19,9 @@
     <ClCompile Include="splash_screen.cpp">
       <Filter>SplashScreen</Filter>
     </ClCompile>
+    <ClCompile Include="imgui_api.cpp">
+      <Filter>Imgui implementation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -57,6 +60,9 @@
     <ClInclude Include="resource.h">
       <Filter>Application resources</Filter>
     </ClInclude>
+    <ClInclude Include="imgui_api.h">
+      <Filter>Imgui implementation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Application">
@@ -73,9 +79,6 @@
     </Filter>
     <Filter Include="Render\Core">
       <UniqueIdentifier>{674f84b9-f680-4b8a-8f22-cd53c563025e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render\Window">
-      <UniqueIdentifier>{3fca8167-4d78-4913-a641-004d2a11ba00}</UniqueIdentifier>
     </Filter>
     <Filter Include="Log">
       <UniqueIdentifier>{2317b261-7bed-4dd9-8250-cb988031028e}</UniqueIdentifier>
@@ -94,6 +97,9 @@
     </Filter>
     <Filter Include="Application resources">
       <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imgui implementation">
+      <UniqueIdentifier>{b4ad1769-255a-45d7-a74c-e9a01d43e20d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
