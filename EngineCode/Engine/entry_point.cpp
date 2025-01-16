@@ -34,7 +34,6 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			return 0;
 		break;
 	case WM_DESTROY:
-		App->Destroy();
 		::PostQuitMessage(0);
 		return 0;
 	}
