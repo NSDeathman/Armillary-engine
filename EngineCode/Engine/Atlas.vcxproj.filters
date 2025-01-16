@@ -19,30 +19,6 @@
     <ClCompile Include="splash_screen.cpp">
       <Filter>SplashScreen</Filter>
     </ClCompile>
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui.cpp">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_demo.cpp">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_draw.cpp">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_tables.cpp">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_widgets.cpp">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx11.cpp">
-      <Filter>Third-Party\Imgui\Backends</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_win32.cpp">
-      <Filter>Third-Party\Imgui\Backends</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx9.cpp">
-      <Filter>Third-Party\Imgui\Backends</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -81,33 +57,6 @@
     <ClInclude Include="resource.h">
       <Filter>Application resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\imconfig.h">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\imgui.h">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\imgui_internal.h">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_rectpack.h">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_textedit.h">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_truetype.h">
-      <Filter>Third-Party\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx9.h">
-      <Filter>Third-Party\Imgui\Backends</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx11.h">
-      <Filter>Third-Party\Imgui\Backends</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_win32.h">
-      <Filter>Third-Party\Imgui\Backends</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Application">
@@ -145,15 +94,6 @@
     </Filter>
     <Filter Include="Application resources">
       <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Third-Party">
-      <UniqueIdentifier>{133da849-67a3-4ea1-abfe-bb2800d7204b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Third-Party\Imgui">
-      <UniqueIdentifier>{723cb12c-c24e-4627-a175-de37abc64217}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Third-Party\Imgui\Backends">
-      <UniqueIdentifier>{1cddf9b0-432b-4340-9bf8-333d91497d13}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

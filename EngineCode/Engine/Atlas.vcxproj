@@ -182,14 +182,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx9.cpp" />
-    <ClCompile Include="..\Third-Party\Include\Imgui\backends\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui.cpp" />
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\Third-Party\Include\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="log.cpp" />
@@ -198,15 +190,6 @@
     <ClCompile Include="splash_screen.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx11.h" />
-    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_dx9.h" />
-    <ClInclude Include="..\Third-Party\Include\Imgui\backends\imgui_impl_win32.h" />
-    <ClInclude Include="..\Third-Party\Include\Imgui\imconfig.h" />
-    <ClInclude Include="..\Third-Party\Include\Imgui\imgui.h" />
-    <ClInclude Include="..\Third-Party\Include\Imgui\imgui_internal.h" />
-    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_rectpack.h" />
-    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_textedit.h" />
-    <ClInclude Include="..\Third-Party\Include\Imgui\imstb_truetype.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="build_identification_helper.h" />
     <ClInclude Include="defines.h" />
@@ -232,6 +215,9 @@
     <Image Include="icon1.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Third-Party\Include\Imgui\Imgui.vcxproj">
+      <Project>{416e416c-4ce6-4163-888b-884d8ad77f7b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Third-Party\Include\Optick\OptickCore.vcxproj">
       <Project>{830934d9-6f6c-c37d-18f2-fb3304348f00}</Project>
     </ProjectReference>

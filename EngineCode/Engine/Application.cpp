@@ -9,7 +9,7 @@
 #include "render_backend.h"
 #include "log.h"
 #include "build_identification_helper.h"
-//#include "threading.h"
+#include "threading.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CBackend* RenderBackend = NULL;
@@ -87,12 +87,18 @@ void CApplication::Process()
 
 	u32 MajorBuildID = compute_build_id_major();
 	u32 MinorBuildID = compute_build_id_minor();
-	Log->Print("BuildID: %d.%d", MajorBuildID, MinorBuildID);
+	Log->Print("Build ID: %d.%d", MajorBuildID, MinorBuildID);
 
 #ifdef _DEBUG
 	Log->Print("Build type: Debug");
 #else
 	Log->Print("Build type: Release");
+#endif
+
+#ifdef WIN32
+	Log->Print("Build architecture: Win32");
+#else
+	Log->Print("Build architecture: Win64");
 #endif
 
 	Log->Print("\n");
