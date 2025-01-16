@@ -24,6 +24,11 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Third-Party\Include\Imgui\Imgui.vcxproj">
+      <Project>{416e416c-4ce6-4163-888b-884d8ad77f7b}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
