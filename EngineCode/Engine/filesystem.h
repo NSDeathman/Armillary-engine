@@ -16,6 +16,7 @@
 #define MESHES "..\\gameresources\\meshes\\"
 #define SHADERS "..\\gameresources\\shaders\\"
 #define SOUNDS "..\\gameresources\\sounds\\"
+#define FONTS "..\\gameresources\\fonts\\"
 ///////////////////////////////////////////////////////////////
 namespace fs = std::filesystem;
 ///////////////////////////////////////////////////////////////

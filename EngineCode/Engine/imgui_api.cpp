@@ -46,6 +46,9 @@ void CImguiAPI::Initialize()
 	// io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
 	// ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr,
 	// io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != nullptr);
+
+	//std::string FontPath = FONTS + (std::string)"letterica-3.ttf";
+	//m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(FontPath.c_str(), 18.0f);
 }
 
 void CImguiAPI::OnFrameBegin()
