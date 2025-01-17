@@ -37,6 +37,12 @@
     <ClCompile Include="scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>Render\Resource manager</Filter>
+    </ClCompile>
+    <ClCompile Include="growable_array.cpp">
+      <Filter>Growable array</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -89,6 +95,12 @@
     </ClInclude>
     <ClInclude Include="scene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>Render\Resource manager</Filter>
+    </ClInclude>
+    <ClInclude Include="growable_array.h">
+      <Filter>Growable array</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +157,12 @@
     </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{1866c7c7-7d3c-47dc-8eae-074d374bf42c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Resource manager">
+      <UniqueIdentifier>{67763e31-4f6d-48a6-9a73-73e79d1f95c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Growable array">
+      <UniqueIdentifier>{9fe9d30a-e7bd-4ed6-a7c7-c950e026c76d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

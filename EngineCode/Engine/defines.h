@@ -2,7 +2,28 @@
 
 #include "stdafx.h"
 
-#define RELEASE(x)			\
+
+#define SAFE_DELETE(p)       \
+	{                        \
+		if (p)               \
+		{                    \
+			delete (p);      \
+			(p) = NULL;      \
+		}                    \
+	}
+
+
+#define SAFE_DELETE_ARRAY(p)\
+	{                       \
+		if (p)              \
+		{                   \
+			delete[](p);    \
+			(p) = NULL;     \
+		}                   \
+	}
+
+
+#define SAFE_RELEASE(x)		\
 	{						\
 		if (x)				\
 		{					\
@@ -11,23 +32,23 @@
 		}					\
 	}
 
-#define ASSERT(expession, error_message)								\
-{																		\
-	if (expession == false)												\
-	{																	\
-		Log->Print(error_message);										\
+#define ASSERT(expession, error_message, ...)										\
+{																					\
+	if (expession == false)															\
+	{																				\
+		Log->Print(error_message);													\
 		MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
-	}																	\
-}																		\
+	}																				\
+}																					\
 
-#define ERROR_MESSAGE(error_message)										\
-	{                                                                       \
-			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);  \
-	}																		\
+#define ERROR_MESSAGE(error_message, ...)												\
+	{																					\
+			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
+	}																					\
 
 #ifdef _DEBUG
 
-#define VERIFY(expession, error_message)                                                                               \
+#define VERIFY(expession, error_message, ...)                                                                          \
 	{                                                                                                                  \
 		if (expession == false)                                                                                        \
 		{                                                                                                              \
@@ -38,7 +59,7 @@
 
 #else
 
-#define VERIFY(expession, error_message)                                                                               \
+#define VERIFY(expession, error_message, ...)                                                                          \
 	{                                                                                                                  \
 		if (expession == false)                                                                                        \
 			Log->Print(error_message);                                                                                 \
