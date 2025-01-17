@@ -18,7 +18,7 @@ CScene::CScene()
 
 void CScene::Load()
 {
-	Log->Print("Loading scene...");
+	Msg("Loading scene...");
 
 	LPD3DXBUFFER pD3DXMtrlBuffer;
 
@@ -68,7 +68,7 @@ void CScene::Load()
 	// Done with the material buffer
 	pD3DXMtrlBuffer->Release();
 
-	Log->Print("Scene loaded successfully");
+	Msg("Scene loaded successfully");
 
 	SetSceneLoaded(true);
 }
@@ -88,7 +88,7 @@ void CScene::DrawGeometry()
 
 void CScene::Destroy()
 {
-	Log->Print("Destroying scene...");
+	Msg("Destroying scene...");
 
 	if (!m_pMeshTextures.empty())
 	{
