@@ -117,15 +117,18 @@ void CApplication::OnFrame()
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
-	if (!Scene->Ready())
+	if (!Scene->Ready() && !Scene->isLoading())
 		MainMenu->Show();
 
 	if (MainMenu->NeedLoadScene())
 	{
 		Scene->Load();
-		MainMenu->SceneLoaded();
-		MainMenu->Hide();
-		HelperWindow->Show();
+		if (!Scene->isLoading())
+		{
+			MainMenu->SceneLoaded();
+			MainMenu->Hide();
+			HelperWindow->Show();
+		}
 	}
 
 	if (HelperWindow->NeedQuitToMainMenu())

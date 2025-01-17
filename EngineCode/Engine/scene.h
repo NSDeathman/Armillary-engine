@@ -11,12 +11,13 @@
 class CScene
 {
   private:
-	CMeshLoader m_MeshLoader;
-
 	bool m_bSceneLoaded;
+	bool m_bSceneLoadingInProcess;
 
   public:
-	CScene() = default;
+	CMeshLoader m_MeshLoader;
+
+	CScene();
 	~CScene() = default;
 
 	void Load();
@@ -31,6 +32,16 @@ class CScene
 	bool Ready()
 	{
 		return m_bSceneLoaded;
+	}
+
+	void SetSceneLoadingState(bool state)
+	{
+		m_bSceneLoadingInProcess = state;
+	}
+
+	bool isLoading()
+	{
+		return m_bSceneLoadingInProcess;
 	}
 };
 ///////////////////////////////////////////////////////////////

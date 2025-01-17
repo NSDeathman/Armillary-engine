@@ -6,16 +6,30 @@
 #include "scene.h"
 #include "render.h"
 #include "log.h"
+#include "threading.h"
 ///////////////////////////////////////////////////////////////
+CScene::CScene()
+{
+	m_bSceneLoadingInProcess = false;
+}
+
+void LoadMesh()
+{
+	Scene->SetSceneLoadingState(true);
+
+	Scene->m_MeshLoader.Create(Device, "Earth.obj");
+	Msg("Scene loaded successfully");
+
+	Scene->SetSceneLoadingState(false);
+	Scene->SetSceneLoaded(true);
+}
+
 void CScene::Load()
 {
 	Msg("Loading scene...");
 
-	m_MeshLoader.Create(Device, "cup.obj");
-
-	Msg("Scene loaded successfully");
-
-	SetSceneLoaded(true);
+	Scheduler.Add(LoadMesh);
+	//LoadMesh();
 }
 
 void CScene::DrawGeometry()
