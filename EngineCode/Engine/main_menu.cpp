@@ -20,13 +20,20 @@ void CMainMenu::Draw()
 {
 	if (m_bNeedDraw)
 	{
+
+		ImGui::PushFont(Imgui->font_letterica_big);
 		ImGui::Begin("Main menu window");
+		ImGui::PopFont();
+
+		ImGui::PushFont(Imgui->font_letterica_medium);
 
 		if (ImGui::Button("Load scene"))
 			m_bNeedLoadScene = true;
 
 		if (ImGui::Button("Close application"))
 			g_bNeedCloseApplication = true;
+
+		ImGui::PopFont();
 
 		ImGui::End();
 	}

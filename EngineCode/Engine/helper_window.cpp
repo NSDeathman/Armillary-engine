@@ -23,7 +23,11 @@ void CHelperWindow::Draw()
 {
 	if (m_bNeedDraw)
 	{
+		ImGui::PushFont(Imgui->font_letterica_big);
 		ImGui::Begin("Armillary helper window");
+		ImGui::PopFont();
+
+		ImGui::PushFont(Imgui->font_letterica_medium);
 
 		if (ImGui::Button("Reset render"))
 			g_bNeedRestart = true;
@@ -39,6 +43,8 @@ void CHelperWindow::Draw()
 
 		if (ImGui::Button("Close application"))
 			g_bNeedCloseApplication = true;
+
+		ImGui::PopFont();
 
 		ImGui::End();
 	}
