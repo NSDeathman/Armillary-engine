@@ -24,7 +24,7 @@ void CHelperWindow::Draw()
 	if (m_bNeedDraw)
 	{
 		ImGui::PushFont(Imgui->font_letterica_big);
-		ImGui::Begin("Armillary helper window");
+		ImGui::Begin("Helper window");
 		ImGui::PopFont();
 
 		ImGui::PushFont(Imgui->font_letterica_medium);
