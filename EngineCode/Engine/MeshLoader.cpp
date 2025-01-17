@@ -155,7 +155,7 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 	// cache hit more often so it won't have to re-execute the vertex shader.
 	DWORD* aAdjacency = new DWORD[pMesh->GetNumFaces() * 3L];
 
-	ASSERT(aAdjacency, "Can't Generate Adjacency in create mesh from OBJ: %s", strFilename);
+	ASSERT((aAdjacency != NULL), "Can't Generate Adjacency in create mesh from OBJ: %s", strFilename);
 
 	hr = pMesh->GenerateAdjacency(1e-6f, aAdjacency);
 
