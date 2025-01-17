@@ -172,8 +172,6 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFileName)
 {
 	CHAR strMaterialFilename[MAX_PATH] = {0};
-	CHAR str[MAX_PATH];
-	//char str[MAX_PATH];
 	HRESULT hr;
 
 	// Create temporary storage for the input data. Once the data has been loaded into
