@@ -8,6 +8,7 @@
 #include "render.h"
 #include "render_backend.h"
 #include "log.h"
+#include "cpu_identificator.h"
 #include "build_identification_helper.h"
 #include "imgui_api.h"
 #include "OptickAPI.h"
@@ -55,6 +56,8 @@ void CApplication::Start()
 {
 	Filesystem = new (CFilesystem);
 	Log = new (CLog);
+
+	_initialize_cpu();
 
 	PrintStartData();
 	

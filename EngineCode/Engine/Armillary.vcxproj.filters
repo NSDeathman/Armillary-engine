@@ -41,7 +41,10 @@
       <Filter>Render\Resource manager</Filter>
     </ClCompile>
     <ClCompile Include="growable_array.cpp">
-      <Filter>Growable array</Filter>
+      <Filter>Math\Growable array</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu_identificator.cpp">
+      <Filter>CPU Identification</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,9 +62,6 @@
     </ClInclude>
     <ClInclude Include="log.h">
       <Filter>Log</Filter>
-    </ClInclude>
-    <ClInclude Include="types.h">
-      <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="build_identification_helper.h">
       <Filter>Helpers</Filter>
@@ -100,7 +100,13 @@
       <Filter>Render\Resource manager</Filter>
     </ClInclude>
     <ClInclude Include="growable_array.h">
-      <Filter>Growable array</Filter>
+      <Filter>Math\Growable array</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu_identificator.h">
+      <Filter>CPU Identification</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,8 +167,14 @@
     <Filter Include="Render\Resource manager">
       <UniqueIdentifier>{67763e31-4f6d-48a6-9a73-73e79d1f95c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Growable array">
+    <Filter Include="Math">
+      <UniqueIdentifier>{0dfdcdce-8148-473b-a5f0-4036ce36458f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Growable array">
       <UniqueIdentifier>{9fe9d30a-e7bd-4ed6-a7c7-c950e026c76d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CPU Identification">
+      <UniqueIdentifier>{c3b742b3-2de4-44ed-a3f7-63e1609df15c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
