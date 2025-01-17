@@ -11,8 +11,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 void COptickAPI::Initialize()
 {
-	Log->Print("\n");
-	Log->Print("Initializing OptickCapture");
+	Msg("\n");
+	Msg("Initializing OptickCapture");
 	m_frames_to_capture = -1;
 	m_start_capture_frame = -1;
 	m_end_capture_frame = -1;
@@ -39,7 +39,7 @@ void COptickAPI::StartCapturing()
 											Optick::Mode::SYS_CALLS | 
 											Optick::Mode::OTHER_PROCESSES));
 
-	Log->Print("- Optick capturing started");
+	Msg("- Optick capturing started");
 }
 
 /* Saving in try-statement for avoiding game crash */
@@ -51,14 +51,14 @@ void COptickAPI::TryToSaveCapture(str_c save_path)
 	}
 	catch (...)
 	{
-		Log->Print("! An error occurred while saving optick capture");
+		Msg("! An error occurred while saving optick capture");
 	}
 };
 
 void COptickAPI::SaveCapture(str_c save_path)
 {
 	TryToSaveCapture(save_path);
-	Log->Print("- Optick capture saved with name: %s", save_path);
+	Msg("- Optick capture saved with name: %s", save_path);
 };
 
 /*********************************************************************************
@@ -91,12 +91,12 @@ void COptickAPI::StopCapturing()
 	OPTICK_STOP_CAPTURE();
 	m_need_capture = false;
 
-	Log->Print("- Optick capturing stoped");
+	Msg("- Optick capturing stoped");
 };
 
 void COptickAPI::SaveCapturedFrames()
 {
-	Log->Print("- Saving captured frames");
+	Msg("- Saving captured frames");
 
 	char capture_path[100];
 	LPCSTR frames = m_frames_to_capture == 1 ? "frame" : "frames";
@@ -113,19 +113,19 @@ void COptickAPI::SwitchProfiler()
 {
 	if (m_need_capture)
 	{
-		Log->Print("! Capturing already started, please wait until end of capturing and try again");
+		Msg("! Capturing already started, please wait until end of capturing and try again");
 		return;
 	}
 
 	if (!m_switched_to_capturing)
 	{
-		Log->Print("- OptickAPI switched to capturing mode, execute command again to switch to saving mode");
+		Msg("- OptickAPI switched to capturing mode, execute command again to switch to saving mode");
 		SwitchToCapturing();
 		m_switched_to_capturing = true;
 	}
 	else
 	{
-		Log->Print("- OptickAPI switched to saving mode");
+		Msg("- OptickAPI switched to saving mode");
 		SwitchToSaving();
 		m_switched_to_capturing = false;
 	}
@@ -144,7 +144,7 @@ void COptickAPI::SwitchToSaving()
 
 	m_frames_to_capture = Render->m_iFrame - m_start_capture_frame;
 
-	Log->Print("- Saving %d frames", m_frames_to_capture);
+	Msg("- Saving %d frames", m_frames_to_capture);
 
 	char capture_path[100];
 	LPCSTR frames = m_frames_to_capture == 1 ? "frame" : "frames";

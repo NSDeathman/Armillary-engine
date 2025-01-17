@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////
 void CImguiAPI::Initialize()
 {
-	Log->Print("Initializing ImGuiAPI...");
+	Msg("Initializing ImGuiAPI...");
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -86,19 +86,19 @@ void CImguiAPI::OnFrameEnd()
 
 void CImguiAPI::OnResetBegin()
 {
-	Log->Print("Invalidating ImGuiAPI Device objects...");
+	Msg("Invalidating ImGuiAPI Device objects...");
 	ImGui_ImplDX9_InvalidateDeviceObjects();
 }
 
 void CImguiAPI::OnResetEnd()
 {
-	Log->Print("Creating ImGuiAPI Device objects...");
+	Msg("Creating ImGuiAPI Device objects...");
 	ImGui_ImplDX9_CreateDeviceObjects();
 }
 
 void CImguiAPI::Destroy()
 {
-	Log->Print("Destroying ImGuiAPI...");
+	Msg("Destroying ImGuiAPI...");
 	ImGui_ImplDX9_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();

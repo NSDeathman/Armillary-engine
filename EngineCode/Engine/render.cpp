@@ -38,7 +38,7 @@ CRender::CRender()
 
 void CRender::Destroy()
 {
-	Log->Print("Destroying render...");
+	Msg("Destroying render...");
 
 	SAFE_RELEASE(m_pDirect3dDevice);
 
@@ -47,7 +47,7 @@ void CRender::Destroy()
 
 void CRender::CreateMainWindow()
 {
-	Log->Print("Creating window...");
+	Msg("Creating window...");
 
 	WNDCLASSEX wc;
 	// The window class. This has to be filled BEFORE the window can be WNDCLASSEX wc;
@@ -98,7 +98,7 @@ void CRender::CreateMainWindow()
 
 void CRender::InitializeDirect3D()
 {
-	Log->Print("Initializing Direct3D...");
+	Msg("Initializing Direct3D...");
 
 	// Create the D3D object.
 	m_pDirect3D = Direct3DCreate9(D3D_SDK_VERSION);
@@ -125,7 +125,7 @@ void CRender::InitializeDirect3D()
 	ASSERT(SUCCEEDED(hresult), "An error occurred while creating the Direct3D");
 
 	if (SUCCEEDED(hresult))
-		Log->Print("Direct3D created successfully");
+		Msg("Direct3D created successfully");
 
 	ShowWindow(m_hWindow, SW_SHOWDEFAULT);
 	UpdateWindow(m_hWindow);
@@ -174,7 +174,7 @@ void CRender::CreateMatrices()
 
 void CRender::Initialize()
 {
-	Log->Print("Initializing render...");
+	Msg("Initializing render...");
 	CreateMainWindow();
 	InitializeDirect3D();
 }
@@ -191,7 +191,7 @@ void CRender::OnResetEnd()
 
 void CRender::Reset()
 {
-	Log->Print("Resetting render...");
+	Msg("Resetting render...");
 
 	OnResetBegin();
 
@@ -205,7 +205,7 @@ void CRender::Reset()
 
 void CRender::HandleDeviceLost()
 {
-	Log->Print("Device was lost, resetting render...");
+	Msg("Device was lost, resetting render...");
 
 	HRESULT result = m_pDirect3dDevice->TestCooperativeLevel();
 
@@ -255,7 +255,7 @@ void CRender::OnFrameBegin()
 	HRESULT hresult = m_pDirect3dDevice->BeginScene();
 
 	if (FAILED(hresult))
-		Log->Print("Failed to begin scene render");
+		Msg("Failed to begin scene render");
 }
 
 void CRender::OnFrameEnd()

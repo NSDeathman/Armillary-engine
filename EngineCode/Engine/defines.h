@@ -36,7 +36,7 @@
 {																					\
 	if (expession == false)															\
 	{																				\
-		Log->Print(error_message);													\
+		Msg(error_message);													\
 		MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
 	}																				\
 }																					\
@@ -52,7 +52,7 @@
 	{                                                                                                                  \
 		if (expession == false)                                                                                        \
 		{                                                                                                              \
-			Log->Print(error_message);                                                                                 \
+			Msg(error_message);                                                                                 \
 			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);                                  \
 		}                                                                                                              \
 	}                                                                                                                  \
@@ -62,7 +62,7 @@
 #define VERIFY(expession, error_message, ...)                                                                          \
 	{                                                                                                                  \
 		if (expession == false)                                                                                        \
-			Log->Print(error_message);                                                                                 \
+			Msg(error_message);                                                                                 \
 	}                                                                                                                  \
 
 #endif

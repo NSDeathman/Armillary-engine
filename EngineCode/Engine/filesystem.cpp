@@ -34,6 +34,6 @@ void CFilesystem::CreateDir(std::string const& dirName)
 
 void CFilesystem::Destroy()
 {
-	Log->Print("Destroying filesystem...");
+	Msg("Destroying filesystem...");
 }
 ///////////////////////////////////////////////////////////////

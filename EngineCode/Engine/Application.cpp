@@ -30,25 +30,25 @@ CScene* Scene = NULL;
 ///////////////////////////////////////////////////////////////
 void CApplication::PrintStartData()
 {
-	Log->Print("Armillary engine");
+	Msg("Armillary engine");
 
 	u32 MajorBuildID = compute_build_id_major();
 	u32 MinorBuildID = compute_build_id_minor();
-	Log->Print("Build ID: %d.%d", MajorBuildID, MinorBuildID);
+	Msg("Build ID: %d.%d", MajorBuildID, MinorBuildID);
 
 #ifdef _DEBUG
-	Log->Print("Build type: Debug");
+	Msg("Build type: Debug");
 #else
-	Log->Print("Build type: Release");
+	Msg("Build type: Release");
 #endif
 
 #ifdef WIN64
-	Log->Print("Build architecture: Win64");
+	Msg("Build architecture: Win64");
 #else
-	Log->Print("Build architecture: Win32");
+	Msg("Build architecture: Win32");
 #endif
 
-	Log->Print("\n");
+	Msg("\n");
 }
 
 void CApplication::Start()
@@ -58,7 +58,7 @@ void CApplication::Start()
 
 	PrintStartData();
 	
-	Log->Print("Starting Application...");
+	Msg("Starting Application...");
 
 	Render = new(CRender);
 	RenderBackend = new(CBackend);
@@ -140,7 +140,7 @@ void CApplication::OnFrame()
 
 void CApplication::EventLoop()
 {
-	Log->Print("Starting event loop...");
+	Msg("Starting event loop...");
 
 	MSG msg_struct;
 	ZeroMemory(&msg_struct, sizeof(msg_struct));
@@ -165,12 +165,12 @@ void CApplication::Process()
 
 	delete (SplashScreen);
 
-	Log->Print("Application started successfully");
-	Log->Print("\n");
+	Msg("Application started successfully");
+	Msg("\n");
 
 	App->EventLoop();
 
-	Log->Print("Destroying Application...");
+	Msg("Destroying Application...");
 
 	App->Destroy();
 }
