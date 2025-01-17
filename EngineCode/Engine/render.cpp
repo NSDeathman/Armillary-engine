@@ -100,7 +100,7 @@ void CRender::InitializeDirect3D()
 	// Create the D3D object.
 	m_pDirect3D = Direct3DCreate9(D3D_SDK_VERSION);
 
-	ASSERT(!(m_pDirect3D == NULL), "An error occurred while creating the Direct3D");
+	ASSERT(!(m_pDirect3D == NULL), "An error occurred while creating the Direct3D9");
 
 	// Set up the structure used to create the D3DDevice. Since we are now
 	// using more complex geometry, we will create a device with a zbuffer.
@@ -119,7 +119,7 @@ void CRender::InitializeDirect3D()
 												&m_pDirect3DPresentParams, 
 												&m_pDirect3dDevice);
 
-	ASSERT(SUCCEEDED(hresult), "An error occurred while creating the Direct3D");
+	ASSERT(SUCCEEDED(hresult), "An error occurred while creating the Direct3D Device");
 
 	if (SUCCEEDED(hresult))
 		Msg("Direct3D created successfully");

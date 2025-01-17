@@ -1,8 +1,10 @@
+/////////////////////////////////////////////////////////////////////
 #pragma once
-
+/////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-
-
+/////////////////////////////////////////////////////////////////////
+extern bool g_bNeedCloseApplication;
+/////////////////////////////////////////////////////////////////////
 #define SAFE_DELETE(p)       \
 	{                        \
 		if (p)               \
@@ -31,29 +33,32 @@
 			(x) = NULL;		\
 		}					\
 	}
-
+/////////////////////////////////////////////////////////////////////
 #define ASSERT(expession, error_message, ...)										\
 {																					\
-	if (expession == false)															\
+	if (expession == true)															\
 	{																				\
-		Msg(error_message);													\
+		Msg(error_message);															\
 		MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
+		g_bNeedCloseApplication = true;												\
 	}																				\
 }																					\
 
 #define ERROR_MESSAGE(error_message, ...)												\
 	{																					\
 			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
+			g_bNeedCloseApplication = true;												\
 	}																					\
-
+/////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
 
 #define VERIFY(expession, error_message, ...)                                                                          \
 	{                                                                                                                  \
 		if (expession == false)                                                                                        \
 		{                                                                                                              \
-			Msg(error_message);                                                                                 \
+			Msg(error_message);																						   \
 			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);                                  \
+			g_bNeedCloseApplication = true;																			   \
 		}                                                                                                              \
 	}                                                                                                                  \
 
@@ -62,7 +67,8 @@
 #define VERIFY(expession, error_message, ...)                                                                          \
 	{                                                                                                                  \
 		if (expession == false)                                                                                        \
-			Msg(error_message);                                                                                 \
+			Msg(error_message);																						   \
 	}                                                                                                                  \
 
 #endif
+/////////////////////////////////////////////////////////////////////
