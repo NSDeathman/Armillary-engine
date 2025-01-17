@@ -37,7 +37,7 @@ CMeshLoader::~CMeshLoader()
 //--------------------------------------------------------------------------------------
 void CMeshLoader::Destroy()
 {
-	for (int iMaterial = 0; iMaterial < m_Materials.GetSize(); iMaterial++)
+	concurrency::parallel_for(int(0), m_Materials.GetSize(), [&](int iMaterial) 
 	{
 		Material* pMaterial = m_Materials.GetAt(iMaterial);
 
@@ -51,7 +51,7 @@ void CMeshLoader::Destroy()
 
 		SAFE_RELEASE(pMaterial->pTexture);
 		SAFE_DELETE(pMaterial);
-	}
+	});
 
 	m_Materials.RemoveAll();
 	m_Vertices.RemoveAll();
@@ -87,7 +87,7 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 	SetCurrentDirectory(m_strMediaDir);
 
 	// Load material textures
-	for (int iMaterial = 0; iMaterial < m_Materials.GetSize(); iMaterial++)
+	concurrency::parallel_for(int(0), m_Materials.GetSize(), [&](int iMaterial) 
 	{
 		Material* pMaterial = m_Materials.GetAt(iMaterial);
 		if (pMaterial->strTexture[0])
@@ -107,12 +107,9 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 
 			// Not found, load the texture
 			if (!bFound)
-			{
-				//V_RETURN(DXUTFindDXSDKMediaFileCch(str, MAX_PATH, pMaterial->strTexture));
 				hr = D3DXCreateTextureFromFile(pd3dDevice, pMaterial->strTexture, &(pMaterial->pTexture));
-			}
 		}
-	}
+	});
 
 	// Restore the original current directory
 	SetCurrentDirectory(strOldDir);
@@ -178,16 +175,6 @@ HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFileName)
 	CHAR str[MAX_PATH];
 	//char str[MAX_PATH];
 	HRESULT hr;
-
-	// Find the file
-	//V_RETURN(DXUTFindDXSDKMediaFileCch(wstr, MAX_PATH, strFileName));
-	//WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, MAX_PATH, NULL, NULL);
-
-	// Store the directory where the mesh was found
-	//strcpy_s(m_strMediaDir, MAX_PATH - 1, str);
-	//WCHAR* pch = wcsrchr(m_strMediaDir, '\\');
-	//if (pch)
-	//	*pch = NULL;
 
 	// Create temporary storage for the input data. Once the data has been loaded into
 	// a reasonable format we can create a D3DXMesh object and load it with the mesh data.
@@ -430,7 +417,7 @@ DWORD CMeshLoader::AddVertex(UINT hash, VERTEX* pVertex)
 void CMeshLoader::DeleteCache()
 {
 	// Iterate through all the elements in the cache and subsequent linked lists
-	for (int i = 0; i < m_VertexCache.GetSize(); i++)
+	concurrency::parallel_for(int(0), m_VertexCache.GetSize(), [&](int i) 
 	{
 		CacheEntry* pEntry = m_VertexCache.GetAt(i);
 		while (pEntry != NULL)
@@ -439,7 +426,7 @@ void CMeshLoader::DeleteCache()
 			SAFE_DELETE(pEntry);
 			pEntry = pNext;
 		}
-	}
+	});
 
 	m_VertexCache.RemoveAll();
 }
@@ -453,12 +440,6 @@ HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFileName)
 	CHAR strOldDir[MAX_PATH] = {0};
 	GetCurrentDirectory(MAX_PATH, strOldDir);
 	SetCurrentDirectory(m_strMediaDir);
-
-	// Find the file
-	//CHAR strPath[MAX_PATH];
-	//char cstrPath[MAX_PATH];
-	//V_RETURN(DXUTFindDXSDKMediaFileCch(strPath, MAX_PATH, strFileName));
-	//WideCharToMultiByte(CP_ACP, 0, strPath, -1, cstrPath, MAX_PATH, NULL, NULL);
 
 	// File input
 	CHAR strCommand[256] = {0};
