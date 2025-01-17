@@ -11,6 +11,7 @@
 #include "imgui_api.h"
 #include "OptickAPI.h"
 #include "helper_window.h"
+#include "scene.h"
 ///////////////////////////////////////////////////////////////
 UINT g_ResizeWidth = NULL;
 UINT g_ResizeHeight = NULL;
@@ -24,11 +25,6 @@ CRender::CRender()
 	m_pDirect3dDevice = NULL;
 	ZeroMemory(&m_pDirect3DPresentParams, sizeof(m_pDirect3DPresentParams));
 
-	m_pMesh = NULL;
-	m_pMeshMaterials.resize(NULL);
-	m_pMeshTextures.resize(NULL);
-	m_dwNumMaterials = 0L;
-
 	m_bDeviceLost = false;
 	m_bNeedReset = false;
 
@@ -40,20 +36,6 @@ CRender::CRender()
 void CRender::Destroy()
 {
 	Log->Print("Destroying render...");
-
-	if (!m_pMeshTextures.empty())
-	{
-		concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator) 
-		{
-			if (m_pMeshTextures[iterator])
-				m_pMeshTextures[iterator]->Release();
-		});
-
-		m_pMeshTextures.clear();
-	}
-
-	if (!m_pMeshMaterials.empty())
-		m_pMeshMaterials.clear();
 
 	RELEASE(m_pDirect3dDevice);
 
@@ -247,8 +229,6 @@ void CRender::OnFrameBegin()
 
 	Imgui->OnFrameBegin();
 
-	HelperWindow->Draw();
-
 	// Handle window resize (we don't resize directly in the WM_SIZE handler)
 	if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
 	{
@@ -296,6 +276,21 @@ void CRender::OnFrame()
 	OnFrameEnd();
 }
 
+void CRender::RenderScene()
+{
+	if (g_bWireframeMode)
+		RenderBackend->set_FillMode(CBackend::FILL_WIREFRAME);
+
+	m_pDirect3dDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
+
+	m_pDirect3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_PHONG);
+
+	Scene->DrawGeometry();
+
+	if (g_bWireframeMode)
+		RenderBackend->set_FillMode(CBackend::FILL_SOLID);
+}
+
 void CRender::RenderFrame()
 {
 	OPTICK_EVENT("CRender::RenderFrame")
@@ -305,106 +300,9 @@ void CRender::RenderFrame()
 
 	RenderBackend->set_CullMode(CBackend::CULL_CCW);
 
-	// Depth prepass
-	if (0)
+	if (Scene->Ready())
 	{
-		RenderBackend->set_ZWriteEnable(TRUE);
-
-		m_pDirect3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-
 		RenderScene();
-
-		RenderBackend->set_ZWriteEnable(FALSE);
-
-		m_pDirect3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_EQUAL);
 	}
-
-	if (g_bWireframeMode)
-		RenderBackend->set_FillMode(CBackend::FILL_WIREFRAME);
-
-	m_pDirect3dDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
-
-	m_pDirect3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_PHONG);
-
-	RenderScene();
-
-	if (g_bWireframeMode)
-		RenderBackend->set_FillMode(CBackend::FILL_SOLID);
-}
-
-void CRender::LoadScene()
-{
-	Log->Print("Loading scene...");
-
-	LPD3DXBUFFER pD3DXMtrlBuffer;
-
-	// Load the mesh from the specified file
-	HRESULT hresult = E_FAIL;
-
-	hresult = D3DXLoadMeshFromX("..\\GameResources\\Tiger.x", 
-								D3DXMESH_SYSTEMMEM, 
-								m_pDirect3dDevice, 
-								NULL,
-								&pD3DXMtrlBuffer, 
-								NULL, 
-								&m_dwNumMaterials, 
-								&m_pMesh);
-
-	// If model is not in current folder
-	ASSERT(SUCCEEDED(hresult), "Could not find tiger.x")
-
-	// We need to extract the material properties and texture names from the pD3DXMtrlBuffer
-	D3DXMATERIAL* d3dxMaterials = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
-	m_pMeshMaterials.resize(m_dwNumMaterials);
-
-	ASSERT(!m_pMeshMaterials.empty(), "Can`t load mesh materials")
-
-	m_pMeshTextures.resize(m_dwNumMaterials);
-
-	ASSERT(!m_pMeshTextures.empty(), "Can`t load mesh textures")
-
-	concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [&](u32 iterator) 
-	{
-		// Copy the material
-		m_pMeshMaterials[iterator] = d3dxMaterials[iterator].MatD3D;
-
-		// Set the ambient color for the material (D3DX does not do this)
-		m_pMeshMaterials[iterator].Ambient = m_pMeshMaterials[iterator].Diffuse;
-
-		m_pMeshTextures[iterator] = NULL;
-		if (d3dxMaterials[iterator].pTextureFilename != NULL && d3dxMaterials[iterator].pTextureFilename[0] != '\0')
-		{
-			HRESULT hresult = E_FAIL;
-
-			// Create texture path
-			CHAR strTexture[MAX_PATH];
-			strcpy_s(strTexture, MAX_PATH, GAME_RESOURCES);
-			strcat_s(strTexture, MAX_PATH, d3dxMaterials[iterator].pTextureFilename);
-
-			// Create the texture
-			hresult = D3DXCreateTextureFromFileA(m_pDirect3dDevice, strTexture, &m_pMeshTextures[iterator]);
-
-			ASSERT(SUCCEEDED(hresult), "Could not find texture map")
-		}
-	});
-
-	// Done with the material buffer
-	pD3DXMtrlBuffer->Release();
-
-	Log->Print("Scene loaded successfully");
-}
-
-void CRender::RenderScene()
-{
-	// Meshes are divided into subsets, one for each material. Render them in a loop
-	concurrency::parallel_for(DWORD(0), m_dwNumMaterials, [this](u32 iterator)
-	{
-		// Set the material and texture for this subset
-		m_pDirect3dDevice->SetMaterial(&m_pMeshMaterials[iterator]);
-		m_pDirect3dDevice->SetTexture(0, m_pMeshTextures[iterator]);
-
-		// Draw the mesh subset
-		m_pMesh->DrawSubset(iterator);
-	});
 }
 ///////////////////////////////////////////////////////////////

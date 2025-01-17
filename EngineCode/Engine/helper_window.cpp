@@ -11,24 +11,51 @@
 bool g_bNeedRestart = false;
 bool g_bWireframeMode = false;
 ///////////////////////////////////////////////////////////////
+CHelperWindow::CHelperWindow()
+{
+	m_bNeedDraw = false;
+	m_bNeedQuitToMainMenu = false;
+}
+
 void CHelperWindow::Draw()
 {
-	ImGui::Begin("Armillary helper window");
+	if (m_bNeedDraw)
+	{
+		ImGui::Begin("Armillary helper window");
 
-	if (ImGui::Button("Reset render"))
-		g_bNeedRestart = true;
+		if (ImGui::Button("Reset render"))
+			g_bNeedRestart = true;
 
-	if (ImGui::Button("Wireframe"))
-		g_bWireframeMode = !g_bWireframeMode;
+		if (ImGui::Button("Wireframe"))
+			g_bWireframeMode = !g_bWireframeMode;
 
-	if (ImGui::Button("Flush log"))
-		Log->Flush();
+		if (ImGui::Button("Flush log"))
+			Log->Flush();
 
-#ifdef DEBUG_BUILD
-		// if (ImGui::Button("Optic capture frame"))
-		//	OptickAPI->StartCapturing(1);
-#endif
+		if (ImGui::Button("Quit to main menu"))
+			m_bNeedQuitToMainMenu = true;
 
-	ImGui::End();
+		ImGui::End();
+	}
+}
+
+void CHelperWindow::Show()
+{
+	m_bNeedDraw = true;
+}
+
+void CHelperWindow::Hide()
+{
+	m_bNeedDraw = false;
+}
+
+bool CHelperWindow::NeedQuitToMainMenu()
+{
+	return m_bNeedQuitToMainMenu;
+}
+
+void CHelperWindow::QuitingToMainMenuIsDone()
+{
+	m_bNeedQuitToMainMenu = false;
 }
 ///////////////////////////////////////////////////////////////

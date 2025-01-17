@@ -1,32 +1,28 @@
 ///////////////////////////////////////////////////////////////
-// Created: 16.01.2025
+// Created: 17.01.2025
 // Author: NS_Deathman
-// ImGui helping window
+// Main menu window
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
 ///////////////////////////////////////////////////////////////
-extern bool g_bNeedRestart;
-extern bool g_bWireframeMode;
-///////////////////////////////////////////////////////////////
-class CHelperWindow
+class CMainMenu
 {
   private:
 	bool m_bNeedDraw;
-	bool m_bNeedQuitToMainMenu;
+	bool m_bNeedLoadScene;
 
   public:
-	CHelperWindow();
-	~CHelperWindow() = default;
+	CMainMenu();
+	~CMainMenu() = default;
 
 	void Draw();
 	void Show();
 	void Hide();
-
-	bool NeedQuitToMainMenu();
-	void QuitingToMainMenuIsDone();
+	void SceneLoaded();
+	bool NeedLoadScene();
 };
 ///////////////////////////////////////////////////////////////
-extern CHelperWindow* HelperWindow;
+extern CMainMenu* MainMenu;
 ///////////////////////////////////////////////////////////////

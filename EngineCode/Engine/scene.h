@@ -1,32 +1,40 @@
 ///////////////////////////////////////////////////////////////
-// Created: 16.01.2025
+// Created: 17.01.2025
 // Author: NS_Deathman
-// ImGui helping window
+// Scene class
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
 ///////////////////////////////////////////////////////////////
-extern bool g_bNeedRestart;
-extern bool g_bWireframeMode;
-///////////////////////////////////////////////////////////////
-class CHelperWindow
+class CScene
 {
   private:
-	bool m_bNeedDraw;
-	bool m_bNeedQuitToMainMenu;
+	LPD3DXMESH m_pMesh;
+	std::vector<D3DMATERIAL9> m_pMeshMaterials;
+	std::vector<LPDIRECT3DTEXTURE9> m_pMeshTextures;
+	DWORD m_dwNumMaterials;
+
+	bool m_bSceneLoaded;
 
   public:
-	CHelperWindow();
-	~CHelperWindow() = default;
+	CScene();
+	~CScene() = default;
 
-	void Draw();
-	void Show();
-	void Hide();
+	void Load();
+	void DrawGeometry();
+	void Destroy();
 
-	bool NeedQuitToMainMenu();
-	void QuitingToMainMenuIsDone();
+	void SetSceneLoaded(bool flag)
+	{
+		m_bSceneLoaded = flag;
+	}
+
+	bool Ready()
+	{
+		return m_bSceneLoaded;
+	}
 };
 ///////////////////////////////////////////////////////////////
-extern CHelperWindow* HelperWindow;
+extern CScene* Scene;
 ///////////////////////////////////////////////////////////////

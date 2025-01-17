@@ -13,6 +13,8 @@
 #include "OptickAPI.h"
 #include "helper_window.h"
 #include "filesystem.h"
+#include "main_menu.h"
+#include "scene.h"
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CBackend* RenderBackend = NULL;
@@ -21,6 +23,8 @@ CImguiAPI* Imgui = NULL;
 COptickAPI* OptickAPI = NULL;
 CHelperWindow* HelperWindow = NULL;
 CFilesystem* Filesystem = NULL;
+CMainMenu* MainMenu = NULL;
+CScene* Scene = NULL;
 ///////////////////////////////////////////////////////////////
 void CApplication::PrintStartData()
 {
@@ -63,24 +67,20 @@ void CApplication::Start()
 
 	HelperWindow = new (CHelperWindow);
 
-#ifdef DEBUG_BUILD
-	//OptickAPI = new (COptickAPI);
-#endif
+	MainMenu = new (CMainMenu);
 
-	Render->LoadScene();
+	Scene = new (CScene);
 }
 
 void CApplication::Destroy()
 {
-#ifdef DEBUG_BUILD
-	//OptickAPI->Destroy();
-	//delete (OptickAPI);
-#endif
-
+	delete (MainMenu);
 	delete (HelperWindow);
 
 	Imgui->Destroy();
 	delete (Imgui);
+
+	Scene->Destroy();
 
 	Render->Destroy();
 	delete (Render);
@@ -92,13 +92,21 @@ void CApplication::Destroy()
 	delete (Log);
 }
 
-void RenderThreadTask()
+void RenderFrame()
 {
 	OPTICK_THREAD("Armillary engine render thread")
 	OPTICK_FRAME("RenderThreadTask")
 	OPTICK_EVENT("RenderThreadTask")
 
-	Render->OnFrame();
+	Render->OnFrameBegin();
+
+	MainMenu->Draw();
+
+	HelperWindow->Draw();
+
+	Render->RenderFrame();
+
+	Render->OnFrameEnd();
 }
 
 void CApplication::OnFrame()
@@ -107,15 +115,25 @@ void CApplication::OnFrame()
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
-	//concurrency::task_group task_render;
-	//task_render.run([&]() 
-	//{ 
-	//	
-	//});
+	if (!Scene->Ready())
+		MainMenu->Show();
 
-	RenderThreadTask();
+	if (MainMenu->NeedLoadScene())
+	{
+		Scene->Load();
+		MainMenu->SceneLoaded();
+		MainMenu->Hide();
+		HelperWindow->Show();
+	}
 
-	//task_render.wait();
+	if (HelperWindow->NeedQuitToMainMenu())
+	{
+		Scene->Destroy();
+		HelperWindow->QuitingToMainMenuIsDone();
+		HelperWindow->Hide();
+	}
+
+	RenderFrame();
 }
 
 void CApplication::EventLoop()

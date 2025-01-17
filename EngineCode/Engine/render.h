@@ -19,11 +19,6 @@ class CRender
 	INT m_iFrame;
 	
   private:
-	LPD3DXMESH m_pMesh;
-	std::vector<D3DMATERIAL9> m_pMeshMaterials;
-	std::vector<LPDIRECT3DTEXTURE9> m_pMeshTextures;
-	DWORD m_dwNumMaterials;
-
 	BOOL m_bDeviceLost;
 	BOOL m_bNeedReset;
 
@@ -48,10 +43,6 @@ class CRender
 	void OnFrameEnd();
 	void OnFrame();
 
-	void LoadGeometry();
-	void LoadMaterials();
-	void LoadTextures();
-	void LoadScene();
 	void RenderScene();
 
 	CRender();
@@ -59,4 +50,6 @@ class CRender
 };
 ///////////////////////////////////////////////////////////////
 extern CRender* Render;
+///////////////////////////////////////////////////////////////
+#define Device ::Render->m_pDirect3dDevice
 ///////////////////////////////////////////////////////////////

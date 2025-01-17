@@ -26,10 +26,16 @@
       <Filter>Third-party implementations\Optick implementation</Filter>
     </ClCompile>
     <ClCompile Include="helper_window.cpp">
-      <Filter>Helper window</Filter>
+      <Filter>User interface\Helper window</Filter>
     </ClCompile>
     <ClCompile Include="filesystem.cpp">
       <Filter>Filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="main_menu.cpp">
+      <Filter>User interface\Main menu</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,7 +82,13 @@
       <Filter>Third-party implementations\Optick implementation</Filter>
     </ClInclude>
     <ClInclude Include="helper_window.h">
-      <Filter>Helper window</Filter>
+      <Filter>User interface\Helper window</Filter>
+    </ClInclude>
+    <ClInclude Include="main_menu.h">
+      <Filter>User interface\Main menu</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -122,8 +134,17 @@
     <Filter Include="Third-party implementations\Optick implementation">
       <UniqueIdentifier>{a9c9402a-5026-4c55-92fd-71046794f0b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helper window">
+    <Filter Include="User interface">
+      <UniqueIdentifier>{6f8e98cb-902a-4912-8d00-0496bf2c246c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User interface\Helper window">
       <UniqueIdentifier>{8601af56-afb2-4e10-b351-00d6c367bf60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User interface\Main menu">
+      <UniqueIdentifier>{4be4ee3b-a3e7-459d-bc92-5a3926077f4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{1866c7c7-7d3c-47dc-8eae-074d374bf42c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
