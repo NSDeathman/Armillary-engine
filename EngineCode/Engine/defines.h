@@ -36,7 +36,7 @@ extern bool g_bNeedCloseApplication;
 /////////////////////////////////////////////////////////////////////
 #define ASSERT(expession, error_message, ...)										\
 {																					\
-	if (expession == true)															\
+	if (expession == false)															\
 	{																				\
 		Msg(error_message);															\
 		MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
