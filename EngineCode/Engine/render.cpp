@@ -12,9 +12,6 @@
 #include "OptickAPI.h"
 #include "helper_window.h"
 #include "scene.h"
-#include "MeshLoader.h"
-///////////////////////////////////////////////////////////////
-CMeshLoader g_MeshLoader;
 ///////////////////////////////////////////////////////////////
 UINT g_ResizeWidth = NULL;
 UINT g_ResizeHeight = NULL;
@@ -131,8 +128,6 @@ void CRender::InitializeDirect3D()
 	UpdateWindow(m_hWindow);
 
 	GetCapabilities();
-
-	g_MeshLoader.Create(m_pDirect3dDevice, "cup.obj");
 }
 
 void CRender::GetCapabilities()
@@ -304,13 +299,6 @@ void CRender::RenderFrame()
 	m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 	RenderBackend->set_CullMode(CBackend::CULL_CCW);
-
-	for (UINT iSubset = 0; iSubset < g_MeshLoader.GetNumMaterials(); iSubset++)
-	{
-		ID3DXMesh* pMesh = g_MeshLoader.GetMesh();
-		Material* pMaterial = g_MeshLoader.GetMaterial(iSubset);
-		pMesh->DrawSubset(iSubset);
-	}
 
 	if (Scene->Ready())
 	{

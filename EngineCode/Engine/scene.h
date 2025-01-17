@@ -6,19 +6,17 @@
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include "MeshLoader.h"
 ///////////////////////////////////////////////////////////////
 class CScene
 {
   private:
-	LPD3DXMESH m_pMesh;
-	std::vector<D3DMATERIAL9> m_pMeshMaterials;
-	std::vector<LPDIRECT3DTEXTURE9> m_pMeshTextures;
-	DWORD m_dwNumMaterials;
+	CMeshLoader m_MeshLoader;
 
 	bool m_bSceneLoaded;
 
   public:
-	CScene();
+	CScene() = default;
 	~CScene() = default;
 
 	void Load();
