@@ -333,7 +333,9 @@ HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFileName)
 	if (strMaterialFilename[0])
 	{
 		hr = LoadMaterialsFromMTL(strMaterialFilename);
-		ASSERT(SUCCEEDED(hr), "Can't Load Materials From MTL in load mesh from OBJ: %s", strFilename);
+
+		if (FAILED(hr))
+			Msg("Can't Load Materials From MTL in load mesh from OBJ: %s", strMaterialFilename);
 	}
 
 	return S_OK;
