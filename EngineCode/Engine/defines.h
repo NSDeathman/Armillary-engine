@@ -5,6 +5,8 @@
 /////////////////////////////////////////////////////////////////////
 extern bool g_bNeedCloseApplication;
 /////////////////////////////////////////////////////////////////////
+#define ERROR_MESSAGE_NAME "Armillary engine error message"
+/////////////////////////////////////////////////////////////////////
 #define SAFE_DELETE(p)       \
 	{                        \
 		if (p)               \
@@ -39,14 +41,14 @@ extern bool g_bNeedCloseApplication;
 	if (expession == false)															\
 	{																				\
 		Msg(error_message);															\
-		MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
+		MessageBox(NULL, error_message, ERROR_MESSAGE_NAME, MB_OK);					\
 		g_bNeedCloseApplication = true;												\
 	}																				\
 }																					\
 
 #define ERROR_MESSAGE(error_message, ...)												\
 	{																					\
-			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);	\
+			MessageBox(NULL, error_message, ERROR_MESSAGE_NAME, MB_OK);					\
 			g_bNeedCloseApplication = true;												\
 	}																					\
 /////////////////////////////////////////////////////////////////////
@@ -57,7 +59,7 @@ extern bool g_bNeedCloseApplication;
 		if (expession == false)                                                                                        \
 		{                                                                                                              \
 			Msg(error_message);																						   \
-			MessageBox(NULL, error_message, "Armillary engine error message", MB_OK);                                  \
+			MessageBox(NULL, error_message, ERROR_MESSAGE_NAME, MB_OK);												   \
 			g_bNeedCloseApplication = true;																			   \
 		}                                                                                                              \
 	}                                                                                                                  \
