@@ -8,6 +8,8 @@
 #include "render.h"
 #include "log.h"
 ///////////////////////////////////////////////////////////////
+extern bool g_bNeedCloseApplication;
+///////////////////////////////////////////////////////////////
 bool g_bNeedRestart = false;
 bool g_bWireframeMode = false;
 ///////////////////////////////////////////////////////////////
@@ -34,6 +36,9 @@ void CHelperWindow::Draw()
 
 		if (ImGui::Button("Quit to main menu"))
 			m_bNeedQuitToMainMenu = true;
+
+		if (ImGui::Button("Close application"))
+			g_bNeedCloseApplication = true;
 
 		ImGui::End();
 	}
