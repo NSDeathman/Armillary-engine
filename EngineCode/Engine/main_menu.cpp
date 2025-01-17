@@ -8,6 +8,8 @@
 #include "render.h"
 #include "log.h"
 ///////////////////////////////////////////////////////////////
+extern bool g_bNeedCloseApplication;
+///////////////////////////////////////////////////////////////
 CMainMenu::CMainMenu()
 {
 	m_bNeedDraw = false;
@@ -22,6 +24,9 @@ void CMainMenu::Draw()
 
 		if (ImGui::Button("Load scene"))
 			m_bNeedLoadScene = true;
+
+		if (ImGui::Button("Close application"))
+			g_bNeedCloseApplication = true;
 
 		ImGui::End();
 	}

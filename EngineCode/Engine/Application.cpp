@@ -16,6 +16,8 @@
 #include "main_menu.h"
 #include "scene.h"
 ///////////////////////////////////////////////////////////////
+bool g_bNeedCloseApplication = false;
+///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CBackend* RenderBackend = NULL;
 CLog* Log = NULL;
@@ -142,17 +144,16 @@ void CApplication::EventLoop()
 
 	MSG msg_struct;
 	ZeroMemory(&msg_struct, sizeof(msg_struct));
-	while (msg_struct.message != WM_QUIT)
+	while (msg_struct.message != WM_QUIT && g_bNeedCloseApplication != true)
 	{
 		if (PeekMessage(&msg_struct, NULL, 0U, 0U, PM_REMOVE))
 		{
 			TranslateMessage(&msg_struct);
 			DispatchMessage(&msg_struct);
 		}
-		else
-		{
-			OnFrame();
-		}
+
+		OnFrame();
+
 	}
 }
 
