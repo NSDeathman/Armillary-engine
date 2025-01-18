@@ -109,7 +109,7 @@ void CRender::InitializeDirect3D()
 	m_pDirect3DPresentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	m_pDirect3DPresentParams.BackBufferFormat = D3DFMT_UNKNOWN;
 	m_pDirect3DPresentParams.EnableAutoDepthStencil = TRUE;
-	m_pDirect3DPresentParams.AutoDepthStencilFormat = D3DFMT_D16;
+	m_pDirect3DPresentParams.AutoDepthStencilFormat = D3DFMT_D24X8;
 
 	// Create the D3DDevice
 	HRESULT hresult = m_pDirect3D->CreateDevice(D3DADAPTER_DEFAULT, 
