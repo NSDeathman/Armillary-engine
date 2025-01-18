@@ -110,6 +110,15 @@ void CApplication::OnFrame()
 
 	UserInterface->OnFrame();
 
+	if (UserInterface->NeedLoadScene())
+		Scene->Load();
+
+	if (UserInterface->NeedDestroyScene())
+	{
+		Scene->Destroy();
+		UserInterface->SceneDestroyed();
+	}
+
 	RenderFrame();
 }
 

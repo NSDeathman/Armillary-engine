@@ -49,6 +49,9 @@
     <ClCompile Include="user_interface.cpp">
       <Filter>User interface\Core</Filter>
     </ClCompile>
+    <ClCompile Include="loading_screen_window.cpp">
+      <Filter>User interface\Windows\Loading window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -113,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="user_interface.h">
       <Filter>User interface\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="loading_screen_window.h">
+      <Filter>User interface\Windows\Loading window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +193,9 @@
     </Filter>
     <Filter Include="Kernel\Application resources">
       <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User interface\Windows\Loading window">
+      <UniqueIdentifier>{bade395a-b27c-467f-9def-c806e348535c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

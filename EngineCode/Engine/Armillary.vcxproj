@@ -197,6 +197,7 @@
     <ClCompile Include="growable_array.cpp" />
     <ClCompile Include="helper_window.cpp" />
     <ClCompile Include="imgui_api.cpp" />
+    <ClCompile Include="loading_screen_window.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main_menu.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="cpu_identificator.h" />
     <ClInclude Include="growable_array.h" />
     <ClInclude Include="helper_window.h" />
+    <ClInclude Include="loading_screen_window.h" />
     <ClInclude Include="main_menu.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="OptickAPI.h" />

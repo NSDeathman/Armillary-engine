@@ -301,8 +301,6 @@ void CRender::RenderFrame()
 	RenderBackend->set_CullMode(CBackend::CULL_CCW);
 
 	if (Scene->Ready())
-	{
 		RenderScene();
-	}
 }
 ///////////////////////////////////////////////////////////////

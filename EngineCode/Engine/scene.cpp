@@ -37,8 +37,11 @@ void CScene::DrawGeometry()
 	concurrency::parallel_for(UINT(0), m_MeshLoader.GetNumMaterials(), [this](UINT iSubset) 
 	{
 		ID3DXMesh* pMesh = m_MeshLoader.GetMesh();
-		Material* pMaterial = m_MeshLoader.GetMaterial(iSubset);
-		pMesh->DrawSubset(iSubset);
+		if (pMesh)
+		{
+			Material* pMaterial = m_MeshLoader.GetMaterial(iSubset);
+			pMesh->DrawSubset(iSubset);
+		}
 	});
 }
 
