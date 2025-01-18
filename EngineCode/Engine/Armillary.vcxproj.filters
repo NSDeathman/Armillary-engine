@@ -26,13 +26,13 @@
       <Filter>Third-party implementations\Optick implementation</Filter>
     </ClCompile>
     <ClCompile Include="helper_window.cpp">
-      <Filter>User interface\Helper window</Filter>
+      <Filter>User interface\Windows\Helper window</Filter>
     </ClCompile>
     <ClCompile Include="filesystem.cpp">
       <Filter>Filesystem</Filter>
     </ClCompile>
     <ClCompile Include="main_menu.cpp">
-      <Filter>User interface\Main menu</Filter>
+      <Filter>User interface\Windows\Main menu</Filter>
     </ClCompile>
     <ClCompile Include="scene.cpp">
       <Filter>Scene</Filter>
@@ -45,6 +45,9 @@
     </ClCompile>
     <ClCompile Include="cpu_identificator.cpp">
       <Filter>CPU Identification</Filter>
+    </ClCompile>
+    <ClCompile Include="user_interface.cpp">
+      <Filter>User interface\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,7 +82,7 @@
       <Filter>Splash screen</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Application resources</Filter>
+      <Filter>Kernel\Application resources</Filter>
     </ClInclude>
     <ClInclude Include="imgui_api.h">
       <Filter>Third-party implementations\Imgui implementation</Filter>
@@ -88,10 +91,10 @@
       <Filter>Third-party implementations\Optick implementation</Filter>
     </ClInclude>
     <ClInclude Include="helper_window.h">
-      <Filter>User interface\Helper window</Filter>
+      <Filter>User interface\Windows\Helper window</Filter>
     </ClInclude>
     <ClInclude Include="main_menu.h">
-      <Filter>User interface\Main menu</Filter>
+      <Filter>User interface\Windows\Main menu</Filter>
     </ClInclude>
     <ClInclude Include="scene.h">
       <Filter>Scene</Filter>
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="cpu_identificator.h">
       <Filter>CPU Identification</Filter>
+    </ClInclude>
+    <ClInclude Include="user_interface.h">
+      <Filter>User interface\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -137,9 +143,6 @@
     <Filter Include="Filesystem">
       <UniqueIdentifier>{0deecb8c-381f-47ec-a335-f339a87c9832}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Application resources">
-      <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Splash screen">
       <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
     </Filter>
@@ -154,12 +157,6 @@
     </Filter>
     <Filter Include="User interface">
       <UniqueIdentifier>{6f8e98cb-902a-4912-8d00-0496bf2c246c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="User interface\Helper window">
-      <UniqueIdentifier>{8601af56-afb2-4e10-b351-00d6c367bf60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="User interface\Main menu">
-      <UniqueIdentifier>{4be4ee3b-a3e7-459d-bc92-5a3926077f4a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{1866c7c7-7d3c-47dc-8eae-074d374bf42c}</UniqueIdentifier>
@@ -176,21 +173,36 @@
     <Filter Include="CPU Identification">
       <UniqueIdentifier>{c3b742b3-2de4-44ed-a3f7-63e1609df15c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="User interface\Core">
+      <UniqueIdentifier>{34517174-8f86-48d7-b971-8468f25b83da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User interface\Windows">
+      <UniqueIdentifier>{9bbee05f-b4db-4123-b4d3-272f54d46a97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User interface\Windows\Helper window">
+      <UniqueIdentifier>{8601af56-afb2-4e10-b351-00d6c367bf60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User interface\Windows\Main menu">
+      <UniqueIdentifier>{4be4ee3b-a3e7-459d-bc92-5a3926077f4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kernel\Application resources">
+      <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
-      <Filter>Application resources</Filter>
+      <Filter>Kernel\Application resources</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bitmap1.bmp">
-      <Filter>Application resources</Filter>
+      <Filter>Kernel\Application resources</Filter>
     </Image>
     <Image Include="bitmap2.bmp">
-      <Filter>Application resources</Filter>
+      <Filter>Kernel\Application resources</Filter>
     </Image>
     <Image Include="icon1.ico">
-      <Filter>Application resources</Filter>
+      <Filter>Kernel\Application resources</Filter>
     </Image>
   </ItemGroup>
 </Project>

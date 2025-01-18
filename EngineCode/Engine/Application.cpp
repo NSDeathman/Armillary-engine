@@ -10,24 +10,20 @@
 #include "log.h"
 #include "cpu_identificator.h"
 #include "build_identification_helper.h"
-#include "imgui_api.h"
 #include "OptickAPI.h"
-#include "helper_window.h"
 #include "filesystem.h"
-#include "main_menu.h"
 #include "scene.h"
+#include "user_interface.h"
 ///////////////////////////////////////////////////////////////
 bool g_bNeedCloseApplication = false;
 ///////////////////////////////////////////////////////////////
 CRender* Render = NULL;
 CBackend* RenderBackend = NULL;
 CLog* Log = NULL;
-CImguiAPI* Imgui = NULL;
 COptickAPI* OptickAPI = NULL;
-CHelperWindow* HelperWindow = NULL;
 CFilesystem* Filesystem = NULL;
-CMainMenu* MainMenu = NULL;
 CScene* Scene = NULL;
+CUserInterface* UserInterface = NULL;
 ///////////////////////////////////////////////////////////////
 void CApplication::PrintStartData()
 {
@@ -65,27 +61,21 @@ void CApplication::Start()
 
 	Render = new(CRender);
 	RenderBackend = new(CBackend);
-	Imgui = new (CImguiAPI);
 
     Render->Initialize();
-	Imgui->Initialize();
 
-	HelperWindow = new (CHelperWindow);
-
-	MainMenu = new (CMainMenu);
+	UserInterface = new (CUserInterface);
+	UserInterface->Initialize();
 
 	Scene = new (CScene);
 }
 
 void CApplication::Destroy()
 {
-	delete (MainMenu);
-	delete (HelperWindow);
-
-	Imgui->Destroy();
-	delete (Imgui);
-
 	Scene->Destroy();
+
+	UserInterface->Destroy();
+	delete (UserInterface);
 
 	Render->Destroy();
 	delete (Render);
@@ -105,9 +95,7 @@ void RenderFrame()
 
 	Render->OnFrameBegin();
 
-	MainMenu->Draw();
-
-	HelperWindow->Draw();
+	UserInterface->Render();
 
 	Render->RenderFrame();
 
@@ -120,26 +108,7 @@ void CApplication::OnFrame()
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
-	if (!Scene->Ready() && !Scene->isLoading())
-		MainMenu->Show();
-
-	if (MainMenu->NeedLoadScene())
-	{
-		Scene->Load();
-		if (!Scene->isLoading())
-		{
-			MainMenu->SceneLoaded();
-			MainMenu->Hide();
-			HelperWindow->Show();
-		}
-	}
-
-	if (HelperWindow->NeedQuitToMainMenu())
-	{
-		Scene->Destroy();
-		HelperWindow->QuitingToMainMenuIsDone();
-		HelperWindow->Hide();
-	}
+	UserInterface->OnFrame();
 
 	RenderFrame();
 }

@@ -205,6 +205,7 @@
     <ClCompile Include="render.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="splash_screen.cpp" />
+    <ClCompile Include="user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu_identificator.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="threading.h" />
     <ClInclude Include="types.h" />
+    <ClInclude Include="user_interface.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

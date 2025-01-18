@@ -8,10 +8,10 @@
 #include "filesystem.h"
 #include "resource.h"
 #include "render_backend.h"
-#include "imgui_api.h"
 #include "OptickAPI.h"
 #include "helper_window.h"
 #include "scene.h"
+#include "user_interface.h"
 ///////////////////////////////////////////////////////////////
 UINT g_ResizeWidth = NULL;
 UINT g_ResizeHeight = NULL;
@@ -176,12 +176,12 @@ void CRender::Initialize()
 
 void CRender::OnResetBegin()
 {
-	Imgui->OnResetBegin();
+	UserInterface->OnResetBegin();
 }
 
 void CRender::OnResetEnd()
 {
-	Imgui->OnResetEnd();
+	UserInterface->OnResetEnd();
 }
 
 void CRender::Reset()
@@ -227,7 +227,7 @@ void CRender::OnFrameBegin()
 		g_bNeedRestart = false;
 	}
 
-	Imgui->OnFrameBegin();
+	UserInterface->OnFrameBegin();
 
 	// Handle window resize (we don't resize directly in the WM_SIZE handler)
 	if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
@@ -255,7 +255,7 @@ void CRender::OnFrameBegin()
 
 void CRender::OnFrameEnd()
 {
-	Imgui->RenderFrame();
+	UserInterface->OnFrameEnd();
 
 	// End the scene
 	m_pDirect3dDevice->EndScene();
