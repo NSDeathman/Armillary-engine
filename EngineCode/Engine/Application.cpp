@@ -102,6 +102,11 @@ void RenderFrame()
 	Render->OnFrameEnd();
 }
 
+//int input()
+//{
+//	SDL_Event Event;
+//}
+
 void CApplication::OnFrame()
 {
 	OPTICK_THREAD("Armillary engine primary thread")
