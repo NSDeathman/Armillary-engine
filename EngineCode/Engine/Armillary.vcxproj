@@ -75,26 +75,26 @@
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
-    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x86\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(DXSDK_DIR)Include\;$(SolutionDir)\Third-Party\Include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
-    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x86\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(DXSDK_DIR)Include\;$(SolutionDir)\Third-Party\Include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x64\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(DXSDK_DIR)Include\;$(SolutionDir)\Third-Party\Include\;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x64\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(DXSDK_DIR)Include\;$(SolutionDir)\Third-Party\Include\;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
@@ -116,6 +116,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
+copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -139,12 +144,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\OptickCore.dll" "$(OutDir)OptickCore.dll"
+copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level2</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;DEBUG_BUILD;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORSWIN64</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;DEBUG_BUILD;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORS;WIN64</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -160,8 +170,9 @@
       <ImportLibrary>$(SolutionDir)..\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\OptickCore.dll" "$(OutDir)OptickCore.dll"
+copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -170,7 +181,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORSWIN64</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORS;WIN64</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -188,6 +199,11 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ImportLibrary>$(SolutionDir)..\libraries\$(ProjectName).lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\OptickCore.dll" "$(OutDir)OptickCore.dll"
+copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\Imgui.dll" "$(OutDir)Imgui.dll"
+copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cpu_identificator.cpp" />
@@ -239,14 +255,6 @@
     <Image Include="bitmap1.bmp" />
     <Image Include="bitmap2.bmp" />
     <Image Include="icon1.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Third-Party\Include\Imgui\Imgui.vcxproj">
-      <Project>{416e416c-4ce6-4163-888b-884d8ad77f7b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Third-Party\Include\Optick\OptickCore.vcxproj">
-      <Project>{830934d9-6f6c-c37d-18f2-fb3304348f00}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

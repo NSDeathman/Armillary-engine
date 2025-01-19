@@ -48,25 +48,25 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
@@ -89,7 +89,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)\Third-Party\Libraries\x64\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <TargetExt>.dll</TargetExt>
@@ -104,12 +104,12 @@
     <LinkIncremental>false</LinkIncremental>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
     <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)\Third-Party\Libraries\x86\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)\Third-Party\Libraries\x64\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <TargetExt>.dll</TargetExt>
@@ -122,7 +122,7 @@
     <TargetExt>.dll</TargetExt>
     <GenerateManifest>false</GenerateManifest>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)\Third-Party\Libraries\x86\</OutDir>
     <IntDir>$(SolutionDir)..\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <IncludePath>$(SolutionDir)third-party\include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -145,7 +145,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ImportLibrary>$(SolutionDir)..\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\Third-Party\Libraries\x64\$(ProjectName).lib</ImportLibrary>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
     </Link>
@@ -169,7 +169,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ImportLibrary>$(SolutionDir)..\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\Third-Party\Libraries\x86\$(ProjectName).lib</ImportLibrary>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
     </Link>
@@ -191,7 +191,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>$(SolutionDir)..\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\Third-Party\Libraries\x64\$(ProjectName).lib</ImportLibrary>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
     </Link>
@@ -209,7 +209,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>$(SolutionDir)..\libraries\$(ProjectName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\Third-Party\Libraries\x86\$(ProjectName).lib</ImportLibrary>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
     </Link>
