@@ -231,18 +231,12 @@ namespace CPU
 		clk_per_milisec = clk_per_second / 1000;
 		clk_per_microsec = clk_per_milisec / 1000;
 
+#ifndef WIN64
 		_control87(_PC_64, MCW_PC);
-		//		_control87	( _RC_CHOP, MCW_RC );
-		double a, b;
-		a = 1;
-		b = double(clk_per_second);
-		clk_to_seconds = float(double(a / b));
-		a = 1000;
-		b = double(clk_per_second);
-		clk_to_milisec = float(double(a / b));
-		a = 1000000;
-		b = double(clk_per_second);
-		clk_to_microsec = float(double(a / b));
+#endif
+		clk_to_seconds = float(double(1.0 / double(clk_per_second)));
+		clk_to_milisec = float(double(1000.0 / double(clk_per_second)));
+		clk_to_microsec = float(double(1000000.0 / double(clk_per_second)));
 	}
 }; // namespace CPU
 
