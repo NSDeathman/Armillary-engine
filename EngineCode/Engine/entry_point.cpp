@@ -44,9 +44,13 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, INT)
 {
 	UNREFERENCED_PARAMETER(hInstance);
 
+	SDL_Init(SDL_INIT_EVERYTHING);
+
 	App = new(CApplication);
 
     App->Process();
+
+	SDL_Quit();
 
     return 0;
 }

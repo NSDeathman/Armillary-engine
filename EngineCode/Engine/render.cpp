@@ -12,6 +12,7 @@
 #include "helper_window.h"
 #include "scene.h"
 #include "user_interface.h"
+#include "main_window.h"
 ///////////////////////////////////////////////////////////////
 UINT g_ResizeWidth = NULL;
 UINT g_ResizeHeight = NULL;
@@ -33,6 +34,12 @@ CRender::CRender()
 	m_iFrame = NULL;
 }
 
+void CRender::Initialize()
+{
+	Msg("Initializing render...");
+	InitializeDirect3D();
+}
+
 void CRender::Destroy()
 {
 	Msg("Destroying render...");
@@ -42,60 +49,11 @@ void CRender::Destroy()
 	SAFE_RELEASE(m_pDirect3D);
 }
 
-void CRender::CreateMainWindow()
-{
-	Msg("Creating window...");
-
-	WNDCLASSEX wc;
-	// The window class. This has to be filled BEFORE the window can be WNDCLASSEX wc;
-	//Flags[Redraw on width / height change from resize / movement] 
-	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	// Pointer to the window processing function for handling messages from this window
-	wc.lpfnWndProc = MsgProc;
-	// Number of extra bytes to allocate following the window-class structure
-	wc.cbClsExtra = 0;
-	// Number of extra bytes to allocate following the window instance
-	wc.cbWndExtra = 0;
-
-	// Handle to the instance that contains the window procedure
-	wc.hInstance = GetModuleHandle(NULL);
-	// Handle to the class icon. Must be a handle to an Icon resource
-	wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-	// Handle to the small icon for the class
-	wc.hIconSm = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-	// Handle to the class cursor. If null, an application must explicitly set the cursor shape whenever the mouse moves
-	// into the application window
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	// Handle to the class background brush for the window's background colour. When NULL an application must paint its
-	// own background colour
-	wc.hbrBackground = NULL;
-	// Pointer to a null-terminated string for the menu
-	wc.lpszMenuName = NULL;
-	// Pointer to null-terminated string of our class name
-	wc.lpszClassName = "Armillary engine";
-	wc.cbSize = sizeof(WNDCLASSEX);
-
-	RegisterClassEx(&wc);
-
-	// Create the application's window
-	m_hWindow = CreateWindow("Armillary engine", 
-							 "Armillary engine", 
-							 WS_OVERLAPPEDWINDOW, 
-							 100,	
-							 100, 
-							 600, 
-							 600, 
-							 NULL, 
-							 NULL, 
-							 wc.hInstance, 
-							 NULL);
-
-	ASSERT(!GetLastError(), "An error occurred while creating the window");
-}
-
 void CRender::InitializeDirect3D()
 {
 	Msg("Initializing Direct3D...");
+
+	m_hWindow = MainWindow->GetWindow();
 
 	// Create the D3D object.
 	m_pDirect3D = Direct3DCreate9(D3D_SDK_VERSION);
@@ -167,23 +125,6 @@ void CRender::CreateMatrices()
 	m_pDirect3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 }
 
-void CRender::Initialize()
-{
-	Msg("Initializing render...");
-	CreateMainWindow();
-	InitializeDirect3D();
-}
-
-void CRender::OnResetBegin()
-{
-	UserInterface->OnResetBegin();
-}
-
-void CRender::OnResetEnd()
-{
-	UserInterface->OnResetEnd();
-}
-
 void CRender::Reset()
 {
 	Msg("Resetting render...");
@@ -196,6 +137,16 @@ void CRender::Reset()
 		ERROR_MESSAGE("Invalid call while device resetting");
 
 	OnResetEnd();
+}
+
+void CRender::OnResetBegin()
+{
+	UserInterface->OnResetBegin();
+}
+
+void CRender::OnResetEnd()
+{
+	UserInterface->OnResetEnd();
 }
 
 void CRender::HandleDeviceLost()
@@ -211,6 +162,21 @@ void CRender::HandleDeviceLost()
 		Reset();
 
 	m_bDeviceLost = false;
+}
+
+void CRender::OnFrame()
+{
+	OnFrameBegin();
+	RenderFrame();
+	OnFrameEnd();
+}
+
+void CRender::RenderFrame()
+{
+	OPTICK_EVENT("CRender::RenderFrame")
+
+	if (Scene->Ready())
+		RenderScene();
 }
 
 void CRender::OnFrameBegin()
@@ -269,38 +235,19 @@ void CRender::OnFrameEnd()
 	m_iFrame++;
 }
 
-void CRender::OnFrame()
-{
-	OnFrameBegin();
-	RenderFrame();
-	OnFrameEnd();
-}
-
 void CRender::RenderScene()
 {
-	if (g_bWireframeMode)
-		RenderBackend->set_FillMode(CBackend::FILL_WIREFRAME);
-
-	m_pDirect3dDevice->SetRenderState(D3DRS_AMBIENT, 0xffffffff);
-
-	m_pDirect3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_PHONG);
-
-	Scene->DrawGeometry();
-
-	if (g_bWireframeMode)
-		RenderBackend->set_FillMode(CBackend::FILL_SOLID);
-}
-
-void CRender::RenderFrame()
-{
-	OPTICK_EVENT("CRender::RenderFrame")
-
 	// Turn on the zbuffer
 	m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 	RenderBackend->set_CullMode(CBackend::CULL_CCW);
 
-	if (Scene->Ready())
-		RenderScene();
+	if (g_bWireframeMode)
+		RenderBackend->set_FillMode(CBackend::FILL_WIREFRAME);
+
+	Scene->DrawGeometry();
+
+	if (g_bWireframeMode)
+		RenderBackend->set_FillMode(CBackend::FILL_SOLID);
 }
 ///////////////////////////////////////////////////////////////

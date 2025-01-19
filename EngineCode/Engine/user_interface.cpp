@@ -10,6 +10,7 @@
 #include "helper_window.h"
 #include "loading_screen_window.h"
 #include "scene.h"
+#include "log.h"
 ///////////////////////////////////////////////////////////////
 CImguiAPI* Imgui = NULL;
 CHelperWindow* HelperWindow = NULL;
@@ -27,6 +28,9 @@ void CUserInterface::Initialize()
 
 	m_bNeedLoadScene = false;
 	m_bNeedDestroyScene = false;
+	m_bHelperWndDraw = true;
+
+	m_bKeyPressed = false;
 }
 
 void CUserInterface::OnFrameBegin()
@@ -34,11 +38,24 @@ void CUserInterface::OnFrameBegin()
 	Imgui->OnFrameBegin();
 }
 
+extern bool m_bKeyPressed;
+
+void CUserInterface::CatchInput()
+{
+	const u8* KeyBoardStates = SDL_GetKeyboardState(NULL);
+	if (m_bKeyPressed)
+		if (KeyBoardStates[SDL_SCANCODE_ESCAPE])
+			Msg("esc");
+}
+
 void CUserInterface::OnFrame()
 {
+	CatchInput();
+
 	if (!Scene->Ready())
 		MainMenu->Show();
-
+	else if (Scene->Ready() && m_bHelperWndDraw)
+		HelperWindow->Hide();
 
 	if (MainMenu->NeedLoadScene())
 	{
@@ -54,6 +71,8 @@ void CUserInterface::OnFrame()
 	{
 		MainMenu->SceneLoaded();
 		LoadingScreen->Hide();
+
+		if (m_bHelperWndDraw)
 		HelperWindow->Show();
 	}
 

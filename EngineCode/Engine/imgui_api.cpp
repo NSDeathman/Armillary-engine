@@ -6,6 +6,7 @@
 #include "imgui_api.h"
 #include "render.h"
 #include "log.h"
+#include "main_window.h"
 ///////////////////////////////////////////////////////////////
 void CImguiAPI::Initialize()
 {
@@ -24,7 +25,7 @@ void CImguiAPI::Initialize()
 	// ImGui::StyleColorsLight();
 
 	// Setup Platform/Renderer backends
-	ImGui_ImplWin32_Init(Render->m_hWindow);
+	ImGui_ImplSDL2_InitForD3D(MainWindow->GetSDLWindow());
 	ImGui_ImplDX9_Init(Render->m_pDirect3dDevice);
 
 	// Load Fonts
@@ -69,7 +70,7 @@ void CImguiAPI::Initialize()
 void CImguiAPI::OnFrameBegin()
 {
 	ImGui_ImplDX9_NewFrame();
-	ImGui_ImplWin32_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 }
 
@@ -100,7 +101,7 @@ void CImguiAPI::Destroy()
 {
 	Msg("Destroying ImGuiAPI...");
 	ImGui_ImplDX9_Shutdown();
-	ImGui_ImplWin32_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 }
 ///////////////////////////////////////////////////////////////

@@ -218,6 +218,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="loading_screen_window.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main_menu.cpp" />
+    <ClCompile Include="main_window.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
     <ClCompile Include="render_backend.cpp" />
@@ -232,6 +233,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClInclude Include="helper_window.h" />
     <ClInclude Include="loading_screen_window.h" />
     <ClInclude Include="main_menu.h" />
+    <ClInclude Include="main_window.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="OptickAPI.h" />
     <ClInclude Include="Application.h" />

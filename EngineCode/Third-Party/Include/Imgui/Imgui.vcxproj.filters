@@ -20,13 +20,16 @@
       <Filter>api</Filter>
     </ClInclude>
     <ClInclude Include="backends\imgui_impl_dx9.h">
-      <Filter>backends</Filter>
+      <Filter>backends\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="backends\imgui_impl_dx11.h">
-      <Filter>backends</Filter>
+      <Filter>backends\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\imgui_impl_sdl2.h">
+      <Filter>backends\SDL</Filter>
     </ClInclude>
     <ClInclude Include="backends\imgui_impl_win32.h">
-      <Filter>backends</Filter>
+      <Filter>backends\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -46,13 +49,16 @@
       <Filter>api</Filter>
     </ClCompile>
     <ClCompile Include="backends\imgui_impl_dx9.cpp">
-      <Filter>backends</Filter>
+      <Filter>backends\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="backends\imgui_impl_dx11.cpp">
-      <Filter>backends</Filter>
+      <Filter>backends\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\imgui_impl_sdl2.cpp">
+      <Filter>backends\SDL</Filter>
     </ClCompile>
     <ClCompile Include="backends\imgui_impl_win32.cpp">
-      <Filter>backends</Filter>
+      <Filter>backends\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +67,15 @@
     </Filter>
     <Filter Include="backends">
       <UniqueIdentifier>{75658337-123c-4d94-9482-71f2b0187729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\DirectX">
+      <UniqueIdentifier>{c02573ec-549f-4307-bb14-f6a155d2ef04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\SDL">
+      <UniqueIdentifier>{90a4bcb8-592f-43e1-8507-000d5d73be39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\Windows">
+      <UniqueIdentifier>{4836c4bc-0f59-422a-9f2b-bb753311693d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

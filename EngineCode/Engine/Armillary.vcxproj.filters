@@ -5,7 +5,7 @@
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="entry_point.cpp">
-      <Filter>Kernel</Filter>
+      <Filter>Core\Kernel</Filter>
     </ClCompile>
     <ClCompile Include="render_backend.cpp">
       <Filter>Render\Backend</Filter>
@@ -14,10 +14,10 @@
       <Filter>Render\Core</Filter>
     </ClCompile>
     <ClCompile Include="log.cpp">
-      <Filter>Log</Filter>
+      <Filter>Core\Log</Filter>
     </ClCompile>
     <ClCompile Include="splash_screen.cpp">
-      <Filter>Splash screen</Filter>
+      <Filter>Core\Splash screen</Filter>
     </ClCompile>
     <ClCompile Include="imgui_api.cpp">
       <Filter>Third-party implementations\Imgui implementation</Filter>
@@ -29,7 +29,7 @@
       <Filter>User interface\Windows\Helper window</Filter>
     </ClCompile>
     <ClCompile Include="filesystem.cpp">
-      <Filter>Filesystem</Filter>
+      <Filter>Core\Filesystem</Filter>
     </ClCompile>
     <ClCompile Include="main_menu.cpp">
       <Filter>User interface\Windows\Main menu</Filter>
@@ -41,10 +41,10 @@
       <Filter>Render\Resource manager</Filter>
     </ClCompile>
     <ClCompile Include="growable_array.cpp">
-      <Filter>Math\Growable array</Filter>
+      <Filter>Core\Math\Growable array</Filter>
     </ClCompile>
     <ClCompile Include="cpu_identificator.cpp">
-      <Filter>CPU Identification</Filter>
+      <Filter>Core\CPU Identification</Filter>
     </ClCompile>
     <ClCompile Include="user_interface.cpp">
       <Filter>User interface\Core</Filter>
@@ -52,13 +52,16 @@
     <ClCompile Include="loading_screen_window.cpp">
       <Filter>User interface\Windows\Loading window</Filter>
     </ClCompile>
+    <ClCompile Include="main_window.cpp">
+      <Filter>Core\Windows\Main window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
       <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>Kernel</Filter>
+      <Filter>Core\Kernel</Filter>
     </ClInclude>
     <ClInclude Include="render_backend.h">
       <Filter>Render\Backend</Filter>
@@ -67,25 +70,25 @@
       <Filter>Render\Core</Filter>
     </ClInclude>
     <ClInclude Include="log.h">
-      <Filter>Log</Filter>
+      <Filter>Core\Log</Filter>
     </ClInclude>
     <ClInclude Include="build_identification_helper.h">
-      <Filter>Helpers</Filter>
+      <Filter>Core\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="threading.h">
-      <Filter>Threading</Filter>
+      <Filter>Core\Threading</Filter>
     </ClInclude>
     <ClInclude Include="filesystem.h">
-      <Filter>Filesystem</Filter>
+      <Filter>Core\Filesystem</Filter>
     </ClInclude>
     <ClInclude Include="defines.h">
-      <Filter>Kernel</Filter>
+      <Filter>Core\Kernel</Filter>
     </ClInclude>
     <ClInclude Include="splash_screen.h">
-      <Filter>Splash screen</Filter>
+      <Filter>Core\Splash screen</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Kernel\Application resources</Filter>
+      <Filter>Core\Kernel\Application resources</Filter>
     </ClInclude>
     <ClInclude Include="imgui_api.h">
       <Filter>Third-party implementations\Imgui implementation</Filter>
@@ -106,13 +109,13 @@
       <Filter>Render\Resource manager</Filter>
     </ClInclude>
     <ClInclude Include="growable_array.h">
-      <Filter>Math\Growable array</Filter>
+      <Filter>Core\Math\Growable array</Filter>
     </ClInclude>
     <ClInclude Include="types.h">
-      <Filter>Kernel</Filter>
+      <Filter>Core\Kernel</Filter>
     </ClInclude>
     <ClInclude Include="cpu_identificator.h">
-      <Filter>CPU Identification</Filter>
+      <Filter>Core\CPU Identification</Filter>
     </ClInclude>
     <ClInclude Include="user_interface.h">
       <Filter>User interface\Core</Filter>
@@ -120,14 +123,11 @@
     <ClInclude Include="loading_screen_window.h">
       <Filter>User interface\Windows\Loading window</Filter>
     </ClInclude>
+    <ClInclude Include="main_window.h">
+      <Filter>Core\Windows\Main window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Application">
-      <UniqueIdentifier>{4c79aad6-7d67-402e-803c-fc3245e03771}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Kernel">
-      <UniqueIdentifier>{94c682e7-0deb-4193-bf29-c70fb1c8f42b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{66eb38e2-6b9d-4e97-b6fd-c98d28adf8d5}</UniqueIdentifier>
     </Filter>
@@ -136,21 +136,6 @@
     </Filter>
     <Filter Include="Render\Core">
       <UniqueIdentifier>{674f84b9-f680-4b8a-8f22-cd53c563025e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Log">
-      <UniqueIdentifier>{2317b261-7bed-4dd9-8250-cb988031028e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helpers">
-      <UniqueIdentifier>{398cebd4-5ed6-45c0-aa59-350137dcba14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Threading">
-      <UniqueIdentifier>{d9c2cbd1-daa3-41da-9954-c4463d30902a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Filesystem">
-      <UniqueIdentifier>{0deecb8c-381f-47ec-a335-f339a87c9832}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Splash screen">
-      <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
     </Filter>
     <Filter Include="Third-party implementations">
       <UniqueIdentifier>{bac53889-5198-456c-9abf-3782ef11cde1}</UniqueIdentifier>
@@ -170,15 +155,6 @@
     <Filter Include="Render\Resource manager">
       <UniqueIdentifier>{67763e31-4f6d-48a6-9a73-73e79d1f95c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Math">
-      <UniqueIdentifier>{0dfdcdce-8148-473b-a5f0-4036ce36458f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Math\Growable array">
-      <UniqueIdentifier>{9fe9d30a-e7bd-4ed6-a7c7-c950e026c76d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CPU Identification">
-      <UniqueIdentifier>{c3b742b3-2de4-44ed-a3f7-63e1609df15c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="User interface\Core">
       <UniqueIdentifier>{34517174-8f86-48d7-b971-8468f25b83da}</UniqueIdentifier>
     </Filter>
@@ -191,27 +167,69 @@
     <Filter Include="User interface\Windows\Main menu">
       <UniqueIdentifier>{4be4ee3b-a3e7-459d-bc92-5a3926077f4a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kernel\Application resources">
-      <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
-    </Filter>
     <Filter Include="User interface\Windows\Loading window">
       <UniqueIdentifier>{bade395a-b27c-467f-9def-c806e348535c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{f9560477-1197-4143-afa5-08b533773a17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{20a78344-617c-4d32-910b-bb2ddbcc81c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Helpers">
+      <UniqueIdentifier>{398cebd4-5ed6-45c0-aa59-350137dcba14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Kernel">
+      <UniqueIdentifier>{94c682e7-0deb-4193-bf29-c70fb1c8f42b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Kernel\Application resources">
+      <UniqueIdentifier>{49f5560b-15d2-4d82-8332-add6bff9a540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Log">
+      <UniqueIdentifier>{2317b261-7bed-4dd9-8250-cb988031028e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math">
+      <UniqueIdentifier>{0dfdcdce-8148-473b-a5f0-4036ce36458f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Growable array">
+      <UniqueIdentifier>{9fe9d30a-e7bd-4ed6-a7c7-c950e026c76d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Filesystem">
+      <UniqueIdentifier>{0deecb8c-381f-47ec-a335-f339a87c9832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\CPU Identification">
+      <UniqueIdentifier>{c3b742b3-2de4-44ed-a3f7-63e1609df15c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Splash screen">
+      <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Threading">
+      <UniqueIdentifier>{d9c2cbd1-daa3-41da-9954-c4463d30902a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{4c79aad6-7d67-402e-803c-fc3245e03771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Windows">
+      <UniqueIdentifier>{a5bbe24e-4b17-4718-baf7-420a937e956a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Windows\Main window">
+      <UniqueIdentifier>{8424f532-b525-410e-86b8-4e335d7fcce1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
-      <Filter>Kernel\Application resources</Filter>
+      <Filter>Core\Kernel\Application resources</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bitmap1.bmp">
-      <Filter>Kernel\Application resources</Filter>
+      <Filter>Core\Kernel\Application resources</Filter>
     </Image>
     <Image Include="bitmap2.bmp">
-      <Filter>Kernel\Application resources</Filter>
+      <Filter>Core\Kernel\Application resources</Filter>
     </Image>
     <Image Include="icon1.ico">
-      <Filter>Kernel\Application resources</Filter>
+      <Filter>Core\Kernel\Application resources</Filter>
     </Image>
   </ItemGroup>
 </Project>

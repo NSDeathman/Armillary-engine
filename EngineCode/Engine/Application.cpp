@@ -14,6 +14,7 @@
 #include "filesystem.h"
 #include "scene.h"
 #include "user_interface.h"
+#include "main_window.h"
 ///////////////////////////////////////////////////////////////
 bool g_bNeedCloseApplication = false;
 ///////////////////////////////////////////////////////////////
@@ -24,6 +25,7 @@ COptickAPI* OptickAPI = NULL;
 CFilesystem* Filesystem = NULL;
 CScene* Scene = NULL;
 CUserInterface* UserInterface = NULL;
+CMainWindow* MainWindow = NULL;
 ///////////////////////////////////////////////////////////////
 void CApplication::PrintStartData()
 {
@@ -59,6 +61,8 @@ void CApplication::Start()
 	
 	Msg("Starting Application...");
 
+	MainWindow = new (CMainWindow);
+
 	Render = new(CRender);
 	RenderBackend = new(CBackend);
 
@@ -85,6 +89,8 @@ void CApplication::Destroy()
 
 	Log->Destroy();
 	delete (Log);
+
+	delete (MainWindow);
 }
 
 void RenderFrame()
@@ -101,11 +107,6 @@ void RenderFrame()
 
 	Render->OnFrameEnd();
 }
-
-//int input()
-//{
-//	SDL_Event Event;
-//}
 
 void CApplication::OnFrame()
 {
@@ -127,24 +128,54 @@ void CApplication::OnFrame()
 	RenderFrame();
 }
 
+bool m_bKeyPressed = false;
+
+void CatchInput()
+{
+	SDL_Event localEvent;
+
+	// Poll events
+	while (SDL_PollEvent(&localEvent))
+	{
+		if (localEvent.type == SDL_KEYUP)
+		{
+			// Reset key pressed status on key release
+			if (localEvent.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+			{
+				m_bKeyPressed = false;
+			}
+		}
+	}
+
+	// Optionally: Check the keyboard state directly for continuous input
+	const u8* KeyBoardStates = SDL_GetKeyboardState(NULL);
+	if (KeyBoardStates[SDL_SCANCODE_ESCAPE] && !m_bKeyPressed)
+	{
+		Msg("Escape is currently pressed");
+		m_bKeyPressed = true; // Set to true to prevent repeating messages
+	}
+}
+
 void CApplication::EventLoop()
 {
 	Msg("Starting event loop...");
 
-	MSG msg_struct;
-	ZeroMemory(&msg_struct, sizeof(msg_struct));
-	while (msg_struct.message != WM_QUIT && g_bNeedCloseApplication != true)
+	SDL_Event WindowEvent;
+
+	while (!g_bNeedCloseApplication)
 	{
-		if (PeekMessage(&msg_struct, NULL, 0U, 0U, PM_REMOVE))
+		// Handle window events
+		if (SDL_PollEvent(&WindowEvent))
 		{
-			TranslateMessage(&msg_struct);
-			DispatchMessage(&msg_struct);
+			if (WindowEvent.type == SDL_QUIT)
+				break;
 		}
 
-		OnFrame();
-
+		CatchInput();							   // Catch keyboard input here
+		OnFrame();								   // Your frame render/update logic
+		ImGui_ImplSDL2_ProcessEvent(&WindowEvent); // Handle ImGui events
 	}
-}
+}   
 
 void CApplication::Process()
 {
