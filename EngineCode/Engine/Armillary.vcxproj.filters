@@ -61,6 +61,9 @@
     <ClCompile Include="build_identificator.cpp">
       <Filter>Core\Build identification</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Render\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -134,6 +137,9 @@
     </ClInclude>
     <ClInclude Include="build_identificator.h">
       <Filter>Core\Build identification</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Render\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -223,6 +229,9 @@
     </Filter>
     <Filter Include="Core\Build identification">
       <UniqueIdentifier>{04e2061b-a258-4172-a411-c221137ed653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Camera">
+      <UniqueIdentifier>{ae38b1d2-c99e-49bc-8bf8-53965320a2bb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

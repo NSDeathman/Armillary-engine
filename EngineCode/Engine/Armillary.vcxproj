@@ -209,6 +209,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="build_identificator.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="cpu_identificator.cpp" />
     <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="Application.cpp" />
@@ -230,6 +231,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="cpu_identificator.h" />
     <ClInclude Include="growable_array.h" />
     <ClInclude Include="helper_window.h" />
