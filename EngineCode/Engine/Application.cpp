@@ -9,7 +9,7 @@
 #include "render_backend.h"
 #include "log.h"
 #include "cpu_identificator.h"
-#include "build_identification_helper.h"
+#include "build_identificator.h"
 #include "OptickAPI.h"
 #include "filesystem.h"
 #include "scene.h"
@@ -28,29 +28,6 @@ CScene* Scene = nullptr;
 CUserInterface* UserInterface = nullptr;
 CMainWindow* MainWindow = nullptr;
 ///////////////////////////////////////////////////////////////
-void CApplication::PrintStartData()
-{
-	Msg("Armillary engine");
-
-	u32 MajorBuildID = computeBuildIdMajor();
-	u32 MinorBuildID = computeBuildIdMinor();
-	Msg("Build ID: %d.%d", MajorBuildID, MinorBuildID);
-
-#ifdef _DEBUG
-	Msg("Build type: Debug");
-#else
-	Msg("Build type: Release");
-#endif
-
-#ifdef WIN64
-	Msg("Build architecture: Win64");
-#else
-	Msg("Build architecture: Win32");
-#endif
-
-	Msg("\n");
-}
-
 void CApplication::Start()
 {
 	Filesystem = new CFilesystem();
@@ -58,7 +35,7 @@ void CApplication::Start()
 
 	initializeCPU();
 
-	PrintStartData();
+	PrintBuildData();
 	
 	Msg("Starting Application...");
 

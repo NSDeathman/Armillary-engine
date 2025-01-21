@@ -58,6 +58,9 @@
     <ClCompile Include="Input.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="build_identificator.cpp">
+      <Filter>Core\Build identification</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -74,9 +77,6 @@
     </ClInclude>
     <ClInclude Include="log.h">
       <Filter>Core\Log</Filter>
-    </ClInclude>
-    <ClInclude Include="build_identification_helper.h">
-      <Filter>Core\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="threading.h">
       <Filter>Core\Threading</Filter>
@@ -132,6 +132,9 @@
     <ClInclude Include="Input.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="build_identificator.h">
+      <Filter>Core\Build identification</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
@@ -182,9 +185,6 @@
     <Filter Include="Core">
       <UniqueIdentifier>{20a78344-617c-4d32-910b-bb2ddbcc81c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Helpers">
-      <UniqueIdentifier>{398cebd4-5ed6-45c0-aa59-350137dcba14}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Kernel">
       <UniqueIdentifier>{94c682e7-0deb-4193-bf29-c70fb1c8f42b}</UniqueIdentifier>
     </Filter>
@@ -220,6 +220,9 @@
     </Filter>
     <Filter Include="Core\Windows\Splash screen">
       <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Build identification">
+      <UniqueIdentifier>{04e2061b-a258-4172-a411-c221137ed653}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

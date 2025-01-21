@@ -208,6 +208,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="build_identificator.cpp" />
     <ClCompile Include="cpu_identificator.cpp" />
     <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="Application.cpp" />
@@ -239,7 +240,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="OptickAPI.h" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="build_identification_helper.h" />
+    <ClInclude Include="build_identificator.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="imgui_api.h" />

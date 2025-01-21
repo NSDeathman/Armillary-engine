@@ -8,6 +8,51 @@
 ////////////////////////////////////////////////////////////////////////////////
 namespace CPU
 {
+enum class Feature : uint32_t
+{
+	Mmx = 0x0001,
+	Sse = 0x0002,
+	Sse2 = 0x0004,
+	Sse3 = 0x0010,
+	Ssse3 = 0x0020,
+	Sse41 = 0x0040,
+	Sse42 = 0x0080,
+	Avx = 0x0100,
+	Avx2 = 0x0200,
+	Avx512 = 0x0400,
+};
+
+struct ProcessorInfo
+{
+	char vendor[32] = {};
+	char modelName[64] = {};
+	uint8_t family = 0;
+	uint8_t model = 0;
+	uint8_t stepping = 0;
+	uint32_t features = 0;
+	uint32_t n_cores = 0;
+	uint32_t n_threads = 0;
+	uint32_t affinity_mask = 0;
+
+	bool hasFeature(CPU::Feature feature) const
+	{
+		return (features & static_cast<uint32_t>(feature)) != 0;
+	}
+};
+
+uint64_t clk_per_second;
+uint64_t clk_per_millisec;
+uint64_t clk_per_microsec;
+float clk_to_seconds;
+float clk_to_milisec;
+float clk_to_microsec;
+uint64_t clk_overhead;
+uint64_t qpc_freq = 0;
+uint64_t qpc_overhead = 0;
+uint32_t qpc_counter = 0;
+
+ProcessorInfo ID;
+
 void nativeCpuId(int regs[4], int i)
 {
 	__cpuid(regs, i);
@@ -68,10 +113,16 @@ unsigned int queryProcessorInfo(ProcessorInfo* pinfo)
 			pinfo->features |= f_ECX[19] ? static_cast<uint32_t>(CPU::Feature::Sse41) : 0;
 			pinfo->features |= f_ECX[20] ? static_cast<uint32_t>(CPU::Feature::Sse42) : 0;
 		}
-	}
+		else if (i == 7) // Check for advanced features
+		{
+			std::bitset<32> f_EBX(cpui[1]);
+			std::bitset<32> f_ECX(cpui[2]);
 
-	// Further CPU feature checks
-	// ...
+			pinfo->features |= f_EBX[5] ? static_cast<uint32_t>(CPU::Feature::Avx) : 0;		// AVX
+			pinfo->features |= f_EBX[16] ? static_cast<uint32_t>(CPU::Feature::Avx2) : 0;	// AVX2
+			pinfo->features |= f_EBX[30] ? static_cast<uint32_t>(CPU::Feature::Avx512) : 0; // AVX512
+		}
+	}
 
 	return pinfo->features;
 }
@@ -155,13 +206,13 @@ void initializeCPU()
 	}
 
 	Msg("CPU Info:");
-	Msg("CPU Frequency: %.2f MHZ", float(CPU::clk_per_second / u64(1000000)));
 	Msg("CPU Thread count: %d", std::thread::hardware_concurrency());
+	Msg("CPU Frequency: %.2f MHZ", float(CPU::clk_per_second / u64(1000000)));
 
 	string256 features;
-	strcpy(features, "RDTSC");
+	strcpy(features, "");
 	if (CPU::ID.hasFeature(CPU::Feature::Sse))
-		strcat(features, ", SSE");
+		strcat(features, "SSE");
 	if (CPU::ID.hasFeature(CPU::Feature::Sse2))
 		strcat(features, ", SSE2");
 	if (CPU::ID.hasFeature(CPU::Feature::Sse3))
@@ -174,13 +225,13 @@ void initializeCPU()
 		strcat(features, ", SSSE3");
 	if (CPU::ID.hasFeature(CPU::Feature::Mmx))
 		strcat(features, ", MMX");
-	if (CPU::ID.hasFeature(CPU::Feature::_3dNow))
-		strcat(features, ", 3DNow!");
-	if (CPU::ID.hasFeature(CPU::Feature::MWait))
-		strcat(features, ", MONITOR/MWAIT");
-	if (CPU::ID.hasFeature(CPU::Feature::HT))
-		strcat(features, ", HTT");
+	if (CPU::ID.hasFeature(CPU::Feature::Avx))
+		strcat(features, ", AVX");
+	if (CPU::ID.hasFeature(CPU::Feature::Avx2))
+		strcat(features, ", AVX2");
+	if (CPU::ID.hasFeature(CPU::Feature::Avx512))
+		strcat(features, ", AVX512");
 
-	Msg("CPU features: %s \n", features);
+	Msg("CPU features: %s\n", features);
 }
 ////////////////////////////////////////////////////////////////////////////////
