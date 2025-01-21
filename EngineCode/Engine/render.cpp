@@ -21,9 +21,9 @@ extern LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 ///////////////////////////////////////////////////////////////
 CRender::CRender()
 {
-	m_hWindow = NULL;
-	m_pDirect3D = NULL;
-	m_pDirect3dDevice = NULL;
+	m_hWindow = nullptr;
+	m_pDirect3D = nullptr;
+	m_pDirect3dDevice = nullptr;
 	ZeroMemory(&m_pDirect3DPresentParams, sizeof(m_pDirect3DPresentParams));
 
 	m_bDeviceLost = false;
@@ -31,7 +31,7 @@ CRender::CRender()
 
 	m_bWireframe = false;
 
-	m_iFrame = NULL;
+	m_iFrame = 0;
 }
 
 void CRender::Initialize()
