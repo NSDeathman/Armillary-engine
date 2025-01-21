@@ -11,6 +11,7 @@
 #include "loading_screen_window.h"
 #include "scene.h"
 #include "log.h"
+#include "Input.h"
 ///////////////////////////////////////////////////////////////
 CImguiAPI* Imgui = nullptr;
 CHelperWindow* HelperWindow = nullptr;
@@ -54,9 +55,6 @@ void CUserInterface::OnFrame()
 	}
 	else
 	{
-		if (m_bHelperWndDraw)
-			HelperWindow->Hide();
-
 		if (MainMenu->NeedLoadScene())
 		{
 			MainMenu->Hide();
@@ -76,6 +74,11 @@ void CUserInterface::OnFrame()
 
 			if (m_bHelperWndDraw)
 				HelperWindow->Show();
+			else
+				HelperWindow->Hide();
+
+			if (Input->KeyPressed(SDL_SCANCODE_ESCAPE))
+				m_bHelperWndDraw = !m_bHelperWndDraw;
 		}
 
 		if (HelperWindow->NeedQuitToMainMenu())
