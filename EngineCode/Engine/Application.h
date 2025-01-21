@@ -13,9 +13,9 @@ private:
 
 public:
 	void Start();
-	 void PrintStartData();
-	void ThreadWork();
+	void PrintStartData();
 	void OnFrame();
+	void CatchInput();
 	void EventLoop();
 	void Destroy();
 	void Process();

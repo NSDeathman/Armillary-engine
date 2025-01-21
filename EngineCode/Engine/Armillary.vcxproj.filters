@@ -17,7 +17,7 @@
       <Filter>Core\Log</Filter>
     </ClCompile>
     <ClCompile Include="splash_screen.cpp">
-      <Filter>Core\Splash screen</Filter>
+      <Filter>Core\Windows\Splash screen</Filter>
     </ClCompile>
     <ClCompile Include="imgui_api.cpp">
       <Filter>Third-party implementations\Imgui implementation</Filter>
@@ -55,6 +55,9 @@
     <ClCompile Include="main_window.cpp">
       <Filter>Core\Windows\Main window</Filter>
     </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -85,7 +88,7 @@
       <Filter>Core\Kernel</Filter>
     </ClInclude>
     <ClInclude Include="splash_screen.h">
-      <Filter>Core\Splash screen</Filter>
+      <Filter>Core\Windows\Splash screen</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Core\Kernel\Application resources</Filter>
@@ -125,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="main_window.h">
       <Filter>Core\Windows\Main window</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,9 +206,6 @@
     <Filter Include="Core\CPU Identification">
       <UniqueIdentifier>{c3b742b3-2de4-44ed-a3f7-63e1609df15c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Splash screen">
-      <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Threading">
       <UniqueIdentifier>{d9c2cbd1-daa3-41da-9954-c4463d30902a}</UniqueIdentifier>
     </Filter>
@@ -214,6 +217,9 @@
     </Filter>
     <Filter Include="Core\Windows\Main window">
       <UniqueIdentifier>{8424f532-b525-410e-86b8-4e335d7fcce1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Windows\Splash screen">
+      <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

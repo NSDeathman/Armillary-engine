@@ -10,11 +10,9 @@
 class CUserInterface
 {
   private:
-	bool m_bNeedDraw;
 	bool m_bNeedLoadScene;
 	bool m_bNeedDestroyScene;
 	bool m_bHelperWndDraw;
-
 	bool m_bKeyPressed;
 
   public:
@@ -23,7 +21,6 @@ class CUserInterface
 
 	void Initialize();
 	void OnFrameBegin();
-	void CatchInput();
 	void OnFrame();
 	void OnFrameEnd();
 	void Render();

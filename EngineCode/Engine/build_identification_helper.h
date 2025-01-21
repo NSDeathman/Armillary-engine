@@ -1,87 +1,88 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Created: 14.01.2025
-// Author: Deathman
-// Refactored code: Build identification
+// Author: ChatGPT, NS_Deathman
+// New Build Identification Code Generator
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
-#include "stdafx.h"
+#include <cstdio>
+#include <cstring>
+#include <string>
+
+// Constants for build identification
+static const char* monthNames[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+									 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+static const int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+// Starting point for the build ID computation
+static const int startDay = 15;
+static const int startMonth = 1;
+static const int startYear = 2025;
+
 ////////////////////////////////////////////////////////////////////////////////
-static const char* month_id[12] = 
+u32 computeBuildIdMajor()
 {
-	"Jan", 
-	"Feb", 
-	"Mar", 
-	"Apr", 
-	"May", 
-	"Jun", 
-	"Jul", 
-	"Aug", 
-	"Sep", 
-	"Oct", 
-	"Nov", 
-	"Dec"
-};
+	const char* buildDate = __DATE__;
 
-static int days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	int day = 0;
+	int monthIndex = 0;
+	int year = 0;
+	char month[16];
 
-static int start_day = 15;
-static int start_month = 1;
-static int start_year = 2025;
-static int start_hour = 0;
-static int start_minut = 0;
-////////////////////////////////////////////////////////////////////////////////
-u32 compute_build_id_major()
-{
-	LPCSTR build_date = __DATE__;
-
-	int days = 0;
-	int months = 0;
-	int years = 0;
-	string16 month;
-	string256 date_buffer;
-	strcpy_s(date_buffer, build_date);
-	(void)sscanf(date_buffer, "%s %d %d", month, &days, &years);
-
-	for (int i = 0; i < 12; i++)
+	if (sscanf(buildDate, "%s %d %d", month, &day, &year) != 3)
 	{
-		if (_stricmp(month_id[i], month))
-			continue;
-
-		months = i;
-		break;
+		// Error handling: unable to parse build date
+		return 0;
 	}
 
-	u32 build_id = (years - start_year) * 365 + (days - start_day);
-
-	for (int i = 0; i < months; ++i)
-	{			
-		build_id += days_in_month[i];
-
-		if (i == 2)
+	// Convert month name to index
+	for (int i = 0; i < 12; ++i)
+	{
+		if (strcasecmp(monthNames[i], month) == 0)
 		{
-			if (years % 4 == 0)
-				build_id += 1;
+			monthIndex = i;
+			break;
 		}
 	}
 
-	for (int i = 0; i < start_month - 1; ++i)
-		build_id -= days_in_month[i];
+	u32 buildId = (year - startYear) * 365 + (day - startDay);
 
-	return build_id;
+	// Calculate total days from previous months
+	for (int i = 0; i < monthIndex; ++i)
+	{
+		buildId += daysInMonth[i];
+	}
+
+	// Account for leap year in February
+	if (monthIndex > 1 && (year % 4 == 0))
+	{
+		buildId += 1; // Add an extra day for leap year
+	}
+
+	// Subtract days from months before the starting month
+	for (int i = 0; i < startMonth - 1; ++i)
+	{
+		buildId -= daysInMonth[i];
+	}
+
+	return buildId;
 }
 
-u32 compute_build_id_minor()
+u32 computeBuildIdMinor()
 {
-	LPCSTR build_time = __TIME__;
+	const char* buildTime = __TIME__;
 
 	int hour = 0;
-	int minut = 0;
+	int minute = 0;
 	int second = 0;
-	string256 time_buffer;
-	strcpy_s(time_buffer, build_time);
-	(void)sscanf(time_buffer, "%d %d %d", &hour, &minut, &second);
 
-	return hour + minut;
+	if (sscanf(buildTime, "%d:%d:%d", &hour, &minute, &second) != 3)
+	{
+		// Error handling: unable to parse build time
+		return 0;
+	}
+
+	return (hour * 60) + minute; // Return total minutes since midnight
 }
 ////////////////////////////////////////////////////////////////////////////////

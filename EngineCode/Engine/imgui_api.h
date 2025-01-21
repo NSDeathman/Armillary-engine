@@ -10,8 +10,6 @@
 class CImguiAPI
 {
 public:
-	ImGuiIO m_pImGuiInputOutputParams;
-
 	ImFont* font_letterica;
 	ImFont* font_letterica_small;
 	ImFont* font_letterica_medium;
@@ -23,6 +21,7 @@ public:
 	ImFont* font_maven_pro_regular;
 
 private:
+	ImGuiIO m_pImGuiInputOutputParams;
 
 public:
 	CImguiAPI() = default;

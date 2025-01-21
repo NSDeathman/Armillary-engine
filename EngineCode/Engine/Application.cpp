@@ -17,22 +17,23 @@
 #include "main_window.h"
 ///////////////////////////////////////////////////////////////
 bool g_bNeedCloseApplication = false;
+SDL_Event g_WindowEvent;
 ///////////////////////////////////////////////////////////////
-CRender* Render = NULL;
-CBackend* RenderBackend = NULL;
-CLog* Log = NULL;
-COptickAPI* OptickAPI = NULL;
-CFilesystem* Filesystem = NULL;
-CScene* Scene = NULL;
-CUserInterface* UserInterface = NULL;
-CMainWindow* MainWindow = NULL;
+CRender* Render = nullptr;
+CBackend* RenderBackend = nullptr;
+CLog* Log = nullptr;
+COptickAPI* OptickAPI = nullptr;
+CFilesystem* Filesystem = nullptr;
+CScene* Scene = nullptr;
+CUserInterface* UserInterface = nullptr;
+CMainWindow* MainWindow = nullptr;
 ///////////////////////////////////////////////////////////////
 void CApplication::PrintStartData()
 {
 	Msg("Armillary engine");
 
-	u32 MajorBuildID = compute_build_id_major();
-	u32 MinorBuildID = compute_build_id_minor();
+	u32 MajorBuildID = computeBuildIdMajor();
+	u32 MinorBuildID = computeBuildIdMinor();
 	Msg("Build ID: %d.%d", MajorBuildID, MinorBuildID);
 
 #ifdef _DEBUG
@@ -52,26 +53,26 @@ void CApplication::PrintStartData()
 
 void CApplication::Start()
 {
-	Filesystem = new (CFilesystem);
-	Log = new (CLog);
+	Filesystem = new CFilesystem();
+	Log = new CLog();
 
-	_initialize_cpu();
+	initializeCPU();
 
 	PrintStartData();
 	
 	Msg("Starting Application...");
 
-	MainWindow = new (CMainWindow);
+	MainWindow = new CMainWindow();
 
-	Render = new(CRender);
-	RenderBackend = new(CBackend);
+	Render = new CRender();
+	RenderBackend = new CBackend();
 
     Render->Initialize();
 
-	UserInterface = new (CUserInterface);
+	UserInterface = new CUserInterface();
 	UserInterface->Initialize();
 
-	Scene = new (CScene);
+	Scene = new CScene();
 }
 
 void CApplication::Destroy()
@@ -79,18 +80,18 @@ void CApplication::Destroy()
 	Scene->Destroy();
 
 	UserInterface->Destroy();
-	delete (UserInterface);
+	delete UserInterface;
 
 	Render->Destroy();
-	delete (Render);
+	delete Render;
 
 	Filesystem->Destroy();
-	delete (Filesystem);
+	delete Filesystem;
 
 	Log->Destroy();
-	delete (Log);
+	delete Log;
 
-	delete (MainWindow);
+	delete MainWindow;
 }
 
 void RenderFrame()
@@ -130,29 +131,22 @@ void CApplication::OnFrame()
 
 bool m_bKeyPressed = false;
 
-void CatchInput()
+void CApplication::CatchInput()
 {
-	SDL_Event localEvent;
-
-	// Poll events
-	while (SDL_PollEvent(&localEvent))
+	while (SDL_PollEvent(&g_WindowEvent))
 	{
-		if (localEvent.type == SDL_KEYUP)
+		if (g_WindowEvent.type == SDL_KEYUP)
 		{
-			// Reset key pressed status on key release
-			if (localEvent.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-			{
+			if (g_WindowEvent.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 				m_bKeyPressed = false;
-			}
 		}
 	}
 
-	// Optionally: Check the keyboard state directly for continuous input
 	const u8* KeyBoardStates = SDL_GetKeyboardState(NULL);
 	if (KeyBoardStates[SDL_SCANCODE_ESCAPE] && !m_bKeyPressed)
 	{
 		Msg("Escape is currently pressed");
-		m_bKeyPressed = true; // Set to true to prevent repeating messages
+		m_bKeyPressed = true;
 	}
 }
 
@@ -160,20 +154,32 @@ void CApplication::EventLoop()
 {
 	Msg("Starting event loop...");
 
-	SDL_Event WindowEvent;
-
 	while (!g_bNeedCloseApplication)
 	{
 		// Handle window events
-		if (SDL_PollEvent(&WindowEvent))
+		if (SDL_PollEvent(&g_WindowEvent))
 		{
-			if (WindowEvent.type == SDL_QUIT)
+			if (g_WindowEvent.type == SDL_QUIT)
 				break;
+
+			if (g_WindowEvent.type == SDL_KEYUP)
+			{
+				if (g_WindowEvent.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+					m_bKeyPressed = false;
+			}
+
+			ImGui_ImplSDL2_ProcessEvent(&g_WindowEvent);
 		}
 
-		CatchInput();							   // Catch keyboard input here
-		OnFrame();								   // Your frame render/update logic
-		ImGui_ImplSDL2_ProcessEvent(&WindowEvent); // Handle ImGui events
+		const u8* KeyBoardStates = SDL_GetKeyboardState(NULL);
+		if (KeyBoardStates[SDL_SCANCODE_ESCAPE] && !m_bKeyPressed)
+		{
+			Msg("Escape is currently pressed");
+			m_bKeyPressed = true;
+		}
+
+		CatchInput();
+		OnFrame();
 	}
 }   
 

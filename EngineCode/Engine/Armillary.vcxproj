@@ -215,6 +215,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="growable_array.cpp" />
     <ClCompile Include="helper_window.cpp" />
     <ClCompile Include="imgui_api.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="loading_screen_window.cpp" />
     <ClCompile Include="log.cpp" />
     <ClCompile Include="main_menu.cpp" />
@@ -231,6 +232,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClInclude Include="cpu_identificator.h" />
     <ClInclude Include="growable_array.h" />
     <ClInclude Include="helper_window.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="loading_screen_window.h" />
     <ClInclude Include="main_menu.h" />
     <ClInclude Include="main_window.h" />
