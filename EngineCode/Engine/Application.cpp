@@ -138,9 +138,6 @@ void CApplication::OnFrame()
 
 	Scheduler->Add(InputUpdateTask);
 
-	if (Input->KeyPressed(SDL_SCANCODE_ESCAPE))
-		Msg("Escape pressed");
-
 	UserInterface->OnFrame();
 
 	if (UserInterface->NeedLoadScene())
