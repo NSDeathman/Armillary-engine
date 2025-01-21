@@ -3,18 +3,33 @@
 //Author: NS_Deathman
 //CApplication class realization
 ///////////////////////////////////////////////////////////////
+// Application and stdafx
 #include "Application.h"
-#include "splash_screen.h"
+
+// Main engine parts
 #include "render.h"
 #include "render_backend.h"
 #include "log.h"
-#include "cpu_identificator.h"
-#include "build_identificator.h"
-#include "OptickAPI.h"
+#include "Input.h"
 #include "filesystem.h"
 #include "scene.h"
-#include "user_interface.h"
+
+// Windows
+#include "splash_screen.h"
 #include "main_window.h"
+
+// Helpers
+#include "cpu_identificator.h"
+#include "build_identificator.h"
+
+// Optick
+#include "OptickAPI.h"
+
+// UI
+#include "user_interface.h"
+
+// Threading
+#include "threading.h"
 ///////////////////////////////////////////////////////////////
 bool g_bNeedCloseApplication = false;
 SDL_Event g_WindowEvent;
@@ -27,6 +42,8 @@ CFilesystem* Filesystem = nullptr;
 CScene* Scene = nullptr;
 CUserInterface* UserInterface = nullptr;
 CMainWindow* MainWindow = nullptr;
+CInput* Input = nullptr;
+CScheduler* Scheduler = nullptr;
 ///////////////////////////////////////////////////////////////
 void CApplication::Start()
 {
@@ -38,6 +55,10 @@ void CApplication::Start()
 	PrintBuildData();
 	
 	Msg("Starting Application...");
+
+	Scheduler = new CScheduler();
+
+	Input = new CInput();
 
 	MainWindow = new CMainWindow();
 
@@ -68,7 +89,11 @@ void CApplication::Destroy()
 	Log->Destroy();
 	delete Log;
 
+	delete Input;
+
 	delete MainWindow;
+
+	delete Scheduler;
 }
 
 void RenderFrame()
@@ -86,11 +111,35 @@ void RenderFrame()
 	Render->OnFrameEnd();
 }
 
+void CApplication::HandleSDLEvents()
+{
+	// Handle window events
+	if (SDL_PollEvent(&g_WindowEvent))
+	{
+		if (g_WindowEvent.type == SDL_QUIT)
+			g_bNeedCloseApplication = true;
+
+		ImGui_ImplSDL2_ProcessEvent(&g_WindowEvent);
+	}
+}
+
+void InputUpdateTask()
+{
+	Input->OnFrame();
+}
+
 void CApplication::OnFrame()
 {
 	OPTICK_THREAD("Armillary engine primary thread")
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
+
+	HandleSDLEvents();
+
+	Scheduler->Add(InputUpdateTask);
+
+	if (Input->KeyPressed(SDL_SCANCODE_ESCAPE))
+		Msg("Escape pressed");
 
 	UserInterface->OnFrame();
 
@@ -106,56 +155,12 @@ void CApplication::OnFrame()
 	RenderFrame();
 }
 
-bool m_bKeyPressed = false;
-
-void CApplication::CatchInput()
-{
-	while (SDL_PollEvent(&g_WindowEvent))
-	{
-		if (g_WindowEvent.type == SDL_KEYUP)
-		{
-			if (g_WindowEvent.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-				m_bKeyPressed = false;
-		}
-	}
-
-	const u8* KeyBoardStates = SDL_GetKeyboardState(NULL);
-	if (KeyBoardStates[SDL_SCANCODE_ESCAPE] && !m_bKeyPressed)
-	{
-		Msg("Escape is currently pressed");
-		m_bKeyPressed = true;
-	}
-}
-
 void CApplication::EventLoop()
 {
 	Msg("Starting event loop...");
 
 	while (!g_bNeedCloseApplication)
 	{
-		// Handle window events
-		if (SDL_PollEvent(&g_WindowEvent))
-		{
-			if (g_WindowEvent.type == SDL_QUIT)
-				break;
-
-			if (g_WindowEvent.type == SDL_KEYUP)
-			{
-				if (g_WindowEvent.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-					m_bKeyPressed = false;
-			}
-
-			ImGui_ImplSDL2_ProcessEvent(&g_WindowEvent);
-		}
-
-		const u8* KeyBoardStates = SDL_GetKeyboardState(NULL);
-		if (KeyBoardStates[SDL_SCANCODE_ESCAPE] && !m_bKeyPressed)
-		{
-			Msg("Escape is currently pressed");
-			m_bKeyPressed = true;
-		}
-
-		CatchInput();
 		OnFrame();
 	}
 }   

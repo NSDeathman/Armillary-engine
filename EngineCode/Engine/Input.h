@@ -1,27 +1,28 @@
 ///////////////////////////////////////////////////////////////
-//Created: 14.01.2025
-//Author: NS_Deathman
-//CApplication class realization
+// Created: 21.01.2025
+// Author: ChatGPT, NS_Deathman
+// Input realization
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
 ///////////////////////////////////////////////////////////////
-class CApplication
+class CInput
 {
-private:
+  private:
+	const Uint8* m_KeyBoardStates;
 
-public:
-	void Start();
-	void HandleSDLEvents();
+	// Array to track key pressed states
+	bool m_bKeyPressed[SDL_NUM_SCANCODES];
+
+  public:
+	CInput();
+	~CInput() = default;
+
 	void OnFrame();
-	void EventLoop();
-	void Destroy();
-	void Process();
-
-	CApplication() = default;
-	~CApplication() = default;
+	bool KeyPressed(int key);
+	bool KeyHolded(int key);
 };
 ///////////////////////////////////////////////////////////////
-extern CApplication* App;
+extern CInput* Input;
 ///////////////////////////////////////////////////////////////

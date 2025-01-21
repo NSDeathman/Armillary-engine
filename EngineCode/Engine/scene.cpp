@@ -28,7 +28,7 @@ void CScene::Load()
 {
 	Msg("Loading scene...");
 
-	Scheduler.Add(LoadMesh);
+	Scheduler->Add(LoadMesh);
 }
 
 void CScene::DrawGeometry()
