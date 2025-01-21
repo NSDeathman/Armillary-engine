@@ -19,19 +19,21 @@ void CInput::OnFrame()
 	// Update the keyboard state
 	m_KeyBoardStates = SDL_GetKeyboardState(NULL);
 
-	SDL_Event event;
-	while (SDL_PollEvent(&event))
-	{ // Poll all events
-		switch (event.type)
+	// Peep events from the queue
+	SDL_Event events[10]; // Array to store events
+	int numEvents = SDL_PeepEvents(events, 10, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT);
+
+	for (int i = 0; i < numEvents; ++i)
+	{
+		switch (events[i].type)
 		{
 		case SDL_KEYDOWN:
-			// Set the corresponding key state to true
-			m_bKeyPressed[event.key.keysym.scancode] = true;
+			m_bKeyPressed[events[i].key.keysym.scancode] = true;
 			break;
 		case SDL_KEYUP:
-			// Set the corresponding key state to false
-			m_bKeyPressed[event.key.keysym.scancode] = false;
+			m_bKeyPressed[events[i].key.keysym.scancode] = false;
 			break;
+			// Handle other event types here if needed
 		}
 	}
 }
