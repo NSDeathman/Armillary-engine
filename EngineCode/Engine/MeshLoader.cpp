@@ -436,11 +436,6 @@ HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* s
 {
 	HRESULT hr;
 
-	// Set the current directory based on where the mesh was found
-	//CHAR strOldDir[MAX_PATH] = {0};
-	//GetCurrentDirectory(MAX_PATH, strOldDir);
-	//SetCurrentDirectory(m_strMediaDir);
-
 	// File input
 	CHAR strCommand[256] = {0};
 	ifstream InFile((std::string)strFilePath + strFileName);
@@ -450,9 +445,6 @@ HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* s
 		Msg("Can't open ifstream in create mesh from OBJ (MTL Loading): %s", (std::string)strFilePath + strFileName);
 		return E_FAIL;
 	}
-
-	// Restore the original current directory
-	//SetCurrentDirectory(strOldDir);
 
 	Material* pMaterial = NULL;
 
