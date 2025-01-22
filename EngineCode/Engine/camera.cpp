@@ -10,6 +10,8 @@
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
+bool g_UseOrthogonalProjection = false;
+float g_OrthogonalProjectionSize = 3.0f;
 float g_Fov = 90.0f;
 float g_Aspect = float(g_ScreenWidth) / float(g_ScreenHeight);
 float g_NearPlane = 0.01f;
@@ -57,6 +59,23 @@ D3DXMATRIX CCamera::GetProjectionMatrix()
 {
 	D3DXMATRIX projectionMatrix;
 	D3DXMatrixPerspectiveFovLH(&projectionMatrix, m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
+
+	if (g_UseOrthogonalProjection)
+	{
+		// Orthographic projection matrix
+		float left = -g_OrthogonalProjectionSize * m_aspectRatio * 0.5f;
+		float right = g_OrthogonalProjectionSize * m_aspectRatio * 0.5f;
+		float bottom = -g_OrthogonalProjectionSize * 0.5f;
+		float top = g_OrthogonalProjectionSize * 0.5f;
+
+		D3DXMatrixOrthoLH(&projectionMatrix, right - left, top - bottom, m_nearPlane, m_farPlane);
+	}
+	else
+	{
+		// Perspective projection matrix
+		D3DXMatrixPerspectiveFovLH(&projectionMatrix, m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
+	}
+
 	return projectionMatrix;
 }
 

@@ -22,6 +22,9 @@ private:
 	float m_nearPlane;		// Near clipping plane
 	float m_farPlane;		// Far clipping plane
 
+	float m_yaw;   // Yaw angle (rotation around the Y axis)
+	float m_pitch; // Pitch angle (rotation around the X axis)
+
 public:
 	CCamera() = default;
 	~CCamera() = default;
@@ -38,6 +41,8 @@ public:
 ///////////////////////////////////////////////////////////////
 extern CCamera* Camera;
 ///////////////////////////////////////////////////////////////
+extern bool g_UseOrthogonalProjection;
+extern float g_OrthogonalProjectionSize;
 extern float g_Fov;
 extern float g_Aspect;
 extern float g_NearPlane;

@@ -101,7 +101,21 @@ void CHelperWindow::DrawSettings()
 
 	if (ImGui::TreeNode("Camera settings"))
 	{
-		ImGui::DragFloat("Camera fov", &g_Fov, 0.5f, 30.0f, 130.0f);
+		if (!g_UseOrthogonalProjection)
+		{
+			if (ImGui::Button("Orthographic camera"))
+				g_UseOrthogonalProjection = true;
+
+			ImGui::DragFloat("Camera fov", &g_Fov, 0.5f, 30.0f, 130.0f);
+		}
+		else 
+		{
+			if (ImGui::Button("Perspective camera"))
+				g_UseOrthogonalProjection = false;
+
+			ImGui::DragFloat("Orthogonal size", &g_OrthogonalProjectionSize, 0.01f, 1.0f, 4.0f);
+		}
+
 		ImGui::DragFloat("View distance", &g_FarPlane, 5.0f, 50.0f, 300.0f);
 
 		ImGui::TreePop();
