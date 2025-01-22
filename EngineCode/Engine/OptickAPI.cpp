@@ -68,7 +68,7 @@ void COptickAPI::OnFrame()
 {
 	if (m_need_capture)
 	{
-		if (Render->m_iFrame == m_end_capture_frame)
+		if (Render->m_Frame == m_end_capture_frame)
 		{
 			StopCapturing();
 			SaveCapturedFrames();
@@ -80,7 +80,7 @@ void COptickAPI::StartCapturing(int frames_to_capture)
 {
 	m_need_capture = true;
 	m_frames_to_capture = frames_to_capture;
-	m_start_capture_frame = Render->m_iFrame;
+	m_start_capture_frame = Render->m_Frame;
 	m_end_capture_frame = m_start_capture_frame + m_frames_to_capture;
 
 	StartCapturing();
@@ -133,7 +133,7 @@ void COptickAPI::SwitchProfiler()
 
 void COptickAPI::SwitchToCapturing()
 {
-	m_start_capture_frame = Render->m_iFrame;
+	m_start_capture_frame = Render->m_Frame;
 
 	StartCapturing();
 };
@@ -142,7 +142,7 @@ void COptickAPI::SwitchToSaving()
 {
 	StopCapturing();
 
-	m_frames_to_capture = Render->m_iFrame - m_start_capture_frame;
+	m_frames_to_capture = Render->m_Frame - m_start_capture_frame;
 
 	Msg("- Saving %d frames", m_frames_to_capture);
 

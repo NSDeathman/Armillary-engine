@@ -18,8 +18,14 @@ class CMainWindow
 	CMainWindow();
 	~CMainWindow();
 
+	void CreateSDLWindow();
+	void DestroySDLWindow();
+
+	void CenterWindow();
+
 	HWND GetWindow();
 	SDL_Window* GetSDLWindow();
+	void Reset();
 };
 ///////////////////////////////////////////////////////////////
 extern CMainWindow* MainWindow;

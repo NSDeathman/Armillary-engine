@@ -36,9 +36,6 @@
     <ClCompile Include="imgui.cpp">
       <Filter>api</Filter>
     </ClCompile>
-    <ClCompile Include="imgui_demo.cpp">
-      <Filter>api</Filter>
-    </ClCompile>
     <ClCompile Include="imgui_draw.cpp">
       <Filter>api</Filter>
     </ClCompile>
@@ -60,6 +57,9 @@
     <ClCompile Include="backends\imgui_impl_win32.cpp">
       <Filter>backends\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="imgui_demo.cpp">
+      <Filter>Demo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="api">
@@ -76,6 +76,9 @@
     </Filter>
     <Filter Include="backends\Windows">
       <UniqueIdentifier>{4836c4bc-0f59-422a-9f2b-bb753311693d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Demo">
+      <UniqueIdentifier>{e27b34f6-76ba-4de5-8736-c13b5554dc10}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

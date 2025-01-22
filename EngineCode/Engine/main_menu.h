@@ -20,7 +20,7 @@ class CMainMenu
 	void Draw();
 	void Show();
 	void Hide();
-	void SceneLoaded();
+	void SetNeedLoadScene(bool flag);
 	bool NeedLoadScene();
 };
 ///////////////////////////////////////////////////////////////

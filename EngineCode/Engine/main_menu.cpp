@@ -28,7 +28,7 @@ void CMainMenu::Draw()
 		ImGui::PushFont(Imgui->font_letterica_medium);
 
 		if (ImGui::Button("Load scene"))
-			m_bNeedLoadScene = true;
+			SetNeedLoadScene(true);
 
 		if (ImGui::Button("Close application"))
 			g_bNeedCloseApplication = true;
@@ -49,9 +49,9 @@ void CMainMenu::Hide()
 	m_bNeedDraw = false;
 }
 
-void CMainMenu::SceneLoaded()
+void CMainMenu::SetNeedLoadScene(bool flag)
 {
-	m_bNeedLoadScene = false;
+	m_bNeedLoadScene = flag;
 }
 
 bool CMainMenu::NeedLoadScene()

@@ -6,6 +6,8 @@
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
+
+#include "log.h"
 ///////////////////////////////////////////////////////////////
 class CUserInterface
 {
@@ -13,13 +15,13 @@ class CUserInterface
 	bool m_bNeedLoadScene;
 	bool m_bNeedDestroyScene;
 	bool m_bHelperWndDraw;
-	bool m_bKeyPressed;
 
   public:
 	CUserInterface() = default;
 	~CUserInterface() = default;
 
 	void Initialize();
+	void UpdateIngameUI();
 	void OnFrameBegin();
 	void OnFrame();
 	void OnFrameEnd();
@@ -33,14 +35,19 @@ class CUserInterface
 		return m_bNeedLoadScene;
 	}
 
+	void SetNeedLoadScene(bool flag)
+	{
+		m_bNeedLoadScene = flag;
+	}
+
 	bool NeedDestroyScene()
 	{
 		return m_bNeedDestroyScene;
 	}
 
-	void SceneDestroyed()
+	void SetNeedDestroyScene(bool flag)
 	{
-		m_bNeedDestroyScene = false;
+		m_bNeedDestroyScene = flag;
 	}
 };
 ///////////////////////////////////////////////////////////////

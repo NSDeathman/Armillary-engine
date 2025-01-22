@@ -30,6 +30,12 @@
 
 // Threading
 #include "threading.h"
+
+// Camera
+#include "camera.h"
+///////////////////////////////////////////////////////////////
+UINT g_ScreenWidth = 720;
+UINT g_ScreenHeight = 480;
 ///////////////////////////////////////////////////////////////
 bool g_bNeedCloseApplication = false;
 SDL_Event g_WindowEvent;
@@ -44,6 +50,8 @@ CUserInterface* UserInterface = nullptr;
 CMainWindow* MainWindow = nullptr;
 CInput* Input = nullptr;
 CScheduler* Scheduler = nullptr;
+///////////////////////////////////////////////////////////////
+CCamera* Camera = nullptr;
 ///////////////////////////////////////////////////////////////
 void CApplication::Start()
 {
@@ -64,12 +72,14 @@ void CApplication::Start()
 
 	Render = new CRender();
 	RenderBackend = new CBackend();
-
     Render->Initialize();
 
 	UserInterface = new CUserInterface();
 	UserInterface->Initialize();
 
+	Camera = new CCamera();								 
+	Camera->Initialize();
+	
 	Scene = new CScene();
 }
 
@@ -80,20 +90,22 @@ void CApplication::Destroy()
 	UserInterface->Destroy();
 	delete UserInterface;
 
+	delete Camera;
+
 	Render->Destroy();
 	delete Render;
-
-	Filesystem->Destroy();
-	delete Filesystem;
-
-	Log->Destroy();
-	delete Log;
 
 	delete Input;
 
 	delete MainWindow;
 
 	delete Scheduler;
+
+	Filesystem->Destroy();
+	delete Filesystem;
+
+	Log->Destroy();
+	delete Log;
 }
 
 void RenderFrame()
@@ -113,7 +125,6 @@ void RenderFrame()
 
 void CApplication::HandleSDLEvents()
 {
-	// Handle window events
 	if (SDL_PollEvent(&g_WindowEvent))
 	{
 		if (g_WindowEvent.type == SDL_QUIT)
@@ -125,6 +136,10 @@ void CApplication::HandleSDLEvents()
 
 void InputUpdateTask()
 {
+	OPTICK_THREAD("Armillary engine input thread")
+	OPTICK_FRAME("InputUpdateTask")
+	OPTICK_EVENT("InputUpdateTask")
+
 	Input->OnFrame();
 }
 
@@ -140,13 +155,17 @@ void CApplication::OnFrame()
 
 	UserInterface->OnFrame();
 
+	Camera->OnFrame();
+
 	if (UserInterface->NeedLoadScene())
+	{
 		Scene->Load();
+	}
 
 	if (UserInterface->NeedDestroyScene())
 	{
 		Scene->Destroy();
-		UserInterface->SceneDestroyed();
+		UserInterface->SetNeedDestroyScene(false);
 	}
 
 	RenderFrame();
@@ -166,17 +185,17 @@ void CApplication::Process()
 {
 	SplashScreen = new (CSplashScreen);
 
-	App->Start();
+	Start();
 
 	delete (SplashScreen);
 
 	Msg("Application started successfully");
 	Msg("\n");
 
-	App->EventLoop();
+	EventLoop();
 
 	Msg("Destroying Application...");
 
-	App->Destroy();
+	Destroy();
 }
 ///////////////////////////////////////////////////////////////

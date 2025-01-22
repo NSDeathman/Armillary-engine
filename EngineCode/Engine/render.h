@@ -16,7 +16,7 @@ class CRender
 	HWND m_hWindow;
 
 	DWORD MaxSimultaneousTextures;
-	INT m_iFrame;
+	UINT m_Frame;
 	
   private:
 	BOOL m_bDeviceLost;
@@ -24,26 +24,32 @@ class CRender
 
 	BOOL m_bWireframe;
 
-  public:
-	void CreateMainWindow();
 	void GetCapabilities();
 	void InitializeDirect3D();
 	void CreateMatrices();
-	void Initialize();
 	void HandleDeviceLost();
 
 	void OnResetBegin();
-	void Reset();
 	void OnResetEnd();
 
+	void RenderScene();
+
+  public:
+
+	void Initialize();
+	void Reset();
 	void Destroy();
 
 	void OnFrameBegin();
 	void RenderFrame();
 	void OnFrameEnd();
+
 	void OnFrame();
 
-	void RenderScene();
+	void SetNeedReset()
+	{
+		m_bNeedReset = true;
+	}
 
 	CRender();
 	~CRender() = default;

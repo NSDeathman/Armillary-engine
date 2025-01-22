@@ -6,15 +6,34 @@
 #include "main_window.h"
 #include "log.h"
 ///////////////////////////////////////////////////////////////
+extern UINT g_ScreenWidth;
+extern UINT g_ScreenHeight;
+///////////////////////////////////////////////////////////////
+SDL_WindowFlags g_WindowFlags = (SDL_WindowFlags)(SDL_WINDOW_SHOWN | 
+												SDL_WINDOW_INPUT_FOCUS |
+												SDL_WINDOW_BORDERLESS | 
+												SDL_WINDOW_MAXIMIZED);
+///////////////////////////////////////////////////////////////
 CMainWindow::CMainWindow()
+{
+	CreateSDLWindow();
+}
+
+CMainWindow::~CMainWindow()
+{
+	DestroySDLWindow();
+}
+
+void CMainWindow::CreateSDLWindow()
 {
 	Msg("Creating window...");
 
-	SDL_WindowFlags winFlags = (SDL_WindowFlags)(SDL_WINDOW_SHOWN | 
-												 SDL_WINDOW_INPUT_FOCUS |
-												 SDL_WINDOW_BORDERLESS);
-
-	m_window = SDL_CreateWindow("Armillary engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, winFlags);
+	m_window = SDL_CreateWindow("Armillary engine", 
+								SDL_WINDOWPOS_CENTERED, 
+								SDL_WINDOWPOS_CENTERED, 
+								g_ScreenWidth,
+								g_ScreenHeight, 
+								g_WindowFlags);
 
 	SDL_VERSION(&m_WindowInfo.version);
 
@@ -27,6 +46,48 @@ CMainWindow::CMainWindow()
 	}
 }
 
+void CMainWindow::CenterWindow()
+{
+	// Check if the window is valid
+	if (!m_window)
+	{
+		Msg("! Cannot center window: window is not created.");
+		return;
+	}
+
+	// Get the current display mode
+	SDL_DisplayMode displayMode;
+	if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0)
+	{
+		std::cerr << "! Failed to get display mode: " << SDL_GetError() << std::endl;
+		return;
+	}
+
+	// Get the window size
+	int windowWidth, windowHeight;
+	SDL_GetWindowSize(m_window, &windowWidth, &windowHeight);
+
+	// Calculate center position
+	int centerX = (displayMode.w - windowWidth) / 2;
+	int centerY = (displayMode.h - windowHeight) / 2;
+
+	// Set the window position
+	SDL_SetWindowPosition(m_window, centerX, centerY);
+
+	Msg("Window centered at %d, %d", centerX, centerY);
+}
+
+void CMainWindow::DestroySDLWindow()
+{
+	Msg("Destroying window...");
+
+	if (m_window)
+	{
+		SDL_DestroyWindow(m_window);
+		m_window = nullptr;
+	}
+}
+
 HWND CMainWindow::GetWindow()
 {
 	return m_WindowInfo.info.win.window;
@@ -35,10 +96,5 @@ HWND CMainWindow::GetWindow()
 SDL_Window* CMainWindow::GetSDLWindow()
 {
 	return m_window;
-}
-
-CMainWindow::~CMainWindow()
-{
-	SDL_DestroyWindow(m_window);
 }
 ///////////////////////////////////////////////////////////////

@@ -15,8 +15,8 @@
 #include "main_window.h"
 #include "camera.h"
 ///////////////////////////////////////////////////////////////
-UINT g_ResizeWidth = NULL;
-UINT g_ResizeHeight = NULL;
+extern UINT g_ScreenWidth;
+extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 extern LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 ///////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ CRender::CRender()
 
 	m_bWireframe = false;
 
-	m_iFrame = 0;
+	m_Frame = 0;
 }
 
 void CRender::Initialize()
@@ -99,21 +99,11 @@ void CRender::GetCapabilities()
 
 void CRender::CreateMatrices()
 {
-	// Create a camera
-	CCamera Camera(D3DXVECTOR3(0.0f, 0.0f, -3.0f), // Position
-					D3DXVECTOR3(0.0f, 0.0f, 0.0f),	// Target
-					D3DXVECTOR3(0.0f, 1.0f, 0.0f),	// Up
-					90.0f,							// Field of View
-					600.0f / 600.0f,				// Aspect Ratio
-					0.1f,							// Near Plane
-					100.0f							// Far Plane
-	);
-
 	// Get view and projection matrices
-	D3DXMATRIX view = Camera.GetViewMatrix();
+	D3DXMATRIX view = Camera->GetViewMatrix();
 	m_pDirect3dDevice->SetTransform(D3DTS_VIEW, &view);
 
-	D3DXMATRIX projection = Camera.GetProjectionMatrix();
+	D3DXMATRIX projection = Camera->GetProjectionMatrix();
 	m_pDirect3dDevice->SetTransform(D3DTS_PROJECTION, &projection);
 
 	// Set up world matrix
@@ -138,6 +128,11 @@ void CRender::Reset()
 
 void CRender::OnResetBegin()
 {
+	SDL_SetWindowSize(MainWindow->GetSDLWindow(), g_ScreenWidth, g_ScreenHeight);
+	MainWindow->CenterWindow();
+
+	Camera->Reset();
+
 	UserInterface->OnResetBegin();
 }
 
@@ -193,11 +188,11 @@ void CRender::OnFrameBegin()
 	UserInterface->OnFrameBegin();
 
 	// Handle window resize (we don't resize directly in the WM_SIZE handler)
-	if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
+	if (g_ScreenWidth != m_pDirect3DPresentParams.BackBufferWidth &&
+		g_ScreenHeight != m_pDirect3DPresentParams.BackBufferHeight)
 	{
-		m_pDirect3DPresentParams.BackBufferWidth = g_ResizeWidth;
-		m_pDirect3DPresentParams.BackBufferHeight = g_ResizeHeight;
-		g_ResizeWidth = g_ResizeHeight = 0;
+		m_pDirect3DPresentParams.BackBufferWidth = g_ScreenWidth;
+		m_pDirect3DPresentParams.BackBufferHeight = g_ScreenHeight;
 		m_bNeedReset = true;
 	}
 
@@ -229,7 +224,7 @@ void CRender::OnFrameEnd()
 	if (present_result == D3DERR_DEVICELOST)
 		m_bDeviceLost = true;
 
-	m_iFrame++;
+	m_Frame++;
 }
 
 void CRender::RenderScene()

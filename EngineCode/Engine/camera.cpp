@@ -5,23 +5,43 @@
 ///////////////////////////////////////////////////////////////
 #include "camera.h"
 #include "log.h"
+#include "main_window.h"
 ///////////////////////////////////////////////////////////////
-	// Constructor
-CCamera::CCamera(D3DXVECTOR3 position, 
-				D3DXVECTOR3 direction, 
-				D3DXVECTOR3 upVec, 
-				float fovDeg, 
-				float aspect, 
-				float nearPlane,
-				float farPlane)
+extern UINT g_ScreenWidth;
+extern UINT g_ScreenHeight;
+///////////////////////////////////////////////////////////////
+float g_Fov = 90.0f;
+float g_Aspect = float(g_ScreenWidth) / float(g_ScreenHeight);
+float g_NearPlane = 0.01f;
+float g_FarPlane = 100.0f;
+///////////////////////////////////////////////////////////////
+void CCamera::Initialize()
 {
-	m_position = position;
-	m_direction = direction;
-	m_upVec = upVec;
-	m_fov = D3DXToRadian(fovDeg);
-	m_aspectRatio = aspect; 
-	m_nearPlane = nearPlane;
-	m_farPlane = farPlane;
+	m_position = D3DXVECTOR3(0.0f, 0.0f, -3.0f);
+	m_direction = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_upVec = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_fov = D3DXToRadian(g_Fov);
+	m_nearPlane = g_NearPlane;
+	m_farPlane = g_FarPlane;
+
+	// Calculate aspect ratio initially
+	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
+}
+
+void CCamera::OnFrame()
+{
+	m_fov = D3DXToRadian(g_Fov);
+	m_nearPlane = g_NearPlane;
+	m_farPlane = g_FarPlane;
+
+	// Update aspect ratio every frame (if resolution can change while running)
+	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
+}
+
+void CCamera::Reset()
+{
+	// Correctly reset the aspect ratio without adding to it
+	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
 }
 
 // Calculate view matrix
@@ -44,15 +64,12 @@ D3DXMATRIX CCamera::GetProjectionMatrix()
 void CCamera::Move(const D3DXVECTOR3& direction, float amount)
 {
 	m_position += direction * amount;
-
-	// Keep the target relative to the camera position
-	m_direction += direction * amount;
+	m_direction += direction * amount; // Keep the target relative to the camera position
 }
 
 // Rotate camera around the target point (simple placeholder)
 void rotate(float yaw, float pitch)
 {
-	// Here you could implement additional calculations to alter the target based on yaw/pitch
-	// For simplicity, this is not implemented.
+	// Implementation for yaw/pitch adjustments would go here.
 }
 ///////////////////////////////////////////////////////////////

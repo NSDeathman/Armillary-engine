@@ -23,14 +23,12 @@ private:
 	float m_farPlane;		// Far clipping plane
 
 public:
-	CCamera(D3DXVECTOR3 position, 
-			D3DXVECTOR3 direction, 
-			D3DXVECTOR3 upVec, 
-			float fovDeg, 
-			float aspect, 
-			float nearPlane,
-			float farPlane);
+	CCamera() = default;
 	~CCamera() = default;
+
+	void Initialize();
+	void OnFrame();
+	void Reset();
 
 	D3DXMATRIX GetViewMatrix();
 	D3DXMATRIX GetProjectionMatrix();
@@ -39,4 +37,9 @@ public:
 };
 ///////////////////////////////////////////////////////////////
 extern CCamera* Camera;
+///////////////////////////////////////////////////////////////
+extern float g_Fov;
+extern float g_Aspect;
+extern float g_NearPlane;
+extern float g_FarPlane;
 ///////////////////////////////////////////////////////////////
