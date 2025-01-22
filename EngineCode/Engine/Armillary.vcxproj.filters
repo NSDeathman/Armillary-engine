@@ -249,5 +249,8 @@
     <Image Include="icon1.ico">
       <Filter>Core\Kernel\Application resources</Filter>
     </Image>
+    <Image Include="armillary.ico">
+      <Filter>Core\Kernel\Application resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
