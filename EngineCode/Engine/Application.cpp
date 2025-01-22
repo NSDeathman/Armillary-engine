@@ -143,6 +143,15 @@ void InputUpdateTask()
 	Input->OnFrame();
 }
 
+void RenderTask()
+{
+	OPTICK_THREAD("Armillary engine render thread")
+	OPTICK_FRAME("RenderTask")
+	OPTICK_EVENT("RenderTask")
+
+	RenderFrame();
+}
+
 void CApplication::OnFrame()
 {
 	OPTICK_THREAD("Armillary engine primary thread")
@@ -153,9 +162,14 @@ void CApplication::OnFrame()
 
 	Scheduler->Add(InputUpdateTask);
 
-	UserInterface->OnFrame();
+	concurrency::task_group render_task;
+	render_task.run([]() 
+	{ 
+		Camera->OnFrame();
+		RenderTask();
+	});
 
-	Camera->OnFrame();
+	UserInterface->OnFrame();
 
 	if (UserInterface->NeedLoadScene())
 	{
@@ -168,7 +182,7 @@ void CApplication::OnFrame()
 		UserInterface->SetNeedDestroyScene(false);
 	}
 
-	RenderFrame();
+	render_task.wait();
 }
 
 void CApplication::EventLoop()

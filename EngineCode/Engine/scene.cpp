@@ -25,6 +25,15 @@ void LoadMesh()
 	Msg("Scene loaded successfully");
 }
 
+void DestroyMesh()
+{
+	Scene->m_MeshLoader.Destroy();
+
+	Scene->SetSceneLoaded(false);
+
+	Msg("Scene destroyed successfully");
+}
+
 void CScene::Load()
 {
 	Msg("Loading scene...");
@@ -50,8 +59,6 @@ void CScene::Destroy()
 {
 	Msg("Destroying scene...");
 
-	m_MeshLoader.Destroy();
-
-	SetSceneLoaded(false);
+	DestroyMesh();
 }
 ///////////////////////////////////////////////////////////////
