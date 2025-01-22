@@ -55,7 +55,7 @@ class CMeshLoader
 
 	void Destroy();
 
-	HRESULT Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilename);
+	HRESULT Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilePath, const CHAR* strFilename);
 
 	UINT GetNumMaterials() const
 	{
@@ -76,8 +76,8 @@ class CMeshLoader
 	}
 
   private:
-	HRESULT LoadGeometryFromOBJ(const CHAR* strFileName);
-	HRESULT LoadMaterialsFromMTL(const CHAR* strFileName);
+	HRESULT LoadGeometryFromOBJ(const CHAR* strFilePath, const CHAR* strFileName);
+	HRESULT LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* strFileName);
 	void InitMaterial(Material* pMaterial);
 
 	DWORD AddVertex(UINT hash, VERTEX* pVertex);

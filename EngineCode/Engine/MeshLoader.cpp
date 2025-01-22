@@ -63,7 +63,7 @@ void CMeshLoader::Destroy()
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilename)
+HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilePath, const CHAR* strFilename)
 {
 	HRESULT hr;
 	CHAR str[MAX_PATH] = {0};
@@ -77,9 +77,9 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 	// Load the vertex buffer, index buffer, and subset information from a file. In this case,
 	// an .obj file was chosen for simplicity, but it's meant to illustrate that ID3DXMesh objects
 	// can be filled from any mesh file format once the necessary data is extracted from file.
-	hr = LoadGeometryFromOBJ(strFilename);
+	hr = LoadGeometryFromOBJ(strFilePath, strFilename);
 
-	ASSERT(SUCCEEDED(hr), "Can't load geometry from OBJ: %s", strFilename);
+	ASSERT(SUCCEEDED(hr), "Can't load geometry from OBJ: %s", strFilePath + strFilename);
 
 	// Set the current directory based on where the mesh was found
 	CHAR strOldDir[MAX_PATH] = {0};
@@ -121,12 +121,12 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 						D3DXMESH_MANAGED | D3DXMESH_32BIT,
 						VERTEX_DECL, pd3dDevice, &pMesh);
 
-	ASSERT(SUCCEEDED(hr), "Can't create mesh from OBJ: %s", strFilename);
+	ASSERT(SUCCEEDED(hr), "Can't create mesh from OBJ: %s", strFilePath + strFilename);
 
 	// Copy the vertex data
 	VERTEX* pVertex;
 	hr = pMesh->LockVertexBuffer(0, (void**)&pVertex);
-	ASSERT(SUCCEEDED(hr), "Can't Lock Vertex Buffer in create mesh from OBJ: %s", strFilename);
+	ASSERT(SUCCEEDED(hr), "Can't Lock Vertex Buffer in create mesh from OBJ: %s", strFilePath + strFilename);
 	memcpy(pVertex, m_Vertices.GetData(), m_Vertices.GetSize() * sizeof(VERTEX));
 	pMesh->UnlockVertexBuffer();
 	m_Vertices.RemoveAll();
@@ -134,7 +134,7 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 	// Copy the index data
 	DWORD* pIndex;
 	hr = pMesh->LockIndexBuffer(0, (void**)&pIndex);
-	ASSERT(SUCCEEDED(hr), "Can't Lock Index Buffer in create mesh from OBJ: %s", strFilename);
+	ASSERT(SUCCEEDED(hr), "Can't Lock Index Buffer in create mesh from OBJ: %s", strFilePath + strFilename);
 	memcpy(pIndex, m_Indices.GetData(), m_Indices.GetSize() * sizeof(DWORD));
 	pMesh->UnlockIndexBuffer();
 	m_Indices.RemoveAll();
@@ -142,7 +142,7 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 	// Copy the attribute data
 	DWORD* pSubset;
 	hr = pMesh->LockAttributeBuffer(0, &pSubset);
-	ASSERT(SUCCEEDED(hr), "Can't Lock Attribute Buffer in create mesh from OBJ: %s", strFilename);
+	ASSERT(SUCCEEDED(hr), "Can't Lock Attribute Buffer in create mesh from OBJ: %s", strFilePath + strFilename);
 	memcpy(pSubset, m_Attributes.GetData(), m_Attributes.GetSize() * sizeof(DWORD));
 	pMesh->UnlockAttributeBuffer();
 	m_Attributes.RemoveAll();
@@ -152,15 +152,15 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 	// cache hit more often so it won't have to re-execute the vertex shader.
 	DWORD* aAdjacency = new DWORD[pMesh->GetNumFaces() * 3L];
 
-	ASSERT((aAdjacency != NULL), "Can't Generate Adjacency in create mesh from OBJ: %s", strFilename);
+	ASSERT((aAdjacency != NULL), "Can't Generate Adjacency in create mesh from OBJ: %s", strFilePath + strFilename);
 
 	hr = pMesh->GenerateAdjacency(1e-6f, aAdjacency);
 
-	ASSERT(SUCCEEDED(hr), "Can't Generate Adjacency in create mesh from OBJ: %s", strFilename);
+	ASSERT(SUCCEEDED(hr), "Can't Generate Adjacency in create mesh from OBJ: %s", strFilePath + strFilename);
 
 	hr = pMesh->OptimizeInplace(D3DXMESHOPT_ATTRSORT | D3DXMESHOPT_VERTEXCACHE, aAdjacency, NULL, NULL, NULL);
 
-	ASSERT(SUCCEEDED(hr), "Can't Optimize Inplace in create mesh from OBJ: %s", strFilename);
+	ASSERT(SUCCEEDED(hr), "Can't Optimize Inplace in create mesh from OBJ: %s", strFilePath + strFilename);
 
 	SAFE_DELETE_ARRAY(aAdjacency);
 	m_pMesh = pMesh;
@@ -169,7 +169,7 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilenam
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFileName)
+HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFilepath, const CHAR* strFileName)
 {
 	CHAR strMaterialFilename[MAX_PATH] = {0};
 	HRESULT hr;
@@ -193,10 +193,10 @@ HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFileName)
 
 	// File input
 	CHAR strCommand[256] = {0};
-	ifstream InFile(strFileName);
+	ifstream InFile((std::string)strFilepath + strFileName);
 	if (!InFile)
 	{
-		ERROR_MESSAGE("Can't open ifstream in create mesh from OBJ: %s", strFilename);
+		ERROR_MESSAGE("Can't open ifstream in create mesh from OBJ: %s", strFilepath + strFilename);
 		return E_FAIL;
 	}
 
@@ -330,7 +330,7 @@ HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFileName)
 	// If an associated material file was found, read that in as well.
 	if (strMaterialFilename[0])
 	{
-		hr = LoadMaterialsFromMTL(strMaterialFilename);
+		hr = LoadMaterialsFromMTL(strFilepath, strMaterialFilename);
 
 		if (FAILED(hr))
 			Msg("Can't Load Materials From MTL in load mesh from OBJ: %s", strMaterialFilename);
@@ -432,26 +432,27 @@ void CMeshLoader::DeleteCache()
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFileName)
+HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* strFileName)
 {
 	HRESULT hr;
 
 	// Set the current directory based on where the mesh was found
-	CHAR strOldDir[MAX_PATH] = {0};
-	GetCurrentDirectory(MAX_PATH, strOldDir);
-	SetCurrentDirectory(m_strMediaDir);
+	//CHAR strOldDir[MAX_PATH] = {0};
+	//GetCurrentDirectory(MAX_PATH, strOldDir);
+	//SetCurrentDirectory(m_strMediaDir);
 
 	// File input
 	CHAR strCommand[256] = {0};
-	ifstream InFile(strFileName);
+	ifstream InFile((std::string)strFilePath + strFileName);
 	if (!InFile)
 	{
-		ERROR_MESSAGE("Can't open ifstream in create mesh from OBJ: %s", strFilename);
+		ERROR_MESSAGE("Can't open ifstream in create mesh from OBJ (MTL Loading)");
+		Msg("Can't open ifstream in create mesh from OBJ (MTL Loading): %s", (std::string)strFilePath + strFileName);
 		return E_FAIL;
 	}
 
 	// Restore the original current directory
-	SetCurrentDirectory(strOldDir);
+	//SetCurrentDirectory(strOldDir);
 
 	Material* pMaterial = NULL;
 

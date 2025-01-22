@@ -17,11 +17,12 @@ void LoadMesh()
 {
 	Scene->SetSceneLoadingState(true);
 
-	Scene->m_MeshLoader.Create(Device, "Earth.obj");
-	Msg("Scene loaded successfully");
+	Scene->m_MeshLoader.Create(Device, MESHES, "Earth.obj");
 
 	Scene->SetSceneLoadingState(false);
 	Scene->SetSceneLoaded(true);
+
+	Msg("Scene loaded successfully");
 }
 
 void CScene::Load()
