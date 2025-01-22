@@ -239,6 +239,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClInclude Include="loading_screen_window.h" />
     <ClInclude Include="main_menu.h" />
     <ClInclude Include="main_window.h" />
+    <ClInclude Include="matrix.h" />
     <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="OptickAPI.h" />
     <ClInclude Include="Application.h" />
@@ -256,6 +257,9 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClInclude Include="threading.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="user_interface.h" />
+    <ClInclude Include="vector2.h" />
+    <ClInclude Include="vector3.h" />
+    <ClInclude Include="vector4.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

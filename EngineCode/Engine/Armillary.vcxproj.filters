@@ -141,6 +141,18 @@
     <ClInclude Include="camera.h">
       <Filter>Render\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="vector2.h">
+      <Filter>Core\Math\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="vector3.h">
+      <Filter>Core\Math\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="vector4.h">
+      <Filter>Core\Math\Vectors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
@@ -235,6 +247,12 @@
     </Filter>
     <Filter Include="Core\Kernel\Application resources\Images">
       <UniqueIdentifier>{d484beec-319f-434d-9746-bcf37bc9b6f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Matrix">
+      <UniqueIdentifier>{83dada92-dae9-45fa-b8f0-cb1a39b63624}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Vectors">
+      <UniqueIdentifier>{2a41d156-c504-4070-8f24-deb11e513a5d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
