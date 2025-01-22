@@ -16,6 +16,7 @@ class CRender
 	HWND m_hWindow;
 
 	DWORD MaxSimultaneousTextures;
+	D3DMULTISAMPLE_TYPE m_MaxMultiSamplingQuality;
 	UINT m_Frame;
 	
   private:
