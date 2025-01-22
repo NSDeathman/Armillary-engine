@@ -233,6 +233,9 @@
     <Filter Include="Render\Camera">
       <UniqueIdentifier>{ae38b1d2-c99e-49bc-8bf8-53965320a2bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Kernel\Application resources\Images">
+      <UniqueIdentifier>{d484beec-319f-434d-9746-bcf37bc9b6f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
@@ -240,14 +243,11 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bitmap1.bmp">
-      <Filter>Core\Kernel\Application resources</Filter>
+    <Image Include="armillary.ico">
+      <Filter>Core\Kernel\Application resources\Images</Filter>
     </Image>
-    <Image Include="bitmap2.bmp">
-      <Filter>Core\Kernel\Application resources</Filter>
-    </Image>
-    <Image Include="icon1.ico">
-      <Filter>Core\Kernel\Application resources</Filter>
+    <Image Include="bitmap.bmp">
+      <Filter>Core\Kernel\Application resources\Images</Filter>
     </Image>
   </ItemGroup>
 </Project>
