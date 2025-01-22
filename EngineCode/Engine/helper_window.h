@@ -16,9 +16,13 @@ class CHelperWindow
 	bool m_bNeedDraw;
 	bool m_bNeedQuitToMainMenu;
 
+	bool m_bNeedDrawSettings;
+
   public:
 	CHelperWindow();
 	~CHelperWindow() = default;
+
+	void DrawSettings();
 
 	void Draw();
 	void Show();

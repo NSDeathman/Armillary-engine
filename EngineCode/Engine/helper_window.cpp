@@ -88,51 +88,67 @@ CHelperWindow::CHelperWindow()
 {
 	m_bNeedDraw = false;
 	m_bNeedQuitToMainMenu = false;
+	m_bNeedDrawSettings = false;
+}
+
+void CHelperWindow::DrawSettings()
+{
+	ImGui::PushFont(Imgui->font_letterica_big);
+	ImGui::Begin("Settings window", &m_bNeedDrawSettings);
+	ImGui::PopFont();
+
+	ImGui::PushFont(Imgui->font_letterica_medium);
+
+	if (ImGui::TreeNode("Camera settings"))
+	{
+		ImGui::DragFloat("Camera fov", &g_Fov, 0.5f, 30.0f, 130.0f);
+		ImGui::DragFloat("View distance", &g_FarPlane, 5.0f, 50.0f, 300.0f);
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNode("Render settings"))
+	{
+		if (ImGui::Combo("Screen resolution", &SelectedResolution, screen_resolution_list, IM_ARRAYSIZE(screen_resolution_list)))
+			ChangeScreenResolution();
+
+		if (ImGui::Button("Reset render"))
+			Render->SetNeedReset();
+
+		if (ImGui::Button("Wireframe"))
+			g_bWireframeMode = !g_bWireframeMode;
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNode("System"))
+	{
+		if (ImGui::Button("Flush log"))
+			Log->Flush();
+
+		ImGui::TreePop();
+	}
+
+	ImGui::PopFont();
+
+	ImGui::End();
 }
 
 void CHelperWindow::Draw()
 {
 	if (m_bNeedDraw)
 	{
+		if (m_bNeedDrawSettings)
+			DrawSettings();
+
 		ImGui::PushFont(Imgui->font_letterica_big);
 		ImGui::Begin("Helper window");
 		ImGui::PopFont();
 
 		ImGui::PushFont(Imgui->font_letterica_medium);
 
-		if (ImGui::TreeNode("Settings"))
-		{
-			if (ImGui::TreeNode("Camera settings"))
-			{
-				ImGui::DragFloat("Camera fov", &g_Fov, 1.0f, 30.0f, 130.0f);
-				ImGui::DragFloat("View distance", &g_FarPlane, 10.0f, 50.0f, 300.0f);
-
-				ImGui::TreePop();
-			}
-
-			if (ImGui::TreeNode("Render settings"))
-			{
-				if (ImGui::Combo("Screen resolution", &SelectedResolution, screen_resolution_list, IM_ARRAYSIZE(screen_resolution_list)))
-					ChangeScreenResolution();
-
-				if (ImGui::Button("Reset render"))
-					g_bNeedRestart = true;
-
-				if (ImGui::Button("Wireframe"))
-					g_bWireframeMode = !g_bWireframeMode;
-
-				ImGui::TreePop();
-			}
-
-			if (ImGui::TreeNode("System"))
-			{
-				if (ImGui::Button("Flush log"))
-					Log->Flush();
-
-				ImGui::TreePop();
-			}
-			ImGui::TreePop();
-		}
+		if (ImGui::Button("Settings"))
+			m_bNeedDrawSettings = !m_bNeedDrawSettings;
 
 		if (ImGui::Button("Quit to main menu"))
 			m_bNeedQuitToMainMenu = true;
