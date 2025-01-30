@@ -114,13 +114,7 @@ void RenderFrame()
 	OPTICK_FRAME("RenderThreadTask")
 	OPTICK_EVENT("RenderThreadTask")
 
-	Render->OnFrameBegin();
-
-	UserInterface->Render();
-
-	Render->RenderFrame();
-
-	Render->OnFrameEnd();
+	Render->OnFrame();
 }
 
 void CApplication::HandleSDLEvents()

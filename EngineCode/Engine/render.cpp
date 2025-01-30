@@ -207,6 +207,8 @@ void CRender::RenderFrame()
 {
 	OPTICK_EVENT("CRender::RenderFrame")
 
+	UserInterface->Render();
+
 	if (Scene->Ready())
 		RenderScene();
 }
