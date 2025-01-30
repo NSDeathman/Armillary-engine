@@ -64,6 +64,9 @@
     <ClCompile Include="camera.cpp">
       <Filter>Render\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="render_device.cpp">
+      <Filter>Render\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">

@@ -226,6 +226,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="OptickAPI.cpp" />
     <ClCompile Include="render_backend.cpp" />
     <ClCompile Include="render.cpp" />
+    <ClCompile Include="render_device.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="splash_screen.cpp" />
     <ClCompile Include="user_interface.cpp" />
