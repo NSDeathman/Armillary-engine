@@ -100,7 +100,7 @@ void CRender::DestroyDirect3D()
 
 void CRender::ResetDirect3D()
 {
-	HRESULT result = m_pDirect3dDevice->Reset(&m_pDirect3DPresentParams);
+	HRESULT result = Device->Reset(&m_pDirect3DPresentParams);
 
 	if (result == D3DERR_INVALIDCALL)
 		ERROR_MESSAGE("Invalid call while device resetting");
@@ -110,7 +110,7 @@ void CRender::HandleDeviceLost()
 {
 	Msg("Device was lost, resetting render...");
 
-	HRESULT result = m_pDirect3dDevice->TestCooperativeLevel();
+	HRESULT result = Device->TestCooperativeLevel();
 
 	if (result == D3DERR_DEVICELOST)
 		Sleep(10);

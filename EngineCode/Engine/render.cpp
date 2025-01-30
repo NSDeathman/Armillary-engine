@@ -51,15 +51,15 @@ void CRender::CreateMatrices()
 {
 	// Get view and projection matrices
 	D3DXMATRIX view = Camera->GetViewMatrix();
-	m_pDirect3dDevice->SetTransform(D3DTS_VIEW, &view);
+	Device->SetTransform(D3DTS_VIEW, &view);
 
 	D3DXMATRIX projection = Camera->GetProjectionMatrix();
-	m_pDirect3dDevice->SetTransform(D3DTS_PROJECTION, &projection);
+	Device->SetTransform(D3DTS_PROJECTION, &projection);
 
 	// Set up world matrix
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
-	m_pDirect3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	Device->SetTransform(D3DTS_WORLD, &matWorld);
 }
 
 void CRender::Reset()
@@ -133,13 +133,13 @@ void CRender::OnFrameBegin()
 	// Clear the backbuffer and the zbuffer
 	D3DCOLOR clear_col_dx = D3DCOLOR_RGBA((int)1.0f * 255, (int)1.0f * 255, (int)1.0f * 255, (int)1.0f * 255);
 
-	m_pDirect3dDevice->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0);
+	Device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0);
 
 	// Setup the world, view, and projection matrices
 	CreateMatrices();
 
 	// Begin the scene
-	HRESULT hresult = m_pDirect3dDevice->BeginScene();
+	HRESULT hresult = Device->BeginScene();
 
 	if (FAILED(hresult))
 		Msg("Failed to begin scene render");
@@ -150,10 +150,10 @@ void CRender::OnFrameEnd()
 	UserInterface->OnFrameEnd();
 
 	// End the scene
-	m_pDirect3dDevice->EndScene();
+	Device->EndScene();
 
 	// Present the backbuffer contents to the display
-	HRESULT present_result = m_pDirect3dDevice->Present(NULL, NULL, NULL, NULL);
+	HRESULT present_result = Device->Present(NULL, NULL, NULL, NULL);
 
 	if (present_result == D3DERR_DEVICELOST)
 		m_bDeviceLost = true;
@@ -164,7 +164,7 @@ void CRender::OnFrameEnd()
 void CRender::RenderScene()
 {
 	// Turn on the zbuffer
-	m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	Device->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 	RenderBackend->set_CullMode(CBackend::CULL_CCW);
 
