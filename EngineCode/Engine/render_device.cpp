@@ -12,8 +12,6 @@
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-extern LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-///////////////////////////////////////////////////////////////
 void CRender::GetCapabilities()
 {
 	D3DCAPS9 Capabilities;

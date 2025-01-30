@@ -18,8 +18,6 @@
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-extern LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-///////////////////////////////////////////////////////////////
 CRender::CRender()
 {
 	m_hWindow = nullptr;
