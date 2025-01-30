@@ -27,6 +27,9 @@ class CRender
 
 	void GetCapabilities();
 	void InitializeDirect3D();
+	void DestroyDirect3D();
+	void ResetDirect3D();
+
 	void CreateMatrices();
 	void HandleDeviceLost();
 
