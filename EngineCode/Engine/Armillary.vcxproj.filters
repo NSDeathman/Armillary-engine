@@ -67,6 +67,12 @@
     <ClCompile Include="render_device.cpp">
       <Filter>Render\Core</Filter>
     </ClCompile>
+    <ClCompile Include="DXUTcamera.cpp">
+      <Filter>Render\Camera\DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="DXUTtimer.cpp">
+      <Filter>Render\Camera\DXUT</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -155,6 +161,12 @@
     </ClInclude>
     <ClInclude Include="vector4.h">
       <Filter>Core\Math\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="DXUTcamera.h">
+      <Filter>Render\Camera\DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="DXUTtimer.h">
+      <Filter>Render\Camera\DXUT</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +268,9 @@
     </Filter>
     <Filter Include="Core\Math\Vectors">
       <UniqueIdentifier>{2a41d156-c504-4070-8f24-deb11e513a5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Camera\DXUT">
+      <UniqueIdentifier>{b11d3bdc-6888-4e43-adbb-a00a6de9825b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
