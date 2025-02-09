@@ -44,6 +44,15 @@ void CMainWindow::CreateSDLWindow()
 		Msg("! Failed to retrieve SDL window handle: %s", SDL_GetError());
 		return;
 	}
+
+	// Get the current display mode
+	result = SDL_GetCurrentDisplayMode(0, &m_displayMode);
+
+	if (result == E_FAIL)
+	{
+		Msg("! Failed to get SDL display mode: %s", SDL_GetError());
+		return;
+	}
 }
 
 void CMainWindow::CenterWindow()
@@ -55,26 +64,18 @@ void CMainWindow::CenterWindow()
 		return;
 	}
 
-	// Get the current display mode
-	SDL_DisplayMode displayMode;
-	if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0)
-	{
-		std::cerr << "! Failed to get display mode: " << SDL_GetError() << std::endl;
-		return;
-	}
-
 	// Get the window size
 	int windowWidth, windowHeight;
 	SDL_GetWindowSize(m_window, &windowWidth, &windowHeight);
 
 	// Calculate center position
-	int centerX = (displayMode.w - windowWidth) / 2;
-	int centerY = (displayMode.h - windowHeight) / 2;
+	int centerX = (m_displayMode.w - windowWidth) / 2;
+	int centerY = (m_displayMode.h - windowHeight) / 2;
 
 	// Set the window position
 	SDL_SetWindowPosition(m_window, centerX, centerY);
 
-	Msg("Window centered at %d, %d", centerX, centerY);
+	DbgMsg("Window centered at %d, %d", centerX, centerY);
 }
 
 void CMainWindow::DestroySDLWindow()
@@ -96,5 +97,10 @@ HWND CMainWindow::GetWindow()
 SDL_Window* CMainWindow::GetSDLWindow()
 {
 	return m_window;
+}
+
+SDL_DisplayMode CMainWindow::GetSDLDisplayMode()
+{
+	return m_displayMode;
 }
 ///////////////////////////////////////////////////////////////

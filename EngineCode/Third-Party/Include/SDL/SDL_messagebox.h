@@ -93,13 +93,13 @@ typedef struct
  */
 typedef struct
 {
+	const SDL_MessageBoxButtonData* buttons;
     Uint32 flags;                       /**< ::SDL_MessageBoxFlags */
     SDL_Window *window;                 /**< Parent window, can be NULL */
     const char *title;                  /**< UTF-8 title */
     const char *message;                /**< UTF-8 message text */
 
     int numbuttons;
-    const SDL_MessageBoxButtonData *buttons;
 
     const SDL_MessageBoxColorScheme *colorScheme;   /**< ::SDL_MessageBoxColorScheme, can be NULL to use system settings */
 } SDL_MessageBoxData;

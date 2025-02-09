@@ -557,10 +557,6 @@ typedef struct SDL_HapticConstant
  */
 typedef struct SDL_HapticPeriodic
 {
-    /* Header */
-    Uint16 type;        /**< ::SDL_HAPTIC_SINE, ::SDL_HAPTIC_LEFTRIGHT,
-                             ::SDL_HAPTIC_TRIANGLE, ::SDL_HAPTIC_SAWTOOTHUP or
-                             ::SDL_HAPTIC_SAWTOOTHDOWN */
     SDL_HapticDirection direction;  /**< Direction of the effect. */
 
     /* Replay */
@@ -582,6 +578,11 @@ typedef struct SDL_HapticPeriodic
     Uint16 attack_level;    /**< Level at the start of the attack. */
     Uint16 fade_length; /**< Duration of the fade. */
     Uint16 fade_level;  /**< Level at the end of the fade. */
+
+    /* Header */
+	Uint16 type; /**< ::SDL_HAPTIC_SINE, ::SDL_HAPTIC_LEFTRIGHT,
+					  ::SDL_HAPTIC_TRIANGLE, ::SDL_HAPTIC_SAWTOOTHUP or
+					  ::SDL_HAPTIC_SAWTOOTHDOWN */
 } SDL_HapticPeriodic;
 
 /**
@@ -647,12 +648,13 @@ typedef struct SDL_HapticCondition
  */
 typedef struct SDL_HapticRamp
 {
+	/* Replay */
+	Uint32 length; /**< Duration of the effect. */
+
     /* Header */
-    Uint16 type;            /**< ::SDL_HAPTIC_RAMP */
     SDL_HapticDirection direction;  /**< Direction of the effect. */
 
     /* Replay */
-    Uint32 length;          /**< Duration of the effect. */
     Uint16 delay;           /**< Delay before starting the effect. */
 
     /* Trigger */
@@ -668,6 +670,9 @@ typedef struct SDL_HapticRamp
     Uint16 attack_level;    /**< Level at the start of the attack. */
     Uint16 fade_length;     /**< Duration of the fade. */
     Uint16 fade_level;      /**< Level at the end of the fade. */
+
+    /* Header */
+	Uint16 type; /**< ::SDL_HAPTIC_RAMP */
 } SDL_HapticRamp;
 
 /**

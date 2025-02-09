@@ -10,7 +10,7 @@
     <ClCompile Include="render_backend.cpp">
       <Filter>Render\Backend</Filter>
     </ClCompile>
-    <ClCompile Include="render.cpp">
+    <ClCompile Include="render_core.cpp">
       <Filter>Render\Core</Filter>
     </ClCompile>
     <ClCompile Include="log.cpp">
@@ -72,6 +72,12 @@
     </ClCompile>
     <ClCompile Include="DXUTtimer.cpp">
       <Filter>Render\Camera\DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="render_frame_pipeline.cpp">
+      <Filter>Render\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="render_reset.cpp">
+      <Filter>Render\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

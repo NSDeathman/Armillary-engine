@@ -109,7 +109,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <IncludeInUnityFile>true</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -136,7 +136,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <IncludeInUnityFile>true</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -164,7 +164,8 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -192,7 +193,8 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -227,8 +229,10 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
     <ClCompile Include="render_backend.cpp" />
-    <ClCompile Include="render.cpp" />
+    <ClCompile Include="render_core.cpp" />
     <ClCompile Include="render_device.cpp" />
+    <ClCompile Include="render_frame_pipeline.cpp" />
+    <ClCompile Include="render_reset.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="splash_screen.cpp" />
     <ClCompile Include="user_interface.cpp" />

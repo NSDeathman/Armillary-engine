@@ -13,6 +13,7 @@ class CMainWindow
   public:
 	SDL_Window* m_window;
 	SDL_SysWMinfo m_WindowInfo;
+	SDL_DisplayMode m_displayMode;
 
   public:
 	CMainWindow();
@@ -25,6 +26,7 @@ class CMainWindow
 
 	HWND GetWindow();
 	SDL_Window* GetSDLWindow();
+	SDL_DisplayMode GetSDLDisplayMode();
 	void Reset();
 };
 ///////////////////////////////////////////////////////////////
