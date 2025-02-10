@@ -3,16 +3,16 @@
 // Author: NS_Deathman
 // Renderer realization
 ///////////////////////////////////////////////////////////////
-#include "render.h"
+#include "render_DX9.h"
 #include "Log.h"
-#include "render_backend.h"
+#include "render_backend_DX9.h"
 #include "OptickAPI.h"
 #include "main_window.h"
 ///////////////////////////////////////////////////////////////
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-void CRender::GetCapabilities()
+void CRenderDX9::GetCapabilities()
 {
 	D3DCAPS9 Capabilities;
 
@@ -44,7 +44,7 @@ void CRender::GetCapabilities()
 	}
 }
 
-void CRender::InitializeDirect3D()
+void CRenderDX9::InitializeDirect3D()
 {
 	Msg("Initializing Direct3D...");
 
@@ -107,14 +107,14 @@ void CRender::InitializeDirect3D()
 	UpdateWindow(m_hWindow);
 }
 
-void CRender::DestroyDirect3D()
+void CRenderDX9::DestroyDirect3D()
 {
 	SAFE_RELEASE(m_pDirect3dDevice);
 
 	SAFE_RELEASE(m_pDirect3D);
 }
 
-void CRender::ResetDirect3D()
+void CRenderDX9::ResetDirect3D()
 {
 	HRESULT result = Device->Reset(&m_pDirect3DPresentParams);
 
@@ -122,7 +122,7 @@ void CRender::ResetDirect3D()
 		ERROR_MESSAGE("Invalid call while device resetting");
 }
 
-void CRender::HandleDeviceLost()
+void CRenderDX9::HandleDeviceLost()
 {
 	Msg("Device was lost, resetting render...");
 

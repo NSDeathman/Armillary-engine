@@ -7,7 +7,7 @@
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
 ///////////////////////////////////////////////////////////////
-class CBackend
+class CRenderBackendDX9
 {
 private:
 	u32 colorwrite_mask;
@@ -37,9 +37,9 @@ public:
 	void enable_anisotropy_filtering();
 	void disable_anisotropy_filtering();
 
-	CBackend();
-	~CBackend() = default;
+	CRenderBackendDX9();
+	~CRenderBackendDX9() = default;
 };
 ///////////////////////////////////////////////////////////////
-extern CBackend* RenderBackend;
+extern CRenderBackendDX9* RenderBackend;
 ///////////////////////////////////////////////////////////////

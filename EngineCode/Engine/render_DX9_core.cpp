@@ -3,11 +3,11 @@
 // Author: NS_Deathman
 // Renderer realization
 ///////////////////////////////////////////////////////////////
-#include "render.h"
+#include "render_DX9.h"
 #include "Log.h"
 #include "filesystem.h"
 #include "resource.h"
-#include "render_backend.h"
+#include "render_backend_DX9.h"
 #include "OptickAPI.h"
 #include "helper_window.h"
 #include "scene.h"
@@ -18,7 +18,7 @@
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-CRender::CRender()
+CRenderDX9::CRenderDX9()
 {
 	m_hWindow = nullptr;
 	m_pDirect3D = nullptr;
@@ -33,19 +33,19 @@ CRender::CRender()
 	m_Frame = 0;
 }
 
-void CRender::Initialize()
+void CRenderDX9::Initialize()
 {
 	Msg("Initializing render...");
 	InitializeDirect3D();
 }
 
-void CRender::Destroy()
+void CRenderDX9::Destroy()
 {
 	Msg("Destroying render...");
 	DestroyDirect3D();
 }
 
-void CRender::CreateMatrices()
+void CRenderDX9::CreateMatrices()
 {
 	D3DXMATRIX matView = Camera->GetViewMatrix();
 	Device->SetTransform(D3DTS_VIEW, &matView);

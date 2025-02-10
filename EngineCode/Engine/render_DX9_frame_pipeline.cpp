@@ -3,11 +3,11 @@
 // Author: NS_Deathman
 // Renderer frame pipeline realization
 ///////////////////////////////////////////////////////////////
-#include "render.h"
+#include "render_DX9.h"
 #include "Log.h"
 #include "filesystem.h"
 #include "resource.h"
-#include "render_backend.h"
+#include "render_backend_DX9.h"
 #include "OptickAPI.h"
 #include "helper_window.h"
 #include "scene.h"
@@ -17,18 +17,18 @@
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-void CRender::OnFrame()
+void CRenderDX9::OnFrame()
 {
-	OPTICK_EVENT("CRender::OnFrame")
+	OPTICK_EVENT("CRenderDX9::OnFrame")
 
 	OnFrameBegin();
 	RenderFrame();
 	OnFrameEnd();
 }
 
-void CRender::OnFrameBegin()
+void CRenderDX9::OnFrameBegin()
 {
-	OPTICK_EVENT("CRender::OnFrameBegin")
+	OPTICK_EVENT("CRenderDX9::OnFrameBegin")
 
 	if (m_bDeviceLost)
 		HandleDeviceLost();
@@ -66,9 +66,9 @@ void CRender::OnFrameBegin()
 		Msg("Failed to begin scene render");
 }
 
-void CRender::RenderFrame()
+void CRenderDX9::RenderFrame()
 {
-	OPTICK_EVENT("CRender::RenderFrame")
+	OPTICK_EVENT("CRenderDX9::RenderFrame")
 
 	UserInterface->Render();
 
@@ -76,27 +76,27 @@ void CRender::RenderFrame()
 		RenderScene();
 }
 
-void CRender::RenderScene()
+void CRenderDX9::RenderScene()
 {
-	OPTICK_EVENT("CRender::RenderScene")
+	OPTICK_EVENT("CRenderDX9::RenderScene")
 
 	// Turn on the zbuffer
 	Device->SetRenderState(D3DRS_ZENABLE, TRUE);
 
-	RenderBackend->set_CullMode(CBackend::CULL_CCW);
+	RenderBackend->set_CullMode(CRenderBackendDX9::CULL_CCW);
 
 	if (g_bWireframeMode)
-		RenderBackend->set_FillMode(CBackend::FILL_WIREFRAME);
+		RenderBackend->set_FillMode(CRenderBackendDX9::FILL_WIREFRAME);
 
 	Scene->DrawGeometry();
 
 	if (g_bWireframeMode)
-		RenderBackend->set_FillMode(CBackend::FILL_SOLID);
+		RenderBackend->set_FillMode(CRenderBackendDX9::FILL_SOLID);
 }
 
-void CRender::OnFrameEnd()
+void CRenderDX9::OnFrameEnd()
 {
-	OPTICK_EVENT("CRender::OnFrameEnd")
+	OPTICK_EVENT("CRenderDX9::OnFrameEnd")
 
 	UserInterface->OnFrameEnd();
 

@@ -7,8 +7,8 @@
 #include "Application.h"
 
 // Main engine parts
-#include "render.h"
-#include "render_backend.h"
+#include "render_DX9.h"
+#include "render_backend_DX9.h"
 #include "log.h"
 #include "Input.h"
 #include "filesystem.h"
@@ -40,8 +40,8 @@ UINT g_ScreenHeight = 480;
 bool g_bNeedCloseApplication = false;
 SDL_Event g_WindowEvent;
 ///////////////////////////////////////////////////////////////
-CRender* Render = nullptr;
-CBackend* RenderBackend = nullptr;
+CRenderDX9* Render = nullptr;
+CRenderBackendDX9* RenderBackend = nullptr;
 CLog* Log = nullptr;
 COptickAPI* OptickAPI = nullptr;
 CFilesystem* Filesystem = nullptr;
@@ -69,8 +69,8 @@ void CApplication::Start()
 
 	MainWindow = new CMainWindow();
 
-	Render = new CRender();
-	RenderBackend = new CBackend();
+	Render = new CRenderDX9();
+	RenderBackend = new CRenderBackendDX9();
     Render->Initialize();
 
 	UserInterface = new CUserInterface();

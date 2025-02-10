@@ -5,7 +5,7 @@
 ///////////////////////////////////////////////////////////////
 #include "helper_window.h"
 #include "imgui_api.h"
-#include "render.h"
+#include "render_DX9.h"
 #include "log.h"
 #include "camera.h"
 #include "main_window.h"

@@ -228,11 +228,11 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="main_window.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
-    <ClCompile Include="render_backend.cpp" />
-    <ClCompile Include="render_core.cpp" />
-    <ClCompile Include="render_device.cpp" />
-    <ClCompile Include="render_frame_pipeline.cpp" />
-    <ClCompile Include="render_reset.cpp" />
+    <ClCompile Include="render_backend_DX9.cpp" />
+    <ClCompile Include="render_DX9_core.cpp" />
+    <ClCompile Include="render_DX9_device.cpp" />
+    <ClCompile Include="render_DX9_frame_pipeline.cpp" />
+    <ClCompile Include="render_DX9_reset.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="splash_screen.cpp" />
     <ClCompile Include="user_interface.cpp" />
@@ -257,8 +257,8 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="imgui_api.h" />
     <ClInclude Include="log.h" />
-    <ClInclude Include="render_backend.h" />
-    <ClInclude Include="render.h" />
+    <ClInclude Include="render_backend_DX9.h" />
+    <ClInclude Include="render_DX9.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="splash_screen.h" />

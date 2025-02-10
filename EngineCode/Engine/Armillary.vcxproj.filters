@@ -7,11 +7,11 @@
     <ClCompile Include="entry_point.cpp">
       <Filter>Core\Kernel</Filter>
     </ClCompile>
-    <ClCompile Include="render_backend.cpp">
-      <Filter>Render\Backend</Filter>
+    <ClCompile Include="render_backend_DX9.cpp">
+      <Filter>Render\DirectX9\Backend</Filter>
     </ClCompile>
-    <ClCompile Include="render_core.cpp">
-      <Filter>Render\Core</Filter>
+    <ClCompile Include="render_DX9_core.cpp">
+      <Filter>Render\DirectX9\Core</Filter>
     </ClCompile>
     <ClCompile Include="log.cpp">
       <Filter>Core\Log</Filter>
@@ -62,22 +62,22 @@
       <Filter>Core\Build identification</Filter>
     </ClCompile>
     <ClCompile Include="camera.cpp">
-      <Filter>Render\Camera</Filter>
+      <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="render_device.cpp">
-      <Filter>Render\Core</Filter>
+    <ClCompile Include="render_DX9_device.cpp">
+      <Filter>Render\DirectX9\Core</Filter>
     </ClCompile>
     <ClCompile Include="DXUTcamera.cpp">
-      <Filter>Render\Camera\DXUT</Filter>
+      <Filter>Third-party implementations\DXUT</Filter>
     </ClCompile>
     <ClCompile Include="DXUTtimer.cpp">
-      <Filter>Render\Camera\DXUT</Filter>
+      <Filter>Third-party implementations\DXUT</Filter>
     </ClCompile>
-    <ClCompile Include="render_frame_pipeline.cpp">
-      <Filter>Render\Core</Filter>
+    <ClCompile Include="render_DX9_frame_pipeline.cpp">
+      <Filter>Render\DirectX9\Core</Filter>
     </ClCompile>
-    <ClCompile Include="render_reset.cpp">
-      <Filter>Render\Core</Filter>
+    <ClCompile Include="render_DX9_reset.cpp">
+      <Filter>Render\DirectX9\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,11 +87,11 @@
     <ClInclude Include="stdafx.h">
       <Filter>Core\Kernel</Filter>
     </ClInclude>
-    <ClInclude Include="render_backend.h">
-      <Filter>Render\Backend</Filter>
+    <ClInclude Include="render_backend_DX9.h">
+      <Filter>Render\DirectX9\Backend</Filter>
     </ClInclude>
-    <ClInclude Include="render.h">
-      <Filter>Render\Core</Filter>
+    <ClInclude Include="render_DX9.h">
+      <Filter>Render\DirectX9\Core</Filter>
     </ClInclude>
     <ClInclude Include="log.h">
       <Filter>Core\Log</Filter>
@@ -154,7 +154,7 @@
       <Filter>Core\Build identification</Filter>
     </ClInclude>
     <ClInclude Include="camera.h">
-      <Filter>Render\Camera</Filter>
+      <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="matrix.h">
       <Filter>Core\Math\Matrix</Filter>
@@ -169,21 +169,15 @@
       <Filter>Core\Math\Vectors</Filter>
     </ClInclude>
     <ClInclude Include="DXUTcamera.h">
-      <Filter>Render\Camera\DXUT</Filter>
+      <Filter>Third-party implementations\DXUT</Filter>
     </ClInclude>
     <ClInclude Include="DXUTtimer.h">
-      <Filter>Render\Camera\DXUT</Filter>
+      <Filter>Third-party implementations\DXUT</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">
       <UniqueIdentifier>{66eb38e2-6b9d-4e97-b6fd-c98d28adf8d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render\Backend">
-      <UniqueIdentifier>{ec946da8-b1fb-4be3-982d-a6014d92fe9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Render\Core">
-      <UniqueIdentifier>{674f84b9-f680-4b8a-8f22-cd53c563025e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Third-party implementations">
       <UniqueIdentifier>{bac53889-5198-456c-9abf-3782ef11cde1}</UniqueIdentifier>
@@ -263,9 +257,6 @@
     <Filter Include="Core\Build identification">
       <UniqueIdentifier>{04e2061b-a258-4172-a411-c221137ed653}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render\Camera">
-      <UniqueIdentifier>{ae38b1d2-c99e-49bc-8bf8-53965320a2bb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Kernel\Application resources\Images">
       <UniqueIdentifier>{d484beec-319f-434d-9746-bcf37bc9b6f0}</UniqueIdentifier>
     </Filter>
@@ -275,8 +266,20 @@
     <Filter Include="Core\Math\Vectors">
       <UniqueIdentifier>{2a41d156-c504-4070-8f24-deb11e513a5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render\Camera\DXUT">
+    <Filter Include="Third-party implementations\DXUT">
       <UniqueIdentifier>{b11d3bdc-6888-4e43-adbb-a00a6de9825b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{ae38b1d2-c99e-49bc-8bf8-53965320a2bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\DirectX9">
+      <UniqueIdentifier>{447d0564-579d-4835-85a4-0a101e3e6f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\DirectX9\Core">
+      <UniqueIdentifier>{674f84b9-f680-4b8a-8f22-cd53c563025e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\DirectX9\Backend">
+      <UniqueIdentifier>{ec946da8-b1fb-4be3-982d-a6014d92fe9a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

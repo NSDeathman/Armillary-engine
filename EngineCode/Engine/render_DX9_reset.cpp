@@ -3,11 +3,11 @@
 // Author: NS_Deathman
 // Renderer resetting realization
 ///////////////////////////////////////////////////////////////
-#include "render.h"
+#include "render_DX9.h"
 #include "Log.h"
 #include "filesystem.h"
 #include "resource.h"
-#include "render_backend.h"
+#include "render_backend_DX9.h"
 #include "OptickAPI.h"
 #include "helper_window.h"
 #include "scene.h"
@@ -18,7 +18,7 @@
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-void CRender::Reset()
+void CRenderDX9::Reset()
 {
 	Msg("Resetting render...");
 
@@ -29,9 +29,10 @@ void CRender::Reset()
 	OnResetEnd();
 }
 
-void CRender::OnResetBegin()
+void CRenderDX9::OnResetBegin()
 {
 	SDL_SetWindowSize(MainWindow->GetSDLWindow(), g_ScreenWidth, g_ScreenHeight);
+
 	MainWindow->CenterWindow();
 
 	Camera->Reset();
@@ -39,7 +40,7 @@ void CRender::OnResetBegin()
 	UserInterface->OnResetBegin();
 }
 
-void CRender::OnResetEnd()
+void CRenderDX9::OnResetEnd()
 {
 	UserInterface->OnResetEnd();
 }
