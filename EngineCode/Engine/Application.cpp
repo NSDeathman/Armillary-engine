@@ -107,15 +107,6 @@ void CApplication::Destroy()
 	delete Log;
 }
 
-void RenderFrame()
-{
-	OPTICK_THREAD("Armillary engine render thread")
-	OPTICK_FRAME("RenderThreadTask")
-	OPTICK_EVENT("RenderThreadTask")
-
-	Render->OnFrame();
-}
-
 void CApplication::HandleSDLEvents()
 {
 	if (SDL_PollEvent(&g_WindowEvent))
@@ -142,7 +133,7 @@ void RenderTask()
 	OPTICK_FRAME("RenderTask")
 	OPTICK_EVENT("RenderTask")
 
-	RenderFrame();
+	Render->OnFrame();
 }
 
 void CApplication::OnFrame()

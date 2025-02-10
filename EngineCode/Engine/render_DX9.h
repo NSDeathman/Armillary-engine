@@ -36,6 +36,9 @@ class CRenderDX9
 	void OnResetBegin();
 	void OnResetEnd();
 
+	void OnFrameBegin();
+	void RenderFrame();
+	void OnFrameEnd();
 	void RenderScene();
 
   public:
@@ -43,13 +46,7 @@ class CRenderDX9
 	void Initialize();
 	void Reset();
 	void Destroy();
-
-	void OnFrameBegin();
-	void RenderFrame();
-	void OnFrameEnd();
-
 	void OnFrame();
-
 	void SetNeedReset()
 	{
 		m_bNeedReset = true;
