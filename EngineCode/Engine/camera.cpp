@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "log.h"
 #include "main_window.h"
+#include "Input.h"
 ///////////////////////////////////////////////////////////////
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
@@ -26,6 +27,8 @@ void CCamera::Initialize()
 	m_nearPlane = g_NearPlane;
 	m_farPlane = g_FarPlane;
 
+	m_moveDirection = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
 	// Calculate aspect ratio initially
 	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
 }
@@ -38,6 +41,8 @@ void CCamera::OnFrame()
 
 	// Update aspect ratio every frame (if resolution can change while running)
 	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
+
+	UpdateInput();
 }
 
 void CCamera::Reset()
@@ -79,11 +84,100 @@ D3DXMATRIX CCamera::GetProjectionMatrix()
 	return projectionMatrix;
 }
 
+void CCamera::UpdateInput()
+{
+	float MoveAmount = 0.5f;
+	float MoveSpeed = 1.0f;
+
+	// Speed Up/Down
+	if (Input->KeyHolded(SDL_SCANCODE_LCTRL))
+		MoveSpeed *= 2.0f;
+	else if (Input->KeyHolded(SDL_SCANCODE_LSHIFT))
+		MoveSpeed /= 4.0f;
+
+	// Move Forward/Backward
+	if (Input->KeyHolded(SDL_SCANCODE_W))
+		m_moveDirection.z += MoveAmount;
+	else if (Input->KeyHolded(SDL_SCANCODE_S))
+		m_moveDirection.z -= MoveAmount;
+
+	// Move Left/Right
+	if (Input->KeyHolded(SDL_SCANCODE_D))
+		m_moveDirection.x += MoveAmount;
+	else if (Input->KeyHolded(SDL_SCANCODE_A))
+		m_moveDirection.x -= MoveAmount;
+
+	// Move Up/Down
+	if (Input->KeyHolded(SDL_SCANCODE_E))
+		m_moveDirection.y += MoveAmount;
+	else if (Input->KeyHolded(SDL_SCANCODE_Q))
+		m_moveDirection.y -= MoveAmount;
+
+	Move(m_moveDirection, MoveSpeed);
+
+	m_moveDirection = D3DXVECTOR3(0, 0, 0);
+}
+
 // Update camera position
 void CCamera::Move(const D3DXVECTOR3& direction, float amount)
 {
-	m_position += direction * amount;
-	m_direction += direction * amount; // Keep the target relative to the camera position
+	// Simple euler method to calculate position delta
+	D3DXVECTOR3 vPosDelta = direction * amount;
+
+	// If rotating the camera
+	// if ((m_nActiveButtonMask & m_nCurrentButtonMask) || m_bRotateWithoutButtonDown)// || m_vGamePadRightThumb.x != 0
+	// || m_vGamePadRightThumb.z != 0) if ((m_nActiveButtonMask & m_nCurrentButtonMask) || m_bRotateWithoutButtonDown)//
+	// || m_vGamePadRightThumb.x != 0 || m_vGamePadRightThumb.z != 0)
+	//{
+	// Update the pitch & yaw angle based on mouse movement
+	float fYawDelta = 0.0f; // m_vRotVelocity.x;
+	float fPitchDelta = 0.0f; // m_vRotVelocity.y;
+
+	// Invert pitch if requested
+	//if (m_bInvertPitch)
+	//	fPitchDelta = -fPitchDelta;
+
+	float m_fCameraPitchAngle = 0.0f; //+= fPitchDelta;
+	float m_fCameraYawAngle = 0.0f; //+= fYawDelta;
+
+	// Limit pitch to straight up or straight down
+	m_fCameraPitchAngle = __max(-D3DX_PI / 2.0f, m_fCameraPitchAngle);
+	m_fCameraPitchAngle = __min(+D3DX_PI / 2.0f, m_fCameraPitchAngle);
+	//}
+
+	// Make a rotation matrix based on the camera's yaw & pitch
+	D3DXMATRIX mCameraRot;
+	D3DXMatrixRotationYawPitchRoll(&mCameraRot, m_fCameraYawAngle, m_fCameraPitchAngle, 0);
+
+	// Transform vectors based on camera's rotation matrix
+	D3DXVECTOR3 vWorldUp, vWorldAhead;
+	D3DXVECTOR3 vLocalUp = D3DXVECTOR3(0, 1, 0);
+	D3DXVECTOR3 vLocalAhead = D3DXVECTOR3(0, 0, 1);
+	D3DXVec3TransformCoord(&vWorldUp, &vLocalUp, &mCameraRot);
+	D3DXVec3TransformCoord(&vWorldAhead, &vLocalAhead, &mCameraRot);
+
+	// Transform the position delta by the camera's rotation
+	D3DXVECTOR3 vPosDeltaWorld;
+	//if (!m_bEnableYAxisMovement)
+	//{
+		// If restricting Y movement, do not include pitch
+		// when transforming position delta vector.
+	//	D3DXMatrixRotationYawPitchRoll(&mCameraRot, m_fCameraYawAngle, 0.0f, 0.0f);
+	//}
+	D3DXVec3TransformCoord(&vPosDeltaWorld, &vPosDelta, &mCameraRot);
+
+	// Move the eye position
+	m_position += vPosDeltaWorld;
+	//if (m_bClipToBoundary)
+	//	ConstrainToBoundary(&m_vEye);
+
+	// Update the lookAt position based on the eye position
+	m_direction = m_position + vWorldAhead;
+
+	// Update the view matrix
+	//D3DXMatrixLookAtLH(&m_mView, &m_vEye, &m_vLookAt, &vWorldUp);
+
+	//D3DXMatrixInverse(&m_mCameraWorld, NULL, &m_mView);
 }
 
 // Rotate camera around the target point (simple placeholder)

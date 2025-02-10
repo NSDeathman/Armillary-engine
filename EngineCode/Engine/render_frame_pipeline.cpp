@@ -13,7 +13,6 @@
 #include "scene.h"
 #include "user_interface.h"
 #include "main_window.h"
-#include "camera.h"
 ///////////////////////////////////////////////////////////////
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;

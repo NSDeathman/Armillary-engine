@@ -33,7 +33,6 @@
 
 // Camera
 #include "camera.h"
-#include "DXUTcamera.h"
 ///////////////////////////////////////////////////////////////
 UINT g_ScreenWidth = 720;
 UINT g_ScreenHeight = 480;
@@ -51,6 +50,7 @@ CUserInterface* UserInterface = nullptr;
 CMainWindow* MainWindow = nullptr;
 CInput* Input = nullptr;
 CScheduler* Scheduler = nullptr;
+CCamera* Camera = nullptr;
 ///////////////////////////////////////////////////////////////
 void CApplication::Start()
 {
@@ -73,15 +73,11 @@ void CApplication::Start()
 	RenderBackend = new CBackend();
     Render->Initialize();
 
-	D3DXVECTOR3 vecEye(2.0f, 1.0f, 0.0f);
-	D3DXVECTOR3 vecAt(0.0f, 0.0f, -0.0f);
-	Camera.SetViewParams(&vecEye, &vecAt);
-
 	UserInterface = new CUserInterface();
 	UserInterface->Initialize();
 
-	//Camera = new CCamera();								 
-	//Camera->Initialize();
+	Camera = new CCamera();								 
+	Camera->Initialize();
 	
 	Scene = new CScene();
 }
@@ -93,7 +89,7 @@ void CApplication::Destroy()
 	UserInterface->Destroy();
 	delete UserInterface;
 
-	//delete Camera;
+	delete Camera;
 
 	Render->Destroy();
 	delete Render;
@@ -159,12 +155,14 @@ void CApplication::OnFrame()
 
 	Scheduler->Add(InputUpdateTask);
 
-	concurrency::task_group render_task;
-	render_task.run([]() 
-	{ 
-		//Camera->OnFrame();
-		RenderTask();
-	});
+	//concurrency::task_group render_task;
+	//render_task.run([]() 
+	//{ 
+
+	//});
+
+	Camera->OnFrame();
+	RenderTask();
 
 	UserInterface->OnFrame();
 
@@ -179,7 +177,7 @@ void CApplication::OnFrame()
 		UserInterface->SetNeedDestroyScene(false);
 	}
 
-	render_task.wait();
+	//render_task.wait();
 }
 
 void CApplication::EventLoop()

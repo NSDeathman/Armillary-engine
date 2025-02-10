@@ -47,14 +47,12 @@ void CRender::Destroy()
 
 void CRender::CreateMatrices()
 {
-	// Get view and projection matrices
-	D3DXMATRIX view = Camera->GetViewMatrix();
-	Device->SetTransform(D3DTS_VIEW, &view);
+	D3DXMATRIX matView = Camera->GetViewMatrix();
+	Device->SetTransform(D3DTS_VIEW, &matView);
 
-	D3DXMATRIX projection = Camera->GetProjectionMatrix();
-	Device->SetTransform(D3DTS_PROJECTION, &projection);
+	D3DXMATRIX matProjection = Camera->GetProjectionMatrix();
+	Device->SetTransform(D3DTS_PROJECTION, &matProjection);
 
-	// Set up world matrix
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
 	Device->SetTransform(D3DTS_WORLD, &matWorld);

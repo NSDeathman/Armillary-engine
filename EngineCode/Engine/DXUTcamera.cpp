@@ -401,7 +401,7 @@ void CBaseCamera::GetInput(bool bGetKeyboardInput, bool bGetMouseInput, bool bGe
 {
 	m_vKeyboardDirection = D3DXVECTOR3(0, 0, 0);
 
-	if (bGetKeyboardInput)
+	//if (bGetKeyboardInput)
 	{
 		float MoveSpeed = 1.0f;
 
@@ -681,6 +681,7 @@ CFirstPersonCamera::CFirstPersonCamera() : m_nActiveButtonMask(0x07)
 //--------------------------------------------------------------------------------------
 VOID CFirstPersonCamera::FrameMove(FLOAT fElapsedTime)
 {
+	/*
 	if (DXUTGetGlobalTimer()->IsStopped())
 	{
 #pragma message("FPS Count")
@@ -690,6 +691,7 @@ VOID CFirstPersonCamera::FrameMove(FLOAT fElapsedTime)
 		else
 			fElapsedTime = 1.0f / fps;
 	}
+	*/
 
 	//if (IsKeyDown(m_aKeys[CAM_RESET]))
 	//	Reset();

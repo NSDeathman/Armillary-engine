@@ -517,5 +517,5 @@ class CDXUTDirectionWidget
 	D3DXMATRIX m_mView;
 };
 
-CFirstPersonCamera Camera;
+//extern CFirstPersonCamera Camera;
 #endif
