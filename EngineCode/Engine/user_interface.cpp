@@ -12,6 +12,7 @@
 #include "scene.h"
 #include "log.h"
 #include "Input.h"
+#include "camera.h"
 ///////////////////////////////////////////////////////////////
 CImguiAPI* Imgui = nullptr;
 CHelperWindow* HelperWindow = nullptr;
@@ -63,8 +64,12 @@ void CUserInterface::UpdateIngameUI()
 		else
 			HelperWindow->Hide();
 
-		if (Input->KeyPressed(SDL_SCANCODE_ESCAPE))
+		if (Input->KeyPressed(SDL_SCANCODE_ESCAPE) || Input->GamepadButtonPressed(SDL_CONTROLLER_BUTTON_START))
+		{
 			m_bHelperWndDraw = !m_bHelperWndDraw;
+			g_bNeedLockCursor = !m_bHelperWndDraw;
+			g_bNeedUpdateCameraInput = !m_bHelperWndDraw;
+		}
 	}
 
 	if (HelperWindow->NeedQuitToMainMenu())
@@ -72,6 +77,9 @@ void CUserInterface::UpdateIngameUI()
 		m_bNeedDestroyScene = true;
 		HelperWindow->QuitingToMainMenuIsDone();
 		HelperWindow->Hide();
+
+		g_bNeedLockCursor = false;
+		g_bNeedUpdateCameraInput = false;
 	}
 }
 

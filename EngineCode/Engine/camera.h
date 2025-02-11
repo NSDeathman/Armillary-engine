@@ -25,6 +25,8 @@ private:
 	float m_yaw;			// Yaw angle (rotation around the Y axis)
 	float m_pitch;			// Pitch angle (rotation around the X axis)
 
+	POINT m_ptLastMousePosition;
+
 	void UpdateInput();
 	void Apply(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta);
 
@@ -52,6 +54,8 @@ public:
 ///////////////////////////////////////////////////////////////
 extern CCamera* Camera;
 ///////////////////////////////////////////////////////////////
+extern bool g_bNeedLockCursor;
+extern bool g_bNeedUpdateCameraInput;
 extern bool g_UseOrthogonalProjection;
 extern float g_OrthogonalProjectionSize;
 extern float g_Fov;

@@ -11,6 +11,8 @@
 extern uint16_t g_ScreenWidth;
 extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
+bool g_bNeedLockCursor = false;
+bool g_bNeedUpdateCameraInput = false;
 bool g_UseOrthogonalProjection = false;
 float g_OrthogonalProjectionSize = 3.0f;
 float g_Fov = 90.0f;
@@ -28,12 +30,16 @@ void CCamera::Initialize()
 	m_nearPlane = g_NearPlane;
 	m_farPlane = g_FarPlane;
 	m_aspectRatio = float(g_ScreenWidth) / float(g_ScreenHeight);
+
+	GetCursorPos(&m_ptLastMousePosition);
 }
 
 void CCamera::OnFrame()
 {
-	if (Input->NeedUpdateInput())
+	if (Input->NeedUpdateInput() && g_bNeedUpdateCameraInput)
 		UpdateInput();
+	else
+		GetCursorPos(&m_ptLastMousePosition);
 }
 
 void CCamera::Reset()
@@ -104,9 +110,46 @@ void CCamera::UpdateInput()
 
 	//---------Rotating---------\\
 
+	POINT ptCurMouseDelta;
+	POINT ptCurMousePos;
+
+	// Get current position of mouse
+	GetCursorPos(&ptCurMousePos);
+
+	// Calc how far it's moved since last frame
+	ptCurMouseDelta.x = ptCurMousePos.x - m_ptLastMousePosition.x;
+	ptCurMouseDelta.y = ptCurMousePos.y - m_ptLastMousePosition.y;
+
+	// Record current position for next time
+	m_ptLastMousePosition = ptCurMousePos;
+
+	if (g_bNeedLockCursor)
+	{
+		// Set position of camera to center of desktop,
+		// so it always has room to move.  This is very useful
+		// if the cursor is hidden.  If this isn't done and cursor is hidden,
+		// then invisible cursor will hit the edge of the screen
+		// and the user can't tell what happened
+		POINT ptCenter;
+
+		// Get the center of the current monitor
+		SDL_DisplayMode DisplayMode = MainWindow->GetSDLDisplayMode();
+
+		// Calculate center position
+		ptCenter.x = DisplayMode.w / 2;
+		ptCenter.y = DisplayMode.h / 2;
+
+		SetCursorPos(ptCenter.x, ptCenter.y);
+
+		m_ptLastMousePosition = ptCenter;
+	}
+
 	float RotateAmount = 0.1f;
 	float YawDelta = 0.0f;
 	float PitchDelta = 0.0f;
+
+	YawDelta += ptCurMouseDelta.x * 0.01f;
+	PitchDelta += ptCurMouseDelta.y * 0.01f;
 
 	// Rotate Up/Down
 	if (Input->KeyHolded(SDL_SCANCODE_UP) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_Y))
@@ -138,12 +181,6 @@ void CCamera::Apply(D3DXVECTOR3 direction, float amount, float yawdelta, float p
 
 	m_yaw += yawdelta;
 	m_pitch += pitchdelta;
-
-	if (m_yaw = 360)
-		m_yaw = 0.0f;
-
-	if (m_yaw = 360)
-		m_yaw = 0.0f;
 
 	// Make a rotation matrix based on the camera's yaw & pitch
 	D3DXMATRIX mCameraRot;
