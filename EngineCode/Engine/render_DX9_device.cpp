@@ -9,8 +9,8 @@
 #include "OptickAPI.h"
 #include "main_window.h"
 ///////////////////////////////////////////////////////////////
-extern UINT g_ScreenWidth;
-extern UINT g_ScreenHeight;
+extern uint16_t g_ScreenWidth;
+extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 void CRenderDX9::GetCapabilities()
 {

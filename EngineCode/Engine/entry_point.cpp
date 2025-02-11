@@ -11,8 +11,8 @@ CSplashScreen* SplashScreen = NULL;
 CApplication* App = NULL;
 HWND g_splash_screen_window = NULL;
 ///////////////////////////////////////////////////////////////
-extern UINT g_ScreenWidth;
-extern UINT g_ScreenHeight;
+extern uint16_t g_ScreenWidth;
+extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 ///////////////////////////////////////////////////////////////
@@ -26,8 +26,8 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 		if (wParam == SIZE_MINIMIZED)
 			return 0;
-		g_ScreenWidth = (UINT)LOWORD(lParam); // Queue resize
-		g_ScreenHeight = (UINT)HIWORD(lParam);
+		g_ScreenWidth = (uint16_t)LOWORD(lParam); // Queue resize
+		g_ScreenHeight = (uint16_t)HIWORD(lParam);
 		return 0;
 	case WM_SYSCOMMAND:
 		if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu

@@ -6,8 +6,8 @@
 #include "main_window.h"
 #include "log.h"
 ///////////////////////////////////////////////////////////////
-extern UINT g_ScreenWidth;
-extern UINT g_ScreenHeight;
+extern uint16_t g_ScreenWidth;
+extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 SDL_WindowFlags g_WindowFlags = (SDL_WindowFlags)(SDL_WINDOW_SHOWN | 
 												SDL_WINDOW_INPUT_FOCUS | 

@@ -20,8 +20,8 @@ extern bool g_bNeedCloseApplication;
 bool g_bNeedRestart = false;
 bool g_bWireframeMode = true;
 ///////////////////////////////////////////////////////////////
-extern UINT g_ScreenWidth;
-extern UINT g_ScreenHeight;
+extern uint16_t g_ScreenWidth;
+extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 static int SelectedResolution = 0;
 const char* screen_resolution_list[] = 
@@ -111,7 +111,8 @@ void CHelperWindow::DrawSettings()
 			if (ImGui::Button("Orthographic camera"))
 				g_UseOrthogonalProjection = true;
 
-			ImGui::DragFloat("Camera fov", &g_Fov, 0.5f, 30.0f, 130.0f);
+			if(ImGui::DragFloat("Camera fov", &g_Fov, 0.5f, 30.0f, 130.0f))
+				Camera->SetFov(g_Fov);
 		}
 		else 
 		{
@@ -121,7 +122,8 @@ void CHelperWindow::DrawSettings()
 			ImGui::DragFloat("Orthogonal size", &g_OrthogonalProjectionSize, 0.01f, 1.0f, 4.0f);
 		}
 
-		ImGui::DragFloat("View distance", &g_FarPlane, 5.0f, 50.0f, 300.0f);
+		if(ImGui::DragFloat("View distance", &g_FarPlane, 5.0f, 50.0f, 300.0f))
+			Camera->SetFarPlane(g_FarPlane);
 
 		ImGui::TreePop();
 	}

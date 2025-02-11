@@ -22,8 +22,11 @@ private:
 	float m_nearPlane;		// Near clipping plane
 	float m_farPlane;		// Far clipping plane
 
-	float m_yaw;   // Yaw angle (rotation around the Y axis)
-	float m_pitch; // Pitch angle (rotation around the X axis)
+	float m_yaw;			// Yaw angle (rotation around the Y axis)
+	float m_pitch;			// Pitch angle (rotation around the X axis)
+
+	void UpdateInput();
+	void Apply(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta);
 
 public:
 	CCamera() = default;
@@ -33,11 +36,18 @@ public:
 	void OnFrame();
 	void Reset();
 
+	void SetFov(float fov)
+	{
+		m_fov = D3DXToRadian(fov);
+	}
+
+	void SetFarPlane(float far_plane)
+	{
+		m_farPlane = far_plane;
+	}
+
 	D3DXMATRIX GetViewMatrix();
 	D3DXMATRIX GetProjectionMatrix();
-
-	void UpdateInput();
-	void Update(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta);
 };
 ///////////////////////////////////////////////////////////////
 extern CCamera* Camera;

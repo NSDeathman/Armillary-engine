@@ -8,12 +8,29 @@
 ///////////////////////////////////////////////////////////////
 CInput::CInput()
 {
+	Msg("Initializing input...");
+
 	m_KeyBoardStates = SDL_GetKeyboardState(NULL);
 
 	// Initialize all keys as not pressed
 	std::fill(std::begin(m_bKeyPressed), std::end(m_bKeyPressed), false);
+	std::fill(std::begin(m_bGamepadButtonPressed), std::end(m_bGamepadButtonPressed), false);
 
-	m_bNeedUpdateInput = false;
+	// Open the first available game controller
+	if (SDL_NumJoysticks() > 0)
+	{
+		//m_GameController = SDL_GameControllerOpen(0);
+		if (m_GameController)
+		{
+			Msg("Already finded connected gamepad");
+		}
+	}
+	else
+	{
+		m_GameController = nullptr; // No game controller available
+	}
+
+	m_bNeedUpdateInput = true;
 }
 
 void CInput::OnFrame()
@@ -31,13 +48,30 @@ void CInput::OnFrame()
 		{
 		case SDL_KEYDOWN:
 			m_bKeyPressed[events[i].key.keysym.scancode] = true;
-			//m_bNeedUpdateInput = true;
+			m_bNeedUpdateInput = true;
 			break;
 		case SDL_KEYUP:
 			m_bKeyPressed[events[i].key.keysym.scancode] = false;
-			//m_bNeedUpdateInput = false;
+			m_bNeedUpdateInput = false;
 			break;
-			// Handle other event types here if needed
+		case SDL_CONTROLLERDEVICEADDED:
+			Msg("Gamepad added");
+			m_GameController = SDL_GameControllerOpen(events[i].cdevice.which);
+			if (m_GameController)
+				Msg("Gamepad controller opened successfuly");
+			break;
+		case SDL_CONTROLLERDEVICEREMOVED:
+			Msg("Gamepad removed");
+			if (m_GameController)
+			{
+				SDL_GameControllerClose(m_GameController);
+				if (!m_GameController)
+					Msg("Gamepad controller closed successfuly");
+			}
+			break;
+		default:
+			m_bNeedUpdateInput = false;
+			break;
 		}
 	}
 }
@@ -70,6 +104,37 @@ bool CInput::KeyHolded(int key)
 {
 	// Return true if the key is currently being held down
 	return m_KeyBoardStates[key];
+}
+
+bool CInput::GamepadButtonPressed(int button)
+{
+	// Check if the gamepad button is pressed
+	if (m_GameController)
+	{
+		if (SDL_GameControllerGetButton(m_GameController, static_cast<SDL_GameControllerButton>(button)) == SDL_PRESSED)
+		{
+			// If it wasn't already marked as pressed, it means this is the first press
+			if (!m_bGamepadButtonPressed[button])
+			{
+				// Update the pressed state to true
+				m_bGamepadButtonPressed[button] = true;
+				// Return true indicating the key was just pressed
+				return true;
+			}
+		}
+		else
+		{
+			// If the key is not pressed, reset its state for next frame
+			m_bGamepadButtonPressed[button] = false;
+		}
+	}
+	return false;
+}
+
+bool CInput::GamepadButtonHolded(int button)
+{
+	// Return true if the gamepad button is being held down
+	return m_GameController && SDL_GameControllerGetButton(m_GameController, static_cast<SDL_GameControllerButton>(button)) == SDL_PRESSED;
 }
 
 bool CInput::NeedUpdateInput()

@@ -16,6 +16,8 @@
 
 #include <vector>
 
+#include <array>
+
 #pragma warning(disable : 4996) // disable deprecated warning
 #include <strsafe.h>
 #pragma warning(default : 4996)

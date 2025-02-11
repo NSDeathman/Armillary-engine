@@ -14,6 +14,9 @@ class CInput
 
 	// Array to track key pressed states
 	bool m_bKeyPressed[SDL_NUM_SCANCODES];
+	bool m_bGamepadButtonPressed[SDL_CONTROLLER_BUTTON_MAX];
+
+	SDL_GameController* m_GameController; // Pointer to the game controller
 
 	bool m_bNeedUpdateInput;
 
@@ -24,6 +27,8 @@ class CInput
 	void OnFrame();
 	bool KeyPressed(int key);
 	bool KeyHolded(int key);
+	bool GamepadButtonPressed(int button);
+	bool GamepadButtonHolded(int button);
 	bool NeedUpdateInput();
 };
 ///////////////////////////////////////////////////////////////

@@ -8,8 +8,8 @@
 #include "main_window.h"
 #include "Input.h"
 ///////////////////////////////////////////////////////////////
-extern UINT g_ScreenWidth;
-extern UINT g_ScreenHeight;
+extern uint16_t g_ScreenWidth;
+extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 bool g_UseOrthogonalProjection = false;
 float g_OrthogonalProjectionSize = 3.0f;
@@ -23,34 +23,24 @@ void CCamera::Initialize()
 	m_position = D3DXVECTOR3(0.0f, 0.0f, -3.0f);
 	m_direction = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_upVec = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
 	m_fov = D3DXToRadian(g_Fov);
 	m_nearPlane = g_NearPlane;
 	m_farPlane = g_FarPlane;
-
-	// Calculate aspect ratio initially
-	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
+	m_aspectRatio = float(g_ScreenWidth) / float(g_ScreenHeight);
 }
 
 void CCamera::OnFrame()
 {
-	m_fov = D3DXToRadian(g_Fov);
-	m_nearPlane = g_NearPlane;
-	m_farPlane = g_FarPlane;
-
-	// Update aspect ratio every frame (if resolution can change while running)
-	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
-
 	if (Input->NeedUpdateInput())
 		UpdateInput();
 }
 
 void CCamera::Reset()
 {
-	// Correctly reset the aspect ratio without adding to it
-	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
+	m_aspectRatio = float(g_ScreenWidth) / float(g_ScreenHeight);
 }
 
-// Calculate view matrix
 D3DXMATRIX CCamera::GetViewMatrix()
 {
 	D3DXMATRIX viewMatrix;
@@ -58,7 +48,6 @@ D3DXMATRIX CCamera::GetViewMatrix()
 	return viewMatrix;
 }
 
-// Calculate projection matrix
 D3DXMATRIX CCamera::GetProjectionMatrix()
 {
 	D3DXMATRIX projectionMatrix;
@@ -66,7 +55,6 @@ D3DXMATRIX CCamera::GetProjectionMatrix()
 
 	if (g_UseOrthogonalProjection)
 	{
-		// Orthographic projection matrix
 		float left = -g_OrthogonalProjectionSize * m_aspectRatio * 0.5f;
 		float right = g_OrthogonalProjectionSize * m_aspectRatio * 0.5f;
 		float bottom = -g_OrthogonalProjectionSize * 0.5f;
@@ -76,7 +64,6 @@ D3DXMATRIX CCamera::GetProjectionMatrix()
 	}
 	else
 	{
-		// Perspective projection matrix
 		D3DXMatrixPerspectiveFovLH(&projectionMatrix, m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 	}
 
@@ -98,15 +85,15 @@ void CCamera::UpdateInput()
 		MoveSpeed /= 4.0f;
 
 	// Move Forward/Backward
-	if (Input->KeyHolded(SDL_SCANCODE_W))
+	if (Input->KeyHolded(SDL_SCANCODE_W) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_DPAD_UP))
 		MoveDirection.z += MoveAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_S))
+	else if (Input->KeyHolded(SDL_SCANCODE_S) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_DPAD_DOWN))
 		MoveDirection.z -= MoveAmount;
 
 	// Move Left/Right
-	if (Input->KeyHolded(SDL_SCANCODE_D))
+	if (Input->KeyHolded(SDL_SCANCODE_D) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_DPAD_RIGHT))
 		MoveDirection.x += MoveAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_A))
+	else if (Input->KeyHolded(SDL_SCANCODE_A) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_DPAD_LEFT))
 		MoveDirection.x -= MoveAmount;
 
 	// Move Up/Down
@@ -122,20 +109,20 @@ void CCamera::UpdateInput()
 	float PitchDelta = 0.0f;
 
 	// Rotate Up/Down
-	if (Input->KeyHolded(SDL_SCANCODE_UP))
+	if (Input->KeyHolded(SDL_SCANCODE_UP) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_Y))
 		PitchDelta -= RotateAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_DOWN))
+	else if (Input->KeyHolded(SDL_SCANCODE_DOWN) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_A))
 		PitchDelta += RotateAmount;
 
 	// Rotate Right/Left
-	if (Input->KeyHolded(SDL_SCANCODE_RIGHT))
+	if (Input->KeyHolded(SDL_SCANCODE_RIGHT) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_B))
 		YawDelta += RotateAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_LEFT))
+	else if (Input->KeyHolded(SDL_SCANCODE_LEFT) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_X))
 		YawDelta -= RotateAmount;
 
 	//---------Applying---------\\
 	// Send data to movement code
-	Update(MoveDirection, MoveSpeed, YawDelta, PitchDelta);
+	Apply(MoveDirection, MoveSpeed, YawDelta, PitchDelta);
 
 	//---------Clearing---------\\
 	// Set direction and rotation zero value
@@ -144,14 +131,19 @@ void CCamera::UpdateInput()
 	PitchDelta = 0.0f;
 }
 
-// Update camera position
-void CCamera::Update(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta)
+void CCamera::Apply(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta)
 {
 	// Simple euler method to calculate position delta
 	D3DXVECTOR3 vPosDelta = direction * amount;
 
 	m_yaw += yawdelta;
 	m_pitch += pitchdelta;
+
+	if (m_yaw = 360)
+		m_yaw = 0.0f;
+
+	if (m_yaw = 360)
+		m_yaw = 0.0f;
 
 	// Make a rotation matrix based on the camera's yaw & pitch
 	D3DXMATRIX mCameraRot;

@@ -40,8 +40,8 @@
 // Camera
 #include "camera.h"
 ///////////////////////////////////////////////////////////////
-UINT g_ScreenWidth = 720;
-UINT g_ScreenHeight = 480;
+uint16_t g_ScreenWidth = 720;
+uint16_t g_ScreenHeight = 480;
 ///////////////////////////////////////////////////////////////
 bool g_bNeedCloseApplication = false;
 SDL_Event g_WindowEvent;

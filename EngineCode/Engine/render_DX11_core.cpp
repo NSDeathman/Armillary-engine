@@ -15,8 +15,8 @@
 #include "main_window.h"
 #include "camera.h"
 ///////////////////////////////////////////////////////////////
-extern UINT g_ScreenWidth;
-extern UINT g_ScreenHeight;
+extern uint16_t g_ScreenWidth;
+extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 CRenderDX11::CRenderDX11()
 {
