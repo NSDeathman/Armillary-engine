@@ -1,13 +1,13 @@
 ///////////////////////////////////////////////////////////////
-// Created: 09.02.2025
+// Created: 10.02.2025
 // Author: NS_Deathman
 // Renderer frame pipeline realization
 ///////////////////////////////////////////////////////////////
-#include "render_DX9.h"
+#include "render_DX11.h"
 #include "Log.h"
 #include "filesystem.h"
 #include "resource.h"
-#include "render_backend_DX9.h"
+//#include "render_backend_DX11.h"
 #include "OptickAPI.h"
 #include "helper_window.h"
 #include "scene.h"
@@ -17,19 +17,20 @@
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-void CRenderDX9::OnFrame()
+void CRenderDX11::OnFrame()
 {
-	OPTICK_EVENT("CRenderDX9::OnFrame")
+	OPTICK_EVENT("CRenderDX11::OnFrame")
 
 	OnFrameBegin();
 	RenderFrame();
 	OnFrameEnd();
 }
 
-void CRenderDX9::OnFrameBegin()
+void CRenderDX11::OnFrameBegin()
 {
-	OPTICK_EVENT("CRenderDX9::OnFrameBegin")
+	OPTICK_EVENT("CRenderDX11::OnFrameBegin")
 
+		/*
 	if (m_bDeviceLost)
 		HandleDeviceLost();
 
@@ -54,34 +55,38 @@ void CRenderDX9::OnFrameBegin()
 	// Clear the backbuffer and the zbuffer
 	D3DCOLOR clear_col_dx = D3DCOLOR_RGBA((int)1.0f * 255, (int)1.0f * 255, (int)1.0f * 255, (int)1.0f * 255);
 
-	m_pDirect3dDevice->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0);
+	Device->Clear(0, nullptr, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clear_col_dx, 1.0f, 0);
 
 	// Setup the world, view, and projection matrices
 	CreateMatrices();
 
 	// Begin the scene
-	HRESULT hresult = m_pDirect3dDevice->BeginScene();
+	HRESULT hresult = Device->BeginScene();
 
 	if (FAILED(hresult))
 		Msg("Failed to begin scene render");
+		*/
 }
 
-void CRenderDX9::RenderFrame()
+void CRenderDX11::RenderFrame()
 {
-	OPTICK_EVENT("CRenderDX9::RenderFrame")
+	OPTICK_EVENT("CRenderDX11::RenderFrame")
 
 	UserInterface->Render();
 
+	/*
 	if (Scene->Ready())
 		RenderScene();
+		*/
 }
 
-void CRenderDX9::RenderScene()
+void CRenderDX11::RenderScene()
 {
-	OPTICK_EVENT("CRenderDX9::RenderScene")
+	OPTICK_EVENT("CRenderDX11::RenderScene")
 
+		/*
 	// Turn on the zbuffer
-	m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	Device->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 	RenderBackend->set_CullMode(CRenderBackendDX9::CULL_CCW);
 
@@ -92,22 +97,25 @@ void CRenderDX9::RenderScene()
 
 	if (g_bWireframeMode)
 		RenderBackend->set_FillMode(CRenderBackendDX9::FILL_SOLID);
+		*/
 }
 
-void CRenderDX9::OnFrameEnd()
+void CRenderDX11::OnFrameEnd()
 {
-	OPTICK_EVENT("CRenderDX9::OnFrameEnd")
+	OPTICK_EVENT("CRenderDX11::OnFrameEnd")
 
 	UserInterface->OnFrameEnd();
 
+	/*
 	// End the scene
-	m_pDirect3dDevice->EndScene();
+	Device->EndScene();
 
 	// Present the backbuffer contents to the display
-	HRESULT present_result = m_pDirect3dDevice->Present(NULL, NULL, NULL, NULL);
+	HRESULT present_result = Device->Present(NULL, NULL, NULL, NULL);
 
 	if (present_result == D3DERR_DEVICELOST)
 		m_bDeviceLost = true;
+*/
 
 	m_Frame++;
 }

@@ -4,9 +4,14 @@
 // Scene class
 ///////////////////////////////////////////////////////////////
 #include "scene.h"
-#include "render_DX9.h"
 #include "log.h"
 #include "threading.h"
+
+#ifdef USE_DX11
+#include "render_DX11.h"
+#else
+#include "render_DX9.h"
+#endif
 ///////////////////////////////////////////////////////////////
 CScene::CScene()
 {

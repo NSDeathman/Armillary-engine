@@ -5,10 +5,15 @@
 ///////////////////////////////////////////////////////////////
 #include "helper_window.h"
 #include "imgui_api.h"
-#include "render_DX9.h"
 #include "log.h"
 #include "camera.h"
 #include "main_window.h"
+
+#ifdef USE_DX11
+#include "render_DX11.h"
+#else
+#include "render_DX9.h"
+#endif
 ///////////////////////////////////////////////////////////////
 extern bool g_bNeedCloseApplication;
 ///////////////////////////////////////////////////////////////

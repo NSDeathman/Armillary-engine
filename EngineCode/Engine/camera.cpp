@@ -113,8 +113,10 @@ void CCamera::UpdateInput()
 	else if (Input->KeyHolded(SDL_SCANCODE_Q))
 		m_moveDirection.y -= MoveAmount;
 
+	// Send data to movement code
 	Move(m_moveDirection, MoveSpeed);
 
+	// Set direction zero value
 	m_moveDirection = D3DXVECTOR3(0, 0, 0);
 }
 
@@ -124,18 +126,9 @@ void CCamera::Move(const D3DXVECTOR3& direction, float amount)
 	// Simple euler method to calculate position delta
 	D3DXVECTOR3 vPosDelta = direction * amount;
 
-	// If rotating the camera
-	// if ((m_nActiveButtonMask & m_nCurrentButtonMask) || m_bRotateWithoutButtonDown)// || m_vGamePadRightThumb.x != 0
-	// || m_vGamePadRightThumb.z != 0) if ((m_nActiveButtonMask & m_nCurrentButtonMask) || m_bRotateWithoutButtonDown)//
-	// || m_vGamePadRightThumb.x != 0 || m_vGamePadRightThumb.z != 0)
-	//{
 	// Update the pitch & yaw angle based on mouse movement
 	float fYawDelta = 0.0f; // m_vRotVelocity.x;
 	float fPitchDelta = 0.0f; // m_vRotVelocity.y;
-
-	// Invert pitch if requested
-	//if (m_bInvertPitch)
-	//	fPitchDelta = -fPitchDelta;
 
 	float m_fCameraPitchAngle = 0.0f; //+= fPitchDelta;
 	float m_fCameraYawAngle = 0.0f; //+= fYawDelta;
@@ -143,7 +136,6 @@ void CCamera::Move(const D3DXVECTOR3& direction, float amount)
 	// Limit pitch to straight up or straight down
 	m_fCameraPitchAngle = __max(-D3DX_PI / 2.0f, m_fCameraPitchAngle);
 	m_fCameraPitchAngle = __min(+D3DX_PI / 2.0f, m_fCameraPitchAngle);
-	//}
 
 	// Make a rotation matrix based on the camera's yaw & pitch
 	D3DXMATRIX mCameraRot;
@@ -157,27 +149,15 @@ void CCamera::Move(const D3DXVECTOR3& direction, float amount)
 	D3DXVec3TransformCoord(&vWorldAhead, &vLocalAhead, &mCameraRot);
 
 	// Transform the position delta by the camera's rotation
-	D3DXVECTOR3 vPosDeltaWorld;
-	//if (!m_bEnableYAxisMovement)
-	//{
-		// If restricting Y movement, do not include pitch
-		// when transforming position delta vector.
-	//	D3DXMatrixRotationYawPitchRoll(&mCameraRot, m_fCameraYawAngle, 0.0f, 0.0f);
-	//}
+	D3DXVECTOR3 vPosDeltaWorld = D3DXVECTOR3(0, 0, 0);
+
 	D3DXVec3TransformCoord(&vPosDeltaWorld, &vPosDelta, &mCameraRot);
 
 	// Move the eye position
 	m_position += vPosDeltaWorld;
-	//if (m_bClipToBoundary)
-	//	ConstrainToBoundary(&m_vEye);
 
 	// Update the lookAt position based on the eye position
 	m_direction = m_position + vWorldAhead;
-
-	// Update the view matrix
-	//D3DXMatrixLookAtLH(&m_mView, &m_vEye, &m_vLookAt, &vWorldUp);
-
-	//D3DXMatrixInverse(&m_mCameraWorld, NULL, &m_mView);
 }
 
 // Rotate camera around the target point (simple placeholder)

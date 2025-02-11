@@ -1,19 +1,20 @@
 ///////////////////////////////////////////////////////////////
-// Created: 30.01.2025
+// Created: 10.02.2025
 // Author: NS_Deathman
 // Renderer realization
 ///////////////////////////////////////////////////////////////
-#include "render_DX9.h"
+#include "render_DX11.h"
 #include "Log.h"
-#include "render_backend_DX9.h"
+//#include "render_backend_DX11.h"
 #include "OptickAPI.h"
 #include "main_window.h"
 ///////////////////////////////////////////////////////////////
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-void CRenderDX9::GetCapabilities()
+void CRenderDX11::GetCapabilities()
 {
+	/*
 	D3DCAPS9 Capabilities;
 
 	m_pDirect3D->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &Capabilities);
@@ -27,12 +28,8 @@ void CRenderDX9::GetCapabilities()
 	{
 		DWORD qualityLevels = 0;
 
-		HRESULT hr = m_pDirect3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, 
-															 D3DDEVTYPE_HAL,
-															 D3DFMT_A8R8G8B8,
-															 FALSE,
-															 (D3DMULTISAMPLE_TYPE)samples, 
-															 &qualityLevels);
+		HRESULT hr = m_pDirect3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_A8R8G8B8, FALSE,
+															 (D3DMULTISAMPLE_TYPE)samples, &qualityLevels);
 
 		// Check if this multi-sample type is supported and has quality levels
 		if (SUCCEEDED(hr) && qualityLevels > 0)
@@ -42,12 +39,50 @@ void CRenderDX9::GetCapabilities()
 			break;
 		}
 	}
+	*/
 }
 
-void CRenderDX9::InitializeDirect3D()
+void CRenderDX11::InitializeDirect3D()
 {
 	Msg("Initializing Direct3D...");
 
+	m_hWindow = MainWindow->GetWindow();
+
+	ZeroMemory(&m_pDirect3dSwapChainDescription, sizeof(m_pDirect3dSwapChainDescription));
+	m_pDirect3dSwapChainDescription.BufferCount = 1;
+	m_pDirect3dSwapChainDescription.BufferDesc.Width = g_ScreenWidth;
+	m_pDirect3dSwapChainDescription.BufferDesc.Height = g_ScreenHeight;
+	m_pDirect3dSwapChainDescription.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	m_pDirect3dSwapChainDescription.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	m_pDirect3dSwapChainDescription.OutputWindow = m_hWindow;
+	m_pDirect3dSwapChainDescription.SampleDesc.Count = 1;
+	m_pDirect3dSwapChainDescription.Windowed = TRUE;
+
+	D3D11CreateDeviceAndSwapChain(nullptr, 
+								D3D_DRIVER_TYPE_HARDWARE, 
+								nullptr, 
+								0, 
+								nullptr, 
+								0, 
+								D3D11_SDK_VERSION, 
+								&m_pDirect3dSwapChainDescription, 
+								&m_pDirect3dSwapChain, 
+								&m_pDirect3dDevice, 
+								nullptr, 
+								&m_pDirect3dDeviceContext);
+
+	ASSERT(m_pDirect3dDevice != NULL, "An error occurred while creating the Direct3D11");
+
+	// Create a render target view
+	ID3D11Texture2D* backBuffer;
+	m_pDirect3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
+	m_pDirect3dDevice->CreateRenderTargetView(backBuffer, nullptr, &m_pDirect3dRenderTargetView);
+	backBuffer->Release();
+
+	ShowWindow(m_hWindow, SW_SHOWDEFAULT);
+	UpdateWindow(m_hWindow);
+
+	/*
 	m_hWindow = MainWindow->GetWindow();
 
 	// Create the D3D object.
@@ -69,13 +104,9 @@ void CRenderDX9::InitializeDirect3D()
 	HRESULT hresult = E_FAIL;
 
 	// Create the D3DDevice
-	hresult = m_pDirect3D->CreateDevice(D3DADAPTER_DEFAULT, 
-										D3DDEVTYPE_HAL, 
-										m_hWindow,
-										D3DCREATE_HARDWARE_VERTEXPROCESSING | 
-										D3DCREATE_MULTITHREADED,
-										&m_pDirect3DPresentParams, 
-										&m_pDirect3dDevice);
+	hresult = m_pDirect3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWindow,
+										D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED,
+										&m_pDirect3DPresentParams, &m_pDirect3dDevice);
 
 	if (SUCCEEDED(hresult))
 		Msg("Direct3D created successfully");
@@ -87,12 +118,8 @@ void CRenderDX9::InitializeDirect3D()
 	DWORD qualityLevels = 0;
 
 	// Check if the selected multi-sample type is supported
-	hresult = m_pDirect3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, 
-													  D3DDEVTYPE_HAL, 
-													  D3DFMT_A8R8G8B8, 
-													  FALSE, 
-													  multiSampleType, 
-													  &qualityLevels);
+	hresult = m_pDirect3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_A8R8G8B8, FALSE,
+													  multiSampleType, &qualityLevels);
 
 	if (SUCCEEDED(hresult))
 		Msg("Device multisample type checked successfully");
@@ -105,28 +132,38 @@ void CRenderDX9::InitializeDirect3D()
 
 	ShowWindow(m_hWindow, SW_SHOWDEFAULT);
 	UpdateWindow(m_hWindow);
+	*/
 }
 
-void CRenderDX9::DestroyDirect3D()
+void CRenderDX11::DestroyDirect3D()
 {
+	/*
 	SAFE_RELEASE(m_pDirect3dDevice);
 
 	SAFE_RELEASE(m_pDirect3D);
+	*/
+	SAFE_RELEASE(m_pDirect3dRenderTargetView);
+	SAFE_RELEASE(m_pDirect3dSwapChain);
+	SAFE_RELEASE(m_pDirect3dDeviceContext);
+	SAFE_RELEASE(m_pDirect3dDevice);
 }
 
-void CRenderDX9::ResetDirect3D()
+void CRenderDX11::ResetDirect3D()
 {
-	HRESULT result = m_pDirect3dDevice->Reset(&m_pDirect3DPresentParams);
+	/*
+	HRESULT result = Device->Reset(&m_pDirect3DPresentParams);
 
 	if (result == D3DERR_INVALIDCALL)
 		ERROR_MESSAGE("Invalid call while device resetting");
+	*/
 }
 
-void CRenderDX9::HandleDeviceLost()
+void CRenderDX11::HandleDeviceLost()
 {
 	Msg("Device was lost, resetting render...");
 
-	HRESULT result = m_pDirect3dDevice->TestCooperativeLevel();
+	/*
+	HRESULT result = Device->TestCooperativeLevel();
 
 	if (result == D3DERR_DEVICELOST)
 		Sleep(10);
@@ -135,5 +172,6 @@ void CRenderDX9::HandleDeviceLost()
 		Reset();
 
 	m_bDeviceLost = false;
+	*/
 }
 ///////////////////////////////////////////////////////////////

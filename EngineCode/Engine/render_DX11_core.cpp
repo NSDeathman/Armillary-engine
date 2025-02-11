@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////
-// Created: 15.01.2025
+// Created: 10.02.2025
 // Author: NS_Deathman
 // Renderer realization
 ///////////////////////////////////////////////////////////////
-#include "render_DX9.h"
+#include "render_DX11.h"
 #include "Log.h"
 #include "filesystem.h"
 #include "resource.h"
@@ -18,12 +18,13 @@
 extern UINT g_ScreenWidth;
 extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-CRenderDX9::CRenderDX9()
+CRenderDX11::CRenderDX11()
 {
 	m_hWindow = nullptr;
-	m_pDirect3D = nullptr;
 	m_pDirect3dDevice = nullptr;
-	ZeroMemory(&m_pDirect3DPresentParams, sizeof(m_pDirect3DPresentParams));
+	m_pDirect3dDeviceContext = nullptr;
+	m_pDirect3dSwapChain = nullptr;
+	ZeroMemory(&m_pDirect3dSwapChainDescription, sizeof(m_pDirect3dSwapChainDescription));
 
 	m_bDeviceLost = false;
 	m_bNeedReset = false;
@@ -33,28 +34,28 @@ CRenderDX9::CRenderDX9()
 	m_Frame = 0;
 }
 
-void CRenderDX9::Initialize()
+void CRenderDX11::Initialize()
 {
 	Msg("Initializing render...");
 	InitializeDirect3D();
 }
 
-void CRenderDX9::Destroy()
+void CRenderDX11::Destroy()
 {
 	Msg("Destroying render...");
 	DestroyDirect3D();
 }
 
-void CRenderDX9::CreateMatrices()
+void CRenderDX11::CreateMatrices()
 {
-	D3DXMATRIX matView = Camera->GetViewMatrix();
-	m_pDirect3dDevice->SetTransform(D3DTS_VIEW, &matView);
+	//D3DXMATRIX matView = Camera->GetViewMatrix();
+	//Device->SetTransform(D3DTS_VIEW, &matView);
 
-	D3DXMATRIX matProjection = Camera->GetProjectionMatrix();
-	m_pDirect3dDevice->SetTransform(D3DTS_PROJECTION, &matProjection);
+	//D3DXMATRIX matProjection = Camera->GetProjectionMatrix();
+	//Device->SetTransform(D3DTS_PROJECTION, &matProjection);
 
-	D3DXMATRIXA16 matWorld;
-	D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
-	m_pDirect3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	//D3DXMATRIXA16 matWorld;
+	//D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
+	//Device->SetTransform(D3DTS_WORLD, &matWorld);
 }
 ///////////////////////////////////////////////////////////////

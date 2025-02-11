@@ -107,7 +107,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -134,7 +134,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -165,7 +165,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -194,7 +194,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -229,6 +229,10 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
     <ClCompile Include="render_backend_DX9.cpp" />
+    <ClCompile Include="render_DX11_core.cpp" />
+    <ClCompile Include="render_DX11_device.cpp" />
+    <ClCompile Include="render_DX11_frame_pipeline.cpp" />
+    <ClCompile Include="render_DX11_reset.cpp" />
     <ClCompile Include="render_DX9_core.cpp" />
     <ClCompile Include="render_DX9_device.cpp" />
     <ClCompile Include="render_DX9_frame_pipeline.cpp" />
@@ -258,7 +262,10 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClInclude Include="imgui_api.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="render_backend_DX9.h" />
+    <ClInclude Include="render_DX11.h" />
+    <ClInclude Include="render_DX11_stdafx.h" />
     <ClInclude Include="render_DX9.h" />
+    <ClInclude Include="render_DX9_stdafx.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="splash_screen.h" />

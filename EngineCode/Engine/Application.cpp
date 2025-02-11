@@ -7,8 +7,14 @@
 #include "Application.h"
 
 // Main engine parts
+#ifndef USE_DX11
 #include "render_DX9.h"
 #include "render_backend_DX9.h"
+#else
+#include "render_DX11.h"
+//#include "render_backend_DX11.h"
+#endif
+
 #include "log.h"
 #include "Input.h"
 #include "filesystem.h"
@@ -40,8 +46,14 @@ UINT g_ScreenHeight = 480;
 bool g_bNeedCloseApplication = false;
 SDL_Event g_WindowEvent;
 ///////////////////////////////////////////////////////////////
+#ifdef USE_DX11
+CRenderDX11* Render = nullptr;
+//CRenderBackendDX11* RenderBackend = nullptr;
+#else
 CRenderDX9* Render = nullptr;
 CRenderBackendDX9* RenderBackend = nullptr;
+#endif
+
 CLog* Log = nullptr;
 COptickAPI* OptickAPI = nullptr;
 CFilesystem* Filesystem = nullptr;
@@ -69,8 +81,14 @@ void CApplication::Start()
 
 	MainWindow = new CMainWindow();
 
+#ifdef USE_DX11
+	Render = new CRenderDX11();
+	//RenderBackend = new CRenderBackendDX11();
+#else
 	Render = new CRenderDX9();
 	RenderBackend = new CRenderBackendDX9();
+#endif
+
     Render->Initialize();
 
 	UserInterface = new CUserInterface();

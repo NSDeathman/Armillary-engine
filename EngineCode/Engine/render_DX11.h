@@ -1,25 +1,27 @@
 ///////////////////////////////////////////////////////////////
-// Created: 15.01.2025
+// Created: 10.02.2025
 // Author: NS_Deathman
 // Renderer realization
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "render_DX9_stdafx.h"
+#include "render_DX11_stdafx.h"
 ///////////////////////////////////////////////////////////////
-class CRenderDX9
+class CRenderDX11
 {
   public:
-	LPDIRECT3DDEVICE9 m_pDirect3dDevice;
-	LPDIRECT3D9 m_pDirect3D;
-	D3DPRESENT_PARAMETERS m_pDirect3DPresentParams;
+	ID3D11Device* m_pDirect3dDevice;
+	ID3D11DeviceContext* m_pDirect3dDeviceContext;
+	IDXGISwapChain* m_pDirect3dSwapChain;
+	ID3D11RenderTargetView* m_pDirect3dRenderTargetView;
+	DXGI_SWAP_CHAIN_DESC m_pDirect3dSwapChainDescription;
 	HWND m_hWindow;
 
-	DWORD MaxSimultaneousTextures;
-	D3DMULTISAMPLE_TYPE m_MaxMultiSamplingQuality;
+	//DWORD MaxSimultaneousTextures;
+	//D3DMULTISAMPLE_TYPE m_MaxMultiSamplingQuality;
 	UINT m_Frame;
-	
+
   private:
 	BOOL m_bDeviceLost;
 	BOOL m_bNeedReset;
@@ -43,7 +45,6 @@ class CRenderDX9
 	void RenderScene();
 
   public:
-
 	void Initialize();
 	void Reset();
 	void Destroy();
@@ -53,15 +54,16 @@ class CRenderDX9
 		m_bNeedReset = true;
 	}
 
-	CRenderDX9();
-	~CRenderDX9() = default;
+	CRenderDX11();
+	~CRenderDX11() = default;
 };
 ///////////////////////////////////////////////////////////////
-#ifndef USE_DX11
+#ifdef USE_DX11
 ///////////////////////////////////////////////////////////////
-extern CRenderDX9* Render;
+extern CRenderDX11* Render;
 ///////////////////////////////////////////////////////////////
 #define Device ::Render->m_pDirect3dDevice
+#define DeviceContext ::Render->m_pDirect3dDeviceContext
 ///////////////////////////////////////////////////////////////
 #endif
 ///////////////////////////////////////////////////////////////

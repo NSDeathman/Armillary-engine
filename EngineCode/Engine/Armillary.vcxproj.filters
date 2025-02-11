@@ -79,6 +79,18 @@
     <ClCompile Include="render_DX9_reset.cpp">
       <Filter>Render\DirectX9\Core</Filter>
     </ClCompile>
+    <ClCompile Include="render_DX11_core.cpp">
+      <Filter>Render\DirectX11\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="render_DX11_device.cpp">
+      <Filter>Render\DirectX11\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="render_DX11_reset.cpp">
+      <Filter>Render\DirectX11\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="render_DX11_frame_pipeline.cpp">
+      <Filter>Render\DirectX11\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -173,6 +185,15 @@
     </ClInclude>
     <ClInclude Include="DXUTtimer.h">
       <Filter>Third-party implementations\DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="render_DX11.h">
+      <Filter>Render\DirectX11\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="render_DX9_stdafx.h">
+      <Filter>Render\DirectX9\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="render_DX11_stdafx.h">
+      <Filter>Render\DirectX11\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +301,12 @@
     </Filter>
     <Filter Include="Render\DirectX9\Backend">
       <UniqueIdentifier>{ec946da8-b1fb-4be3-982d-a6014d92fe9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\DirectX11">
+      <UniqueIdentifier>{ae64c950-c780-494c-928b-b90ce6a63aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\DirectX11\Core">
+      <UniqueIdentifier>{92e86566-1bc4-4f38-b67f-2ef62e1f205e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
