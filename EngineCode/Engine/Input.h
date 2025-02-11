@@ -15,6 +15,8 @@ class CInput
 	// Array to track key pressed states
 	bool m_bKeyPressed[SDL_NUM_SCANCODES];
 
+	bool m_bNeedUpdateInput;
+
   public:
 	CInput();
 	~CInput() = default;
@@ -22,6 +24,7 @@ class CInput
 	void OnFrame();
 	bool KeyPressed(int key);
 	bool KeyHolded(int key);
+	bool NeedUpdateInput();
 };
 ///////////////////////////////////////////////////////////////
 extern CInput* Input;

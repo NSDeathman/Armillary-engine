@@ -16,8 +16,6 @@ private:
 	D3DXVECTOR3 m_direction;
 	D3DXVECTOR3 m_upVec;
 
-	D3DXVECTOR3 m_moveDirection;
-
 	// Camera settings
 	float m_fov;			// Field of view
 	float m_aspectRatio;	// Aspect ratio
@@ -39,7 +37,7 @@ public:
 	D3DXMATRIX GetProjectionMatrix();
 
 	void UpdateInput();
-	void Move(const D3DXVECTOR3& direction, float amount);
+	void Update(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta);
 };
 ///////////////////////////////////////////////////////////////
 extern CCamera* Camera;

@@ -107,7 +107,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -134,7 +134,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -165,7 +165,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -194,7 +194,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

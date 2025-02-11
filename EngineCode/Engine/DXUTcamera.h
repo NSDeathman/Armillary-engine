@@ -10,7 +10,6 @@
 #define CAMERA_H
 #include "stdafx.h"
 #include <D3D10.h>
-//--------------------------------------------------------------------------------------
 class CD3DArcBall
 {
   public:

@@ -27,8 +27,6 @@ void CCamera::Initialize()
 	m_nearPlane = g_NearPlane;
 	m_farPlane = g_FarPlane;
 
-	m_moveDirection = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
 	// Calculate aspect ratio initially
 	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
 }
@@ -42,7 +40,8 @@ void CCamera::OnFrame()
 	// Update aspect ratio every frame (if resolution can change while running)
 	m_aspectRatio = static_cast<float>(g_ScreenWidth) / static_cast<float>(g_ScreenHeight);
 
-	UpdateInput();
+	if (Input->NeedUpdateInput())
+		UpdateInput();
 }
 
 void CCamera::Reset()
@@ -86,6 +85,9 @@ D3DXMATRIX CCamera::GetProjectionMatrix()
 
 void CCamera::UpdateInput()
 {
+	//---------Moving---------\\
+
+	D3DXVECTOR3 MoveDirection = D3DXVECTOR3(0, 0, 0);
 	float MoveAmount = 0.5f;
 	float MoveSpeed = 1.0f;
 
@@ -97,49 +99,63 @@ void CCamera::UpdateInput()
 
 	// Move Forward/Backward
 	if (Input->KeyHolded(SDL_SCANCODE_W))
-		m_moveDirection.z += MoveAmount;
+		MoveDirection.z += MoveAmount;
 	else if (Input->KeyHolded(SDL_SCANCODE_S))
-		m_moveDirection.z -= MoveAmount;
+		MoveDirection.z -= MoveAmount;
 
 	// Move Left/Right
 	if (Input->KeyHolded(SDL_SCANCODE_D))
-		m_moveDirection.x += MoveAmount;
+		MoveDirection.x += MoveAmount;
 	else if (Input->KeyHolded(SDL_SCANCODE_A))
-		m_moveDirection.x -= MoveAmount;
+		MoveDirection.x -= MoveAmount;
 
 	// Move Up/Down
 	if (Input->KeyHolded(SDL_SCANCODE_E))
-		m_moveDirection.y += MoveAmount;
+		MoveDirection.y += MoveAmount;
 	else if (Input->KeyHolded(SDL_SCANCODE_Q))
-		m_moveDirection.y -= MoveAmount;
+		MoveDirection.y -= MoveAmount;
 
+	//---------Rotating---------\\
+
+	float RotateAmount = 0.1f;
+	float YawDelta = 0.0f;
+	float PitchDelta = 0.0f;
+
+	// Rotate Up/Down
+	if (Input->KeyHolded(SDL_SCANCODE_UP))
+		PitchDelta -= RotateAmount;
+	else if (Input->KeyHolded(SDL_SCANCODE_DOWN))
+		PitchDelta += RotateAmount;
+
+	// Rotate Right/Left
+	if (Input->KeyHolded(SDL_SCANCODE_RIGHT))
+		YawDelta += RotateAmount;
+	else if (Input->KeyHolded(SDL_SCANCODE_LEFT))
+		YawDelta -= RotateAmount;
+
+	//---------Applying---------\\
 	// Send data to movement code
-	Move(m_moveDirection, MoveSpeed);
+	Update(MoveDirection, MoveSpeed, YawDelta, PitchDelta);
 
-	// Set direction zero value
-	m_moveDirection = D3DXVECTOR3(0, 0, 0);
+	//---------Clearing---------\\
+	// Set direction and rotation zero value
+	MoveDirection = D3DXVECTOR3(0, 0, 0);
+	YawDelta = 0.0f;
+	PitchDelta = 0.0f;
 }
 
 // Update camera position
-void CCamera::Move(const D3DXVECTOR3& direction, float amount)
+void CCamera::Update(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta)
 {
 	// Simple euler method to calculate position delta
 	D3DXVECTOR3 vPosDelta = direction * amount;
 
-	// Update the pitch & yaw angle based on mouse movement
-	float fYawDelta = 0.0f; // m_vRotVelocity.x;
-	float fPitchDelta = 0.0f; // m_vRotVelocity.y;
-
-	float m_fCameraPitchAngle = 0.0f; //+= fPitchDelta;
-	float m_fCameraYawAngle = 0.0f; //+= fYawDelta;
-
-	// Limit pitch to straight up or straight down
-	m_fCameraPitchAngle = __max(-D3DX_PI / 2.0f, m_fCameraPitchAngle);
-	m_fCameraPitchAngle = __min(+D3DX_PI / 2.0f, m_fCameraPitchAngle);
+	m_yaw += yawdelta;
+	m_pitch += pitchdelta;
 
 	// Make a rotation matrix based on the camera's yaw & pitch
 	D3DXMATRIX mCameraRot;
-	D3DXMatrixRotationYawPitchRoll(&mCameraRot, m_fCameraYawAngle, m_fCameraPitchAngle, 0);
+	D3DXMatrixRotationYawPitchRoll(&mCameraRot, m_yaw, m_pitch, 0);
 
 	// Transform vectors based on camera's rotation matrix
 	D3DXVECTOR3 vWorldUp, vWorldAhead;
@@ -158,11 +174,5 @@ void CCamera::Move(const D3DXVECTOR3& direction, float amount)
 
 	// Update the lookAt position based on the eye position
 	m_direction = m_position + vWorldAhead;
-}
-
-// Rotate camera around the target point (simple placeholder)
-void rotate(float yaw, float pitch)
-{
-	// Implementation for yaw/pitch adjustments would go here.
 }
 ///////////////////////////////////////////////////////////////

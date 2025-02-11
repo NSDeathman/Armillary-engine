@@ -12,6 +12,8 @@ CInput::CInput()
 
 	// Initialize all keys as not pressed
 	std::fill(std::begin(m_bKeyPressed), std::end(m_bKeyPressed), false);
+
+	m_bNeedUpdateInput = false;
 }
 
 void CInput::OnFrame()
@@ -29,9 +31,11 @@ void CInput::OnFrame()
 		{
 		case SDL_KEYDOWN:
 			m_bKeyPressed[events[i].key.keysym.scancode] = true;
+			//m_bNeedUpdateInput = true;
 			break;
 		case SDL_KEYUP:
 			m_bKeyPressed[events[i].key.keysym.scancode] = false;
+			//m_bNeedUpdateInput = false;
 			break;
 			// Handle other event types here if needed
 		}
@@ -66,5 +70,10 @@ bool CInput::KeyHolded(int key)
 {
 	// Return true if the key is currently being held down
 	return m_KeyBoardStates[key];
+}
+
+bool CInput::NeedUpdateInput()
+{
+	return true; // m_bNeedUpdateInput;
 }
 ///////////////////////////////////////////////////////////////
