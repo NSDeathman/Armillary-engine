@@ -35,6 +35,7 @@ public:
 	~CCamera() = default;
 
 	void Initialize();
+	void SetDefaultParams();
 	void OnFrame();
 	void Reset();
 

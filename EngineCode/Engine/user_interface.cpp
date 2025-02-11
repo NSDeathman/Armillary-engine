@@ -80,6 +80,8 @@ void CUserInterface::UpdateIngameUI()
 
 		g_bNeedLockCursor = false;
 		g_bNeedUpdateCameraInput = false;
+
+		Camera->SetDefaultParams();
 	}
 }
 

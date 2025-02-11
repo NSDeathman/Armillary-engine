@@ -22,9 +22,7 @@ float g_FarPlane = 100.0f;
 ///////////////////////////////////////////////////////////////
 void CCamera::Initialize()
 {
-	m_position = D3DXVECTOR3(0.0f, 0.0f, -3.0f);
-	m_direction = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_upVec = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	SetDefaultParams();
 
 	m_fov = D3DXToRadian(g_Fov);
 	m_nearPlane = g_NearPlane;
@@ -32,6 +30,13 @@ void CCamera::Initialize()
 	m_aspectRatio = float(g_ScreenWidth) / float(g_ScreenHeight);
 
 	GetCursorPos(&m_ptLastMousePosition);
+}
+
+void CCamera::SetDefaultParams()
+{
+	m_position = D3DXVECTOR3(0.0f, 0.0f, -3.0f);
+	m_direction = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_upVec = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 }
 
 void CCamera::OnFrame()
