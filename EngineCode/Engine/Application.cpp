@@ -150,15 +150,6 @@ void InputUpdateTask()
 	Input->OnFrame();
 }
 
-void RenderTask()
-{
-	OPTICK_THREAD("Armillary engine render thread")
-	OPTICK_FRAME("RenderTask")
-	OPTICK_EVENT("RenderTask")
-
-	Render->OnFrame();
-}
-
 void ProfilingTask()
 {
 	OptickAPI->OnFrame();
@@ -183,7 +174,7 @@ void CApplication::OnFrame()
 	//});
 
 	Camera->OnFrame();
-	RenderTask();
+	Render->OnFrame();
 
 	UserInterface->OnFrame();
 
