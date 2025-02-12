@@ -25,10 +25,16 @@ class CInput
 	~CInput() = default;
 
 	void OnFrame();
+
 	bool KeyPressed(int key);
 	bool KeyHolded(int key);
+
 	bool GamepadButtonPressed(int button);
 	bool GamepadButtonHolded(int button);
+
+	void GetLeftStick(float& x, float& y);
+	void GetRightStick(float& x, float& y);
+
 	bool NeedUpdateInput();
 };
 ///////////////////////////////////////////////////////////////

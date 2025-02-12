@@ -100,22 +100,29 @@ void CCamera::UpdateInput()
 		MoveSpeed /= 4.0f;
 
 	// Move Forward/Backward
-	if (Input->KeyHolded(SDL_SCANCODE_W) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_DPAD_UP))
+	if (Input->KeyHolded(SDL_SCANCODE_W))
 		MoveDirection.z += MoveAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_S) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_DPAD_DOWN))
+	else if (Input->KeyHolded(SDL_SCANCODE_S))
 		MoveDirection.z -= MoveAmount;
 
 	// Move Left/Right
-	if (Input->KeyHolded(SDL_SCANCODE_D) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_DPAD_RIGHT))
+	if (Input->KeyHolded(SDL_SCANCODE_D))
 		MoveDirection.x += MoveAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_A) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_DPAD_LEFT))
+	else if (Input->KeyHolded(SDL_SCANCODE_A))
 		MoveDirection.x -= MoveAmount;
 
 	// Move Up/Down
-	if (Input->KeyHolded(SDL_SCANCODE_E))
+	if (Input->KeyHolded(SDL_SCANCODE_E) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_LEFTSHOULDER))
 		MoveDirection.y += MoveAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_Q))
+	else if (Input->KeyHolded(SDL_SCANCODE_Q) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER))
 		MoveDirection.y -= MoveAmount;
+
+	float LeftStickX = 0.0f;
+	float LeftStickY = 0.0f;
+	Input->GetLeftStick(LeftStickX, LeftStickY);
+
+	MoveDirection.x += LeftStickX * MoveAmount;
+	MoveDirection.z -= LeftStickY * MoveAmount;
 
 	//---------Rotating---------\\
 
@@ -161,16 +168,23 @@ void CCamera::UpdateInput()
 	PitchDelta += ptCurMouseDelta.y * 0.01f;
 
 	// Rotate Up/Down
-	if (Input->KeyHolded(SDL_SCANCODE_UP) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_Y))
+	if (Input->KeyHolded(SDL_SCANCODE_UP))
 		PitchDelta -= RotateAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_DOWN) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_A))
+	else if (Input->KeyHolded(SDL_SCANCODE_DOWN))
 		PitchDelta += RotateAmount;
 
 	// Rotate Right/Left
-	if (Input->KeyHolded(SDL_SCANCODE_RIGHT) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_B))
+	if (Input->KeyHolded(SDL_SCANCODE_RIGHT))
 		YawDelta += RotateAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_LEFT) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_X))
+	else if (Input->KeyHolded(SDL_SCANCODE_LEFT))
 		YawDelta -= RotateAmount;
+
+	float RightStickX = 0.0f;
+	float RightStickY = 0.0f;
+	Input->GetRightStick(RightStickX, RightStickY);
+
+	YawDelta += RightStickX * RotateAmount;
+	PitchDelta += RightStickY * RotateAmount;
 
 	//---------Applying---------\\
 	// Send data to movement code

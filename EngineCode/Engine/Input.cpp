@@ -12,23 +12,10 @@ CInput::CInput()
 
 	m_KeyBoardStates = SDL_GetKeyboardState(NULL);
 
-	// Initialize all keys as not pressed
 	std::fill(std::begin(m_bKeyPressed), std::end(m_bKeyPressed), false);
 	std::fill(std::begin(m_bGamepadButtonPressed), std::end(m_bGamepadButtonPressed), false);
 
-	// Open the first available game controller
-	if (SDL_NumJoysticks() > 0)
-	{
-		//m_GameController = SDL_GameControllerOpen(0);
-		if (m_GameController)
-		{
-			Msg("Already finded connected gamepad");
-		}
-	}
-	else
-	{
-		m_GameController = nullptr; // No game controller available
-	}
+	m_GameController = nullptr;
 
 	m_bNeedUpdateInput = true;
 }
@@ -55,18 +42,18 @@ void CInput::OnFrame()
 			m_bNeedUpdateInput = false;
 			break;
 		case SDL_CONTROLLERDEVICEADDED:
-			Msg("Gamepad added");
+			Msg("New game controller device added");
 			m_GameController = SDL_GameControllerOpen(events[i].cdevice.which);
 			if (m_GameController)
-				Msg("Gamepad controller opened successfuly");
+				Msg("New game controller device opened successfuly");
 			break;
 		case SDL_CONTROLLERDEVICEREMOVED:
-			Msg("Gamepad removed");
+			Msg("New game controller device removed");
 			if (m_GameController)
 			{
 				SDL_GameControllerClose(m_GameController);
 				if (!m_GameController)
-					Msg("Gamepad controller closed successfuly");
+					Msg("New game controller device opened successfuly");
 			}
 			break;
 		default:
@@ -135,6 +122,36 @@ bool CInput::GamepadButtonHolded(int button)
 {
 	// Return true if the gamepad button is being held down
 	return m_GameController && SDL_GameControllerGetButton(m_GameController, static_cast<SDL_GameControllerButton>(button)) == SDL_PRESSED;
+}
+
+// New method to get left stick position
+void CInput::GetLeftStick(float& x, float& y)
+{
+	if (m_GameController)
+	{
+		x = SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_LEFTX) / 32767.0f; // Normalize to [-1, 1]
+		y = SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_LEFTY) / 32767.0f; // Normalize to [-1, 1]
+	}
+	else
+	{
+		x = 0.0f;
+		y = 0.0f;
+	}
+}
+
+// New method to get right stick position
+void CInput::GetRightStick(float& x, float& y)
+{
+	if (m_GameController)
+	{
+		x = SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f; // Normalize to [-1, 1]
+		y = SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_RIGHTY) / 32767.0f; // Normalize to [-1, 1]
+	}
+	else
+	{
+		x = 0.0f;
+		y = 0.0f;
+	}
 }
 
 bool CInput::NeedUpdateInput()
