@@ -98,6 +98,8 @@ void CApplication::Start()
 	Camera->Initialize();
 	
 	Scene = new CScene();
+
+	OptickAPI = new COptickAPI();
 }
 
 void CApplication::Destroy()
@@ -123,6 +125,9 @@ void CApplication::Destroy()
 
 	Log->Destroy();
 	delete Log;
+
+	OptickAPI->Destroy();
+	delete OptickAPI;
 }
 
 void CApplication::HandleSDLEvents()
@@ -154,6 +159,11 @@ void RenderTask()
 	Render->OnFrame();
 }
 
+void ProfilingTask()
+{
+	OptickAPI->OnFrame();
+}
+
 void CApplication::OnFrame()
 {
 	OPTICK_THREAD("Armillary engine primary thread")
@@ -164,10 +174,12 @@ void CApplication::OnFrame()
 
 	Scheduler->Add(InputUpdateTask);
 
+	ProfilingTask();
+
 	//concurrency::task_group render_task;
 	//render_task.run([]() 
 	//{ 
-
+		
 	//});
 
 	Camera->OnFrame();

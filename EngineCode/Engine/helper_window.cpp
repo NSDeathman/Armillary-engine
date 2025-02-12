@@ -14,6 +14,7 @@
 #else
 #include "render_DX9.h"
 #endif
+#include "OptickAPI.h"
 ///////////////////////////////////////////////////////////////
 extern bool g_bNeedCloseApplication;
 ///////////////////////////////////////////////////////////////
@@ -94,6 +95,7 @@ CHelperWindow::CHelperWindow()
 	m_bNeedDraw = false;
 	m_bNeedQuitToMainMenu = false;
 	m_bNeedDrawSettings = false;
+	m_bNeedDrawProfilingSettings = false;
 	m_bNeedLeaveToScene = false;
 }
 
@@ -156,12 +158,31 @@ void CHelperWindow::DrawSettings()
 	ImGui::End();
 }
 
+void CHelperWindow::DrawProfilingSettings()
+{
+	ImGui::PushFont(Imgui->font_letterica_big);
+	ImGui::Begin("Profiling settings window", &m_bNeedDrawProfilingSettings);
+	ImGui::PopFont();
+
+	ImGui::PushFont(Imgui->font_letterica_medium);
+
+	if (ImGui::Button("Capture 1 frame"))
+		OptickAPI->StartCapturing(1);
+
+	ImGui::PopFont();
+
+	ImGui::End();
+}
+
 void CHelperWindow::Draw()
 {
 	if (m_bNeedDraw)
 	{
 		if (m_bNeedDrawSettings)
 			DrawSettings();
+
+		if (m_bNeedDrawProfilingSettings)
+			DrawProfilingSettings();
 
 		ImGui::PushFont(Imgui->font_letterica_big);
 		ImGui::Begin("Helper window");
@@ -174,6 +195,9 @@ void CHelperWindow::Draw()
 
 		if (ImGui::Button("Settings"))
 			m_bNeedDrawSettings = !m_bNeedDrawSettings;
+
+		if (ImGui::Button("Profiling"))
+			m_bNeedDrawProfilingSettings = !m_bNeedDrawProfilingSettings;
 
 		if (ImGui::Button("Quit to main menu"))
 			m_bNeedQuitToMainMenu = true;
