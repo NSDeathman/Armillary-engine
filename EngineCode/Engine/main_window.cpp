@@ -17,6 +17,7 @@ SDL_WindowFlags g_WindowFlags = (SDL_WindowFlags)(SDL_WINDOW_SHOWN |
 CMainWindow::CMainWindow()
 {
 	CreateSDLWindow();
+	CreateCursor();
 }
 
 CMainWindow::~CMainWindow()
@@ -102,5 +103,27 @@ SDL_Window* CMainWindow::GetSDLWindow()
 SDL_DisplayMode CMainWindow::GetSDLDisplayMode()
 {
 	return m_displayMode;
+}
+
+void CMainWindow::CreateCursor()
+{
+	Uint8 l_data[1];
+	Uint8 l_mask[1];
+
+	l_data[0] = 0;
+	l_mask[0] = 0;
+
+	m_cursor = SDL_CreateCursor(l_data, l_mask, 1, 1, 0, 0);
+	SDL_SetCursor(m_cursor);
+}
+
+void CMainWindow::HideCursor()
+{
+	SDL_ShowCursor(false);
+}
+
+void CMainWindow::ShowCursor()
+{
+	SDL_ShowCursor(true);
 }
 ///////////////////////////////////////////////////////////////

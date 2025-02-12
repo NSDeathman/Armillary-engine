@@ -18,6 +18,8 @@ class CHelperWindow
 
 	bool m_bNeedDrawSettings;
 
+	bool m_bNeedLeaveToScene;
+
   public:
 	CHelperWindow();
 	~CHelperWindow() = default;
@@ -29,6 +31,8 @@ class CHelperWindow
 	void Hide();
 
 	bool NeedQuitToMainMenu();
+	bool NeedLeaveToScene();
+	void LeavingToSceneIsDone();
 	void QuitingToMainMenuIsDone();
 };
 ///////////////////////////////////////////////////////////////

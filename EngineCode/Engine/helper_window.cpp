@@ -94,6 +94,7 @@ CHelperWindow::CHelperWindow()
 	m_bNeedDraw = false;
 	m_bNeedQuitToMainMenu = false;
 	m_bNeedDrawSettings = false;
+	m_bNeedLeaveToScene = false;
 }
 
 void CHelperWindow::DrawSettings()
@@ -168,6 +169,9 @@ void CHelperWindow::Draw()
 
 		ImGui::PushFont(Imgui->font_letterica_medium);
 
+		if (ImGui::Button("Leave to scene"))
+			m_bNeedLeaveToScene = true;
+
 		if (ImGui::Button("Settings"))
 			m_bNeedDrawSettings = !m_bNeedDrawSettings;
 
@@ -196,6 +200,16 @@ void CHelperWindow::Hide()
 bool CHelperWindow::NeedQuitToMainMenu()
 {
 	return m_bNeedQuitToMainMenu;
+}
+
+bool CHelperWindow::NeedLeaveToScene()
+{
+	return m_bNeedLeaveToScene;
+}
+
+void CHelperWindow::LeavingToSceneIsDone()
+{
+	m_bNeedLeaveToScene = false;
 }
 
 void CHelperWindow::QuitingToMainMenuIsDone()

@@ -41,10 +41,14 @@ void CCamera::SetDefaultParams()
 
 void CCamera::OnFrame()
 {
-	if (Input->NeedUpdateInput() && g_bNeedUpdateCameraInput)
+	if (g_bNeedUpdateCameraInput)
+	{
 		UpdateInput();
+	}
 	else
+	{
 		GetCursorPos(&m_ptLastMousePosition);
+	}
 }
 
 void CCamera::Reset()

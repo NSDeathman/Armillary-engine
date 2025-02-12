@@ -140,4 +140,14 @@ void CImguiAPI::Destroy()
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 }
+
+void CImguiAPI::HideCursor()
+{
+	ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+}
+
+void CImguiAPI::ShowCursor()
+{
+	ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
+}
 ///////////////////////////////////////////////////////////////

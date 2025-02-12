@@ -13,6 +13,7 @@
 #include "log.h"
 #include "Input.h"
 #include "camera.h"
+#include "main_window.h"
 ///////////////////////////////////////////////////////////////
 CImguiAPI* Imgui = nullptr;
 CHelperWindow* HelperWindow = nullptr;
@@ -60,12 +61,24 @@ void CUserInterface::UpdateIngameUI()
 		LoadingScreen->Hide();
 
 		if (m_bHelperWndDraw)
-			HelperWindow->Show();
-		else
-			HelperWindow->Hide();
-
-		if (Input->KeyPressed(SDL_SCANCODE_ESCAPE) || Input->GamepadButtonPressed(SDL_CONTROLLER_BUTTON_START))
 		{
+			Imgui->ShowCursor();
+			MainWindow->ShowCursor();
+			HelperWindow->Show();
+		}
+		else
+		{
+			Imgui->HideCursor();
+			MainWindow->HideCursor();
+			HelperWindow->Hide();
+		}
+			
+
+		if (Input->KeyPressed(SDL_SCANCODE_ESCAPE) || Input->GamepadButtonPressed(SDL_CONTROLLER_BUTTON_START) || HelperWindow->NeedLeaveToScene())
+		{
+			if (HelperWindow->NeedLeaveToScene())
+				HelperWindow->LeavingToSceneIsDone();
+
 			m_bHelperWndDraw = !m_bHelperWndDraw;
 			g_bNeedLockCursor = !m_bHelperWndDraw;
 			g_bNeedUpdateCameraInput = !m_bHelperWndDraw;
