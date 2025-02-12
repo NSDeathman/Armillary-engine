@@ -6,6 +6,7 @@
 #include "main_menu.h"
 #include "imgui_api.h"
 #include "log.h"
+#include "input.h"
 
 #ifdef USE_DX11
 #include "render_DX11.h"
@@ -47,11 +48,13 @@ void CMainMenu::Draw()
 void CMainMenu::Show()
 {
 	m_bNeedDraw = true;
+	Input->SetNeedUpdateCursorWithGameController(true);
 }
 
 void CMainMenu::Hide()
 {
 	m_bNeedDraw = false;
+	Input->SetNeedUpdateCursorWithGameController(false);
 }
 
 void CMainMenu::SetNeedLoadScene(bool flag)

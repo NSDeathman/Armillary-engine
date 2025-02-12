@@ -19,10 +19,15 @@ class CInput
 	SDL_GameController* m_GameController; // Pointer to the game controller
 
 	bool m_bNeedUpdateInput;
+	bool m_bNeedHandleCursorWithGameController;
+
+	POINT m_ptLastCursorPosition;
 
   public:
 	CInput();
 	~CInput() = default;
+
+	void HandleCursorWithGameController();
 
 	void OnFrame();
 
@@ -31,11 +36,16 @@ class CInput
 
 	bool GamepadButtonPressed(int button);
 	bool GamepadButtonHolded(int button);
+	bool GamepadButtonReleased(int button);
 
 	void GetLeftStick(float& x, float& y);
 	void GetRightStick(float& x, float& y);
 
 	bool NeedUpdateInput();
+	void SetNeedUpdateCursorWithGameController(bool flag)
+	{
+		m_bNeedHandleCursorWithGameController = flag;
+	}
 };
 ///////////////////////////////////////////////////////////////
 extern CInput* Input;

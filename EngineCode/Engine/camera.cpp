@@ -66,7 +66,6 @@ D3DXMATRIX CCamera::GetViewMatrix()
 D3DXMATRIX CCamera::GetProjectionMatrix()
 {
 	D3DXMATRIX projectionMatrix;
-	D3DXMatrixPerspectiveFovLH(&projectionMatrix, m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 
 	if (g_UseOrthogonalProjection)
 	{

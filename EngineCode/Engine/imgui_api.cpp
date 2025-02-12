@@ -12,6 +12,8 @@
 #else
 #include "render_DX9.h"
 #endif
+
+#include "Input.h"
 ///////////////////////////////////////////////////////////////
 void CImguiAPI::Initialize()
 {
@@ -98,6 +100,8 @@ void CImguiAPI::RenderFrame()
 #else
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 #endif
+
+	m_pImGuiInputOutputParams = ImGui::GetIO();
 }
 
 void CImguiAPI::OnFrameEnd()

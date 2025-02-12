@@ -8,6 +8,7 @@
 #include "log.h"
 #include "camera.h"
 #include "main_window.h"
+#include "input.h"
 
 #ifdef USE_DX11
 #include "render_DX11.h"
@@ -214,11 +215,13 @@ void CHelperWindow::Draw()
 void CHelperWindow::Show()
 {
 	m_bNeedDraw = true;
+	Input->SetNeedUpdateCursorWithGameController(true);
 }
 
 void CHelperWindow::Hide()
 {
 	m_bNeedDraw = false;
+	Input->SetNeedUpdateCursorWithGameController(false);
 }
 
 bool CHelperWindow::NeedQuitToMainMenu()

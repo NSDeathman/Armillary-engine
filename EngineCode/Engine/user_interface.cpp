@@ -72,7 +72,6 @@ void CUserInterface::UpdateIngameUI()
 			MainWindow->HideCursor();
 			HelperWindow->Hide();
 		}
-			
 
 		if (Input->KeyPressed(SDL_SCANCODE_ESCAPE) || Input->GamepadButtonPressed(SDL_CONTROLLER_BUTTON_START) || HelperWindow->NeedLeaveToScene())
 		{

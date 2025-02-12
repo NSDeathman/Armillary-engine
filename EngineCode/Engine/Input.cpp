@@ -18,6 +18,34 @@ CInput::CInput()
 	m_GameController = nullptr;
 
 	m_bNeedUpdateInput = true;
+	m_bNeedHandleCursorWithGameController = false;
+
+	GetCursorPos(&m_ptLastCursorPosition);
+}
+
+void CInput::HandleCursorWithGameController()
+{
+	if (m_GameController && m_bNeedHandleCursorWithGameController)
+	{
+		float LeftStickX = 0.0f;
+		float LeftStickY = 0.0f;
+
+		GetLeftStick(LeftStickX, LeftStickY);
+
+		GetCursorPos(&m_ptLastCursorPosition);
+
+		// Adjust the cursor position based on the right stick input
+		m_ptLastCursorPosition.x += static_cast<LONG>(LeftStickX * 10.0f); // Adjust scaling factor as needed
+		m_ptLastCursorPosition.y += static_cast<LONG>(LeftStickY * 10.0f); // Subtract y-axis because screen coordinates typically have 0 at the top
+
+		SetCursorPos(m_ptLastCursorPosition.x, m_ptLastCursorPosition.y);
+
+		if (GamepadButtonHolded(SDL_CONTROLLER_BUTTON_A))
+			mouse_event(MOUSEEVENTF_LEFTDOWN, m_ptLastCursorPosition.x, m_ptLastCursorPosition.y, 0, 0);
+
+		if (GamepadButtonReleased(SDL_CONTROLLER_BUTTON_A))
+			mouse_event(MOUSEEVENTF_LEFTUP, m_ptLastCursorPosition.x, m_ptLastCursorPosition.y, 0, 0);
+	}
 }
 
 void CInput::OnFrame()
@@ -61,6 +89,8 @@ void CInput::OnFrame()
 			break;
 		}
 	}
+
+	HandleCursorWithGameController();
 }
 
 bool CInput::KeyPressed(int key)
@@ -122,6 +152,12 @@ bool CInput::GamepadButtonHolded(int button)
 {
 	// Return true if the gamepad button is being held down
 	return m_GameController && SDL_GameControllerGetButton(m_GameController, static_cast<SDL_GameControllerButton>(button)) == SDL_PRESSED;
+}
+
+bool CInput::GamepadButtonReleased(int button)
+{
+	// Return true if the gamepad button is being held down
+	return m_GameController && SDL_GameControllerGetButton(m_GameController, static_cast<SDL_GameControllerButton>(button)) == SDL_RELEASED;
 }
 
 // New method to get left stick position
