@@ -143,7 +143,6 @@ void CApplication::HandleSDLEvents()
 
 void InputUpdateTask()
 {
-	OPTICK_THREAD("Armillary engine input thread")
 	OPTICK_FRAME("InputUpdateTask")
 	OPTICK_EVENT("InputUpdateTask")
 
@@ -157,7 +156,6 @@ void ProfilingTask()
 
 void CApplication::OnFrame()
 {
-	OPTICK_THREAD("Armillary engine primary thread")
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
