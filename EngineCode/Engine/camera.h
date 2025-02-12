@@ -28,7 +28,6 @@ private:
 	POINT m_ptLastMousePosition;
 
 	void UpdateInput();
-	void Apply(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta);
 
 public:
 	CCamera() = default;
@@ -37,6 +36,7 @@ public:
 	void Initialize();
 	void SetDefaultParams();
 	void OnFrame();
+	void ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta);
 	void Reset();
 
 	void SetFov(float fov)

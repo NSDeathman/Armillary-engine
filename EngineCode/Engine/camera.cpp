@@ -112,9 +112,9 @@ void CCamera::UpdateInput()
 		MoveDirection.x -= MoveAmount;
 
 	// Move Up/Down
-	if (Input->KeyHolded(SDL_SCANCODE_E) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_LEFTSHOULDER))
+	if (Input->KeyHolded(SDL_SCANCODE_E) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER))
 		MoveDirection.y += MoveAmount;
-	else if (Input->KeyHolded(SDL_SCANCODE_Q) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER))
+	else if (Input->KeyHolded(SDL_SCANCODE_Q) || Input->GamepadButtonHolded(SDL_CONTROLLER_BUTTON_LEFTSHOULDER))
 		MoveDirection.y -= MoveAmount;
 
 	float LeftStickX = 0.0f;
@@ -188,7 +188,7 @@ void CCamera::UpdateInput()
 
 	//---------Applying---------\\
 	// Send data to movement code
-	Apply(MoveDirection, MoveSpeed, YawDelta, PitchDelta);
+	ApplyMovement(MoveDirection, MoveSpeed, YawDelta, PitchDelta);
 
 	//---------Clearing---------\\
 	// Set direction and rotation zero value
@@ -197,7 +197,7 @@ void CCamera::UpdateInput()
 	PitchDelta = 0.0f;
 }
 
-void CCamera::Apply(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta)
+void CCamera::ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta)
 {
 	// Simple euler method to calculate position delta
 	D3DXVECTOR3 vPosDelta = direction * amount;
