@@ -5,6 +5,7 @@
 ///////////////////////////////////////////////////////////////
 #include "Input.h"
 #include "log.h"
+#include "main_window.h"
 ///////////////////////////////////////////////////////////////
 CInput::CInput()
 {
@@ -69,24 +70,22 @@ void CInput::OnFrame()
 			m_bKeyPressed[events[i].key.keysym.scancode] = false;
 			m_bNeedUpdateInput = false;
 			break;
-		case SDL_CONTROLLERDEVICEADDED:
-			Msg("New game controller device added");
-			m_GameController = SDL_GameControllerOpen(events[i].cdevice.which);
-			if (m_GameController)
-				Msg("New game controller device opened successfuly");
-			break;
-		case SDL_CONTROLLERDEVICEREMOVED:
-			Msg("New game controller device removed");
-			if (m_GameController)
-			{
-				SDL_GameControllerClose(m_GameController);
-				if (!m_GameController)
-					Msg("New game controller device opened successfuly");
-			}
-			break;
 		default:
 			m_bNeedUpdateInput = false;
 			break;
+		}
+
+		if (SDL_NumJoysticks() && !m_GameController)
+		{
+			m_GameController = SDL_GameControllerOpen(events[i].cdevice.which);
+			if (m_GameController)
+				Msg("New game controller device opened successfuly");
+		}
+		else if (SDL_NumJoysticks() == 0 && m_GameController)
+		{
+			SDL_GameControllerClose(m_GameController);
+			m_GameController = nullptr; // Set to null after closing
+			Msg("Game controller device closed successfuly");
 		}
 	}
 
