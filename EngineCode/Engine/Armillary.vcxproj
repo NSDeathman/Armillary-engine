@@ -24,7 +24,7 @@
     <ProjectGuid>{015B628E-86AE-4D37-97DD-3700EF946707}</ProjectGuid>
     <RootNamespace>Testengine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Armillary</ProjectName>
+    <ProjectName>Armillary engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

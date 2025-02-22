@@ -105,10 +105,70 @@ void CRenderDX9::InitializeDirect3D()
 
 	ShowWindow(m_hWindow, SW_SHOWDEFAULT);
 	UpdateWindow(m_hWindow);
+
+	ID3DXBuffer* vertexShaderBuffer = NULL;
+	ID3DXBuffer* errorBuffer = NULL;
+
+	std::string ObjectStageShaderPath = SHADERS + (std::string) "object_stage.hlsl";
+
+	hresult = D3DXCompileShaderFromFile(ObjectStageShaderPath.c_str(), 
+										nullptr, 
+										nullptr, 
+										"VSMain", 
+										"vs_3_0", 
+										NULL, 
+										&vertexShaderBuffer, 
+										&errorBuffer, 
+										&m_pConstantTable);
+
+	if (FAILED(hresult))
+	{
+		if (errorBuffer)
+		{
+			Msg("Vertex shader error");
+			Msg("%s", (char*)errorBuffer->GetBufferPointer());
+			MessageBoxA(nullptr, (char*)errorBuffer->GetBufferPointer(), "Shader Error", MB_OK);
+			errorBuffer->Release();
+		}
+		return;
+	}
+
+	m_pDirect3dDevice->CreateVertexShader((DWORD*)vertexShaderBuffer->GetBufferPointer(), &m_vertexShader);
+	vertexShaderBuffer->Release();
+
+	ID3DXBuffer* PixelShaderBuffer = NULL;
+
+	hresult = D3DXCompileShaderFromFile(ObjectStageShaderPath.c_str(), 
+										nullptr, 
+										nullptr, 
+										"PSMain", 
+										"ps_3_0", 
+										NULL, 
+										&PixelShaderBuffer,
+										&errorBuffer, 
+										&m_pConstantTable);
+
+	if (FAILED(hresult))
+	{
+		if (errorBuffer)
+		{
+			Msg("Pixel shader error");
+			Msg("%s", (char*)errorBuffer->GetBufferPointer());
+			MessageBoxA(nullptr, (char*)errorBuffer->GetBufferPointer(), "Shader Error", MB_OK);
+			errorBuffer->Release();
+		}
+		return;
+	}
+
+	m_pDirect3dDevice->CreatePixelShader((DWORD*)PixelShaderBuffer->GetBufferPointer(), &m_pixelShader);
+	PixelShaderBuffer->Release();
 }
 
 void CRenderDX9::DestroyDirect3D()
 {
+	SAFE_RELEASE(m_pixelShader);
+	SAFE_RELEASE(m_vertexShader);
+
 	SAFE_RELEASE(m_pDirect3dDevice);
 
 	SAFE_RELEASE(m_pDirect3D);

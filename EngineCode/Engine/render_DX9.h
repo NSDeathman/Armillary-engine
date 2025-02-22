@@ -19,6 +19,10 @@ class CRenderDX9
 	DWORD MaxSimultaneousTextures;
 	D3DMULTISAMPLE_TYPE m_MaxMultiSamplingQuality;
 	UINT m_Frame;
+
+	IDirect3DVertexShader9* m_vertexShader;
+	IDirect3DPixelShader9* m_pixelShader;
+	ID3DXConstantTable* m_pConstantTable;
 	
   private:
 	BOOL m_bDeviceLost;

@@ -44,7 +44,6 @@ struct Material
 
 	CHAR strTexture[MAX_PATH];
 	IDirect3DTexture9* pTexture;
-	D3DXHANDLE hTechnique;
 };
 
 class CMeshLoader

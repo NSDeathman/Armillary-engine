@@ -20,7 +20,7 @@
 extern bool g_bNeedCloseApplication;
 ///////////////////////////////////////////////////////////////
 bool g_bNeedRestart = false;
-bool g_bWireframeMode = true;
+bool g_bWireframeMode = false;
 ///////////////////////////////////////////////////////////////
 extern uint16_t g_ScreenWidth;
 extern uint16_t g_ScreenHeight;

@@ -22,7 +22,7 @@ void LoadMesh()
 {
 	Scene->SetSceneLoadingState(true);
 
-	Scene->m_MeshLoader.Create(Device, MESHES, "Earth.obj");
+	Scene->m_MeshLoader.Create(Device, MESHES, "maxwell.obj");
 
 	Scene->SetSceneLoadingState(false);
 	Scene->SetSceneLoaded(true);
@@ -49,15 +49,16 @@ void CScene::Load()
 void CScene::DrawGeometry()
 {
 	// Meshes are divided into subsets, one for each material. Render them in a loop
-	concurrency::parallel_for(UINT(0), m_MeshLoader.GetNumMaterials(), [this](UINT iSubset) 
+	for (UINT iSubset = 0; iSubset < m_MeshLoader.GetNumMaterials(); iSubset++) 
 	{
 		ID3DXMesh* pMesh = m_MeshLoader.GetMesh();
 		if (pMesh)
 		{
 			Material* pMaterial = m_MeshLoader.GetMaterial(iSubset);
+			Device->SetTexture(0, pMaterial->pTexture);
 			pMesh->DrawSubset(iSubset);
 		}
-	});
+	}
 }
 
 void CScene::Destroy()

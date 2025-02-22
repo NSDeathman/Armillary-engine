@@ -23,6 +23,7 @@ CRenderDX9::CRenderDX9()
 	m_hWindow = nullptr;
 	m_pDirect3D = nullptr;
 	m_pDirect3dDevice = nullptr;
+	m_pConstantTable = nullptr;
 	ZeroMemory(&m_pDirect3DPresentParams, sizeof(m_pDirect3DPresentParams));
 
 	m_bDeviceLost = false;
@@ -43,18 +44,5 @@ void CRenderDX9::Destroy()
 {
 	Msg("Destroying render...");
 	DestroyDirect3D();
-}
-
-void CRenderDX9::CreateMatrices()
-{
-	D3DXMATRIX matView = Camera->GetViewMatrix();
-	m_pDirect3dDevice->SetTransform(D3DTS_VIEW, &matView);
-
-	D3DXMATRIX matProjection = Camera->GetProjectionMatrix();
-	m_pDirect3dDevice->SetTransform(D3DTS_PROJECTION, &matProjection);
-
-	D3DXMATRIXA16 matWorld;
-	D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
-	m_pDirect3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 }
 ///////////////////////////////////////////////////////////////

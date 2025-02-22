@@ -34,8 +34,8 @@ void CCamera::Initialize()
 
 void CCamera::SetDefaultParams()
 {
-	m_position = D3DXVECTOR3(0.0f, 0.0f, -3.0f);
-	m_direction = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_position = D3DXVECTOR3(0.0f, 15.0f, -30.0f);
+	m_direction = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
 	m_upVec = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 	m_yaw = 0.0f;

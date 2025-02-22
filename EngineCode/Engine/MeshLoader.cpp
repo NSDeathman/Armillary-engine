@@ -65,6 +65,8 @@ void CMeshLoader::Destroy()
 //--------------------------------------------------------------------------------------
 HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilePath, const CHAR* strFilename)
 {
+	Msg("Creating mesh from OBJ file with name: %s", strFilename);
+
 	HRESULT hr;
 	CHAR str[MAX_PATH] = {0};
 
@@ -87,7 +89,7 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilePat
 	SetCurrentDirectory(m_strMediaDir);
 
 	// Load material textures
-	concurrency::parallel_for(int(0), m_Materials.GetSize(), [&](int iMaterial) 
+	for (int iMaterial = 0; iMaterial < m_Materials.GetSize(); iMaterial++) 
 	{
 		Material* pMaterial = m_Materials.GetAt(iMaterial);
 		if (pMaterial->strTexture[0])
@@ -104,12 +106,16 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilePat
 					break;
 				}
 			}
-
+			
 			// Not found, load the texture
 			if (!bFound)
+			{
+				Msg("Loading texture: %s", pMaterial->strTexture);
 				hr = D3DXCreateTextureFromFile(pd3dDevice, pMaterial->strTexture, &(pMaterial->pTexture));
+				ASSERT(SUCCEEDED(hr), "Can't load texture from OBJ: %s", pMaterial->strTexture);
+			}
 		}
-	});
+	}
 
 	// Restore the original current directory
 	SetCurrentDirectory(strOldDir);
@@ -434,6 +440,8 @@ void CMeshLoader::DeleteCache()
 //--------------------------------------------------------------------------------------
 HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* strFileName)
 {
+	Msg("Loading material from MTL file with name: %s", strFileName);
+
 	HRESULT hr;
 
 	// File input
@@ -454,27 +462,28 @@ HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* s
 		if (!InFile)
 			break;
 
-		if (0 == strcmp(strCommand, "newmt"))
+		if (0 == strcmp(strCommand, "newmtl"))
 		{
 			// Switching active materials
 			CHAR strName[MAX_PATH] = {0};
 			InFile >> strName;
 
+			Msg("Processing material: %s", strName);
+
 			pMaterial = NULL;
 			for (int i = 0; i < m_Materials.GetSize(); i++)
 			{
 				Material* pCurMaterial = m_Materials.GetAt(i);
-				if (0 == strcmp(pCurMaterial->strName, strName))
-				{
-					pMaterial = pCurMaterial;
-					break;
-				}
+				pMaterial = pCurMaterial;
+				break;
 			}
 		}
 
 		// The rest of the commands rely on an active material
 		if (pMaterial == NULL)
+		{
 			continue;
+		}
 
 		if (0 == strcmp(strCommand, "#"))
 		{
@@ -524,8 +533,8 @@ HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* s
 		{
 			// Texture
 			InFile >> pMaterial->strTexture;
+			Msg("%s", pMaterial->strTexture);
 		}
-
 		else
 		{
 			// Unimplemented or unrecognized command
