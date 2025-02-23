@@ -12,7 +12,8 @@ extern uint16_t g_ScreenHeight;
 SDL_WindowFlags g_WindowFlags = (SDL_WindowFlags)(SDL_WINDOW_SHOWN | 
 												SDL_WINDOW_INPUT_FOCUS | 
 												SDL_WINDOW_BORDERLESS | 
-												SDL_WINDOW_MAXIMIZED);
+												SDL_WINDOW_MAXIMIZED |
+												SDL_WINDOW_ALLOW_HIGHDPI);
 ///////////////////////////////////////////////////////////////
 CMainWindow::CMainWindow()
 {

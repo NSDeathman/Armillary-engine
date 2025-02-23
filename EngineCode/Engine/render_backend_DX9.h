@@ -37,6 +37,10 @@ public:
 	void enable_anisotropy_filtering();
 	void disable_anisotropy_filtering();
 
+	void set_shader_constant(D3DXHANDLE constant, bool flag)
+	{
+	}
+
 	CRenderBackendDX9();
 	~CRenderBackendDX9() = default;
 };

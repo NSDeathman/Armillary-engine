@@ -75,7 +75,8 @@ void CRenderDX9::CreateMatrices()
 	m_pDirect3dDevice->SetTransform(D3DTS_PROJECTION, &matProjection);
 
 	D3DXMATRIX matWorld;
-	D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
+	//D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
+	D3DXMatrixTranslation(&matWorld, 0, 0, 0);
 	m_pDirect3dDevice->SetVertexShaderConstantF(9, matWorld, 4);
 	m_pDirect3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
@@ -88,6 +89,9 @@ void CRenderDX9::CreateMatrices()
 	D3DXMATRIX matViewProjectionTransposed;
 	D3DXMatrixTranspose(&matViewProjectionTransposed, &matWorldViewProjection);
 	m_pDirect3dDevice->SetVertexShaderConstantF(17, matViewProjectionTransposed, 4);
+
+	D3DXMATRIX matWorldView = matWorld * matView;
+	m_pDirect3dDevice->SetVertexShaderConstantF(21, matWorldView, 4);
 }
 
 void CRenderDX9::RenderFrame()
@@ -111,8 +115,6 @@ void CRenderDX9::RenderScene()
 
 	if (g_bWireframeMode)
 		RenderBackend->set_FillMode(CRenderBackendDX9::FILL_WIREFRAME);
-
-	//m_pConstantTable->SetVector(m_pDirect3dDevice, "color", &clear_col_dx);
 
 	Scene->DrawGeometry();
 

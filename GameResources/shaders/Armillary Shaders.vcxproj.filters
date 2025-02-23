@@ -18,4 +18,9 @@
       <Filter>Helpers</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="brdf.ash">
+      <Filter>Helpers</Filter>
+    </None>
+  </ItemGroup>
 </Project>

@@ -122,6 +122,10 @@
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -151,6 +155,10 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -177,6 +185,10 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -208,13 +220,15 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="build_identificator.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="cpu_identificator.cpp" />
-    <ClCompile Include="DXUTcamera.cpp" />
-    <ClCompile Include="DXUTtimer.cpp" />
     <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="filesystem.cpp" />
@@ -244,8 +258,6 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="cpu_identificator.h" />
-    <ClInclude Include="DXUTcamera.h" />
-    <ClInclude Include="DXUTtimer.h" />
     <ClInclude Include="growable_array.h" />
     <ClInclude Include="helper_window.h" />
     <ClInclude Include="Input.h" />

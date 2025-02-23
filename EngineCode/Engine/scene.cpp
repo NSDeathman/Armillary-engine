@@ -22,7 +22,7 @@ void LoadMesh()
 {
 	Scene->SetSceneLoadingState(true);
 
-	Scene->m_MeshLoader.Create(Device, MESHES, "maxwell.obj");
+	Scene->m_MeshLoader.Create(Device, MESHES, "debug_plane.obj");
 
 	Scene->SetSceneLoadingState(false);
 	Scene->SetSceneLoaded(true);
@@ -55,7 +55,13 @@ void CScene::DrawGeometry()
 		if (pMesh)
 		{
 			Material* pMaterial = m_MeshLoader.GetMaterial(iSubset);
-			Device->SetTexture(0, pMaterial->pTexture);
+
+			Device->SetTexture(0, pMaterial->pTextureAlbedo);
+			Device->SetTexture(1, pMaterial->pTextureNormal);
+			Device->SetTexture(2, pMaterial->pTextureRoughness);
+			Device->SetTexture(3, pMaterial->pTextureMetallic);
+			Device->SetTexture(4, pMaterial->pTextureAO);
+
 			pMesh->DrawSubset(iSubset);
 		}
 	}

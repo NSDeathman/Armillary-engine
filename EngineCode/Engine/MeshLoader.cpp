@@ -45,11 +45,24 @@ void CMeshLoader::Destroy()
 		for (int x = iMaterial + 1; x < m_Materials.GetSize(); x++)
 		{
 			Material* pCur = m_Materials.GetAt(x);
-			if (pCur->pTexture == pMaterial->pTexture)
-				pCur->pTexture = NULL;
+			if (pCur->pTextureAlbedo == pMaterial->pTextureAlbedo)
+				pCur->pTextureAlbedo = NULL;
+
+			if (pCur->pTextureNormal == pMaterial->pTextureNormal)
+				pCur->pTextureNormal = NULL;
+
+			if (pCur->pTextureRoughness == pMaterial->pTextureRoughness)
+				pCur->pTextureRoughness = NULL;
+
+			if (pCur->pTextureMetallic == pMaterial->pTextureMetallic)
+				pCur->pTextureMetallic = NULL;
 		}
 
-		SAFE_RELEASE(pMaterial->pTexture);
+		SAFE_RELEASE(pMaterial->pTextureAlbedo);
+		SAFE_RELEASE(pMaterial->pTextureNormal);
+		SAFE_RELEASE(pMaterial->pTextureRoughness);
+		SAFE_RELEASE(pMaterial->pTextureMetallic);
+		SAFE_RELEASE(pMaterial->pTextureAO);
 		SAFE_DELETE(pMaterial);
 	});
 
@@ -92,17 +105,20 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilePat
 	for (int iMaterial = 0; iMaterial < m_Materials.GetSize(); iMaterial++) 
 	{
 		Material* pMaterial = m_Materials.GetAt(iMaterial);
-		if (pMaterial->strTexture[0])
+		if (pMaterial->strTextureAlbedo[0])
 		{
 			// Avoid loading the same texture twice
 			bool bFound = false;
 			for (int x = 0; x < iMaterial; x++)
 			{
 				Material* pCur = m_Materials.GetAt(x);
-				if (0 == strcmp(pCur->strTexture, pMaterial->strTexture))
+				if (0 == strcmp(pCur->strTextureAlbedo, pMaterial->strTextureAlbedo))
 				{
 					bFound = true;
-					pMaterial->pTexture = pCur->pTexture;
+					pMaterial->pTextureAlbedo = pCur->pTextureAlbedo;
+					pMaterial->pTextureNormal = pCur->pTextureNormal;
+					pMaterial->pTextureRoughness = pCur->pTextureRoughness;
+					pMaterial->pTextureMetallic = pCur->pTextureMetallic;
 					break;
 				}
 			}
@@ -110,9 +126,57 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilePat
 			// Not found, load the texture
 			if (!bFound)
 			{
-				Msg("Loading texture: %s", pMaterial->strTexture);
-				hr = D3DXCreateTextureFromFile(pd3dDevice, pMaterial->strTexture, &(pMaterial->pTexture));
-				ASSERT(SUCCEEDED(hr), "Can't load texture from OBJ: %s", pMaterial->strTexture);
+				Msg("Loading albedo texture: %s", pMaterial->strTextureAlbedo);
+				hr = D3DXCreateTextureFromFile(pd3dDevice, pMaterial->strTextureAlbedo, &(pMaterial->pTextureAlbedo));
+				ASSERT(SUCCEEDED(hr), "Can't load texture from OBJ: %s", pMaterial->strTextureAlbedo);
+
+				if (pMaterial->bHaveNormal)
+				{
+					Msg("Loading normal texture: %s", pMaterial->strTextureNormal);
+					hr = D3DXCreateTextureFromFile(pd3dDevice, pMaterial->strTextureNormal, &(pMaterial->pTextureNormal));
+					ASSERT(SUCCEEDED(hr), "Can't load texture from OBJ: %s", pMaterial->strTextureNormal);
+				}
+				else
+				{
+					std::string DummyNormalPath = TEXTURES + (std::string)"dummy_normal.dds";
+					hr = D3DXCreateTextureFromFile(pd3dDevice, DummyNormalPath.c_str(), &(pMaterial->pTextureNormal));
+				}
+
+				if (pMaterial->bHaveRoughness)
+				{
+					Msg("Loading roughness texture: %s", pMaterial->strTextureRoughness);
+					hr = D3DXCreateTextureFromFile(pd3dDevice, pMaterial->strTextureRoughness, &(pMaterial->pTextureRoughness));
+					ASSERT(SUCCEEDED(hr), "Can't load texture from OBJ: %s", pMaterial->strTextureRoughness);
+				}
+				else
+				{
+					std::string DummyRoughnessPath = TEXTURES + (std::string) "dummy_white.dds";
+					hr = D3DXCreateTextureFromFile(pd3dDevice, DummyRoughnessPath.c_str(), &(pMaterial->pTextureRoughness));
+				}
+
+				if (pMaterial->bHaveMetallic)
+				{
+					Msg("Loading metallic texture: %s", pMaterial->strTextureMetallic);
+					hr = D3DXCreateTextureFromFile(pd3dDevice, pMaterial->strTextureMetallic, &(pMaterial->pTextureMetallic));
+					ASSERT(SUCCEEDED(hr), "Can't load texture from OBJ: %s", pMaterial->strTextureMetallic);
+				}
+				else
+				{
+					std::string DummyMetallicPath = TEXTURES + (std::string) "dummy_black.dds";
+					hr = D3DXCreateTextureFromFile(pd3dDevice, DummyMetallicPath.c_str(), &(pMaterial->pTextureRoughness));
+				}
+
+				if (pMaterial->bHaveAO)
+				{
+					Msg("Loading AO texture: %s", pMaterial->strTextureAO);
+					hr = D3DXCreateTextureFromFile(pd3dDevice, pMaterial->strTextureAO, &(pMaterial->pTextureAO));
+					ASSERT(SUCCEEDED(hr), "Can't load texture from OBJ: %s", pMaterial->strTextureAO);
+				}
+				else
+				{
+					std::string DummyAOPath = TEXTURES + (std::string) "dummy_white.dds";
+					hr = D3DXCreateTextureFromFile(pd3dDevice, DummyAOPath.c_str(), &(pMaterial->pTextureAO));
+				}
 			}
 		}
 	}
@@ -169,6 +233,7 @@ HRESULT CMeshLoader::Create(IDirect3DDevice9* pd3dDevice, const CHAR* strFilePat
 	ASSERT(SUCCEEDED(hr), "Can't Optimize Inplace in create mesh from OBJ: %s", strFilePath + strFilename);
 
 	SAFE_DELETE_ARRAY(aAdjacency);
+
 	m_pMesh = pMesh;
 
 	return S_OK;
@@ -185,15 +250,6 @@ HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFilepath, const CHAR* st
 	CGrowableArray<D3DXVECTOR3> Positions;
 	CGrowableArray<D3DXVECTOR2> TexCoords;
 	CGrowableArray<D3DXVECTOR3> Normals;
-
-	// The first subset uses the default material
-	Material* pMaterial = new Material();
-	if (pMaterial == NULL)
-		return E_OUTOFMEMORY;
-
-	InitMaterial(pMaterial);
-	strcpy_s(pMaterial->strName, MAX_PATH - 1, "default");
-	m_Materials.Add(pMaterial);
 
 	DWORD dwCurSubset = 0;
 
@@ -221,7 +277,7 @@ HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFilepath, const CHAR* st
 			// Vertex Position
 			float x, y, z;
 			InFile >> x >> y >> z;
-			Positions.Add(D3DXVECTOR3(x, y, z));
+			Positions.Add(D3DXVECTOR3(-x, y, z));
 		}
 		else if (0 == strcmp(strCommand, "vt"))
 		{
@@ -289,11 +345,13 @@ HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFilepath, const CHAR* st
 			// Material library
 			InFile >> strMaterialFilename;
 		}
-		else if (0 == strcmp(strCommand, "usemt"))
+		else if (0 == strcmp(strCommand, "usemtl"))
 		{
 			// Material
 			CHAR strName[MAX_PATH] = {0};
 			InFile >> strName;
+
+			Msg("Processing material %s", strName);
 
 			bool bFound = false;
 			for (int iMaterial = 0; iMaterial < m_Materials.GetSize(); iMaterial++)
@@ -309,7 +367,7 @@ HRESULT CMeshLoader::LoadGeometryFromOBJ(const CHAR* strFilepath, const CHAR* st
 
 			if (!bFound)
 			{
-				pMaterial = new Material();
+				Material* pMaterial = new Material();
 				if (pMaterial == NULL)
 					return E_OUTOFMEMORY;
 
@@ -468,22 +526,21 @@ HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* s
 			CHAR strName[MAX_PATH] = {0};
 			InFile >> strName;
 
-			Msg("Processing material: %s", strName);
-
 			pMaterial = NULL;
 			for (int i = 0; i < m_Materials.GetSize(); i++)
 			{
 				Material* pCurMaterial = m_Materials.GetAt(i);
-				pMaterial = pCurMaterial;
-				break;
+				if (0 == strcmp(pCurMaterial->strName, strName))
+				{
+					pMaterial = pCurMaterial;
+					break;
+				}
 			}
 		}
 
 		// The rest of the commands rely on an active material
 		if (pMaterial == NULL)
-		{
 			continue;
-		}
 
 		if (0 == strcmp(strCommand, "#"))
 		{
@@ -532,8 +589,31 @@ HRESULT CMeshLoader::LoadMaterialsFromMTL(const CHAR* strFilePath, const CHAR* s
 		else if (0 == strcmp(strCommand, "map_Kd"))
 		{
 			// Texture
-			InFile >> pMaterial->strTexture;
-			Msg("%s", pMaterial->strTexture);
+			InFile >> pMaterial->strTextureAlbedo;
+		}
+		else if (0 == strcmp(strCommand, "map_Bump"))
+		{
+			// Texture
+			InFile >> pMaterial->strTextureNormal;
+			pMaterial->bHaveNormal = true;
+		}
+		else if (0 == strcmp(strCommand, "map_Ns"))
+		{
+			// Texture
+			InFile >> pMaterial->strTextureRoughness;
+			pMaterial->bHaveRoughness = true;
+		}
+		else if (0 == strcmp(strCommand, "refl"))
+		{
+			// Texture
+			InFile >> pMaterial->strTextureMetallic;
+			pMaterial->bHaveMetallic = true;
+		}
+		else if (0 == strcmp(strCommand, "ao"))
+		{
+			// Texture
+			InFile >> pMaterial->strTextureAO;
+			pMaterial->bHaveAO = true;
 		}
 		else
 		{
@@ -559,5 +639,15 @@ void CMeshLoader::InitMaterial(Material* pMaterial)
 	pMaterial->nShininess = 0;
 	pMaterial->fAlpha = 1.0f;
 	pMaterial->bSpecular = false;
-	pMaterial->pTexture = NULL;
+
+	pMaterial->pTextureAlbedo = NULL;
+	pMaterial->pTextureNormal = NULL;
+	pMaterial->pTextureRoughness = NULL;
+	pMaterial->pTextureMetallic = NULL;
+	pMaterial->pTextureAO = NULL;
+
+	pMaterial->bHaveMetallic = false;
+	pMaterial->bHaveRoughness = false;
+	pMaterial->bHaveNormal = false;
+	pMaterial->bHaveAO = false;
 }

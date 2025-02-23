@@ -167,8 +167,8 @@ void CHelperWindow::DrawProfilingSettings()
 
 	ImGui::PushFont(Imgui->font_letterica_medium);
 
-	if (ImGui::Button("Capture 20 frames"))
-		OptickAPI->StartCapturing(20);
+	if (ImGui::Button("Capture 10 frames"))
+		OptickAPI->StartCapturing(10);
 
 	ImGui::PopFont();
 

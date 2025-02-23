@@ -24,6 +24,9 @@
   <ItemGroup>
     <ClInclude Include="common.ash" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="brdf.ash" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
