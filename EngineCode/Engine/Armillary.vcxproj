@@ -24,7 +24,7 @@
     <ProjectGuid>{015B628E-86AE-4D37-97DD-3700EF946707}</ProjectGuid>
     <RootNamespace>Testengine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Armillary engine</ProjectName>
+    <ProjectName>Armillary</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -109,7 +109,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <IncludeInUnityFile>true</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -122,10 +122,6 @@
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
-    <Manifest>
-      <EnableDpiAwareness>true</EnableDpiAwareness>
-      <SuppressStartupBanner>false</SuppressStartupBanner>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -140,7 +136,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <IncludeInUnityFile>true</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -155,10 +151,6 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
-    <Manifest>
-      <EnableDpiAwareness>true</EnableDpiAwareness>
-      <SuppressStartupBanner>false</SuppressStartupBanner>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -172,8 +164,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -185,10 +176,6 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"<
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
-    <Manifest>
-      <EnableDpiAwareness>true</EnableDpiAwareness>
-      <SuppressStartupBanner>false</SuppressStartupBanner>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -205,8 +192,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -220,10 +206,6 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\Imgui.dll" "$(OutDir)Imgui.dll"
 copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
     </PostBuildEvent>
-    <Manifest>
-      <EnableDpiAwareness>true</EnableDpiAwareness>
-      <SuppressStartupBanner>false</SuppressStartupBanner>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="build_identificator.cpp" />
@@ -242,15 +224,8 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="main_window.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
-    <ClCompile Include="render_backend_DX9.cpp" />
-    <ClCompile Include="render_DX11_core.cpp" />
-    <ClCompile Include="render_DX11_device.cpp" />
-    <ClCompile Include="render_DX11_frame_pipeline.cpp" />
-    <ClCompile Include="render_DX11_reset.cpp" />
-    <ClCompile Include="render_DX9_core.cpp" />
-    <ClCompile Include="render_DX9_device.cpp" />
-    <ClCompile Include="render_DX9_frame_pipeline.cpp" />
-    <ClCompile Include="render_DX9_reset.cpp" />
+    <ClCompile Include="render_backend.cpp" />
+    <ClCompile Include="render.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="splash_screen.cpp" />
     <ClCompile Include="user_interface.cpp" />
@@ -273,11 +248,8 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="imgui_api.h" />
     <ClInclude Include="log.h" />
-    <ClInclude Include="render_backend_DX9.h" />
-    <ClInclude Include="render_DX11.h" />
-    <ClInclude Include="render_DX11_stdafx.h" />
-    <ClInclude Include="render_DX9.h" />
-    <ClInclude Include="render_DX9_stdafx.h" />
+    <ClInclude Include="render_backend.h" />
+    <ClInclude Include="render.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="splash_screen.h" />

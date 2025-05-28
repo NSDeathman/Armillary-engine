@@ -4,16 +4,9 @@
 // ImGui implementation
 ///////////////////////////////////////////////////////////////
 #include "imgui_api.h"
+#include "render.h"
 #include "log.h"
 #include "main_window.h"
-
-#ifdef USE_DX11
-#include "render_DX11.h"
-#else
-#include "render_DX9.h"
-#endif
-
-#include "Input.h"
 ///////////////////////////////////////////////////////////////
 void CImguiAPI::Initialize()
 {
@@ -33,12 +26,7 @@ void CImguiAPI::Initialize()
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplSDL2_InitForD3D(MainWindow->GetSDLWindow());
-
-#ifdef USE_DX11
-	ImGui_ImplDX11_Init(Device, DeviceContext);
-#else
-	ImGui_ImplDX9_Init(Device);
-#endif
+	ImGui_ImplDX9_Init(Render->m_pDirect3dDevice);
 
 	// Load Fonts
 	// - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use
@@ -81,12 +69,7 @@ void CImguiAPI::Initialize()
 
 void CImguiAPI::OnFrameBegin()
 {
-#ifdef USE_DX11
-	ImGui_ImplDX11_NewFrame();
-#else
 	ImGui_ImplDX9_NewFrame();
-#endif
-
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 }
@@ -94,14 +77,7 @@ void CImguiAPI::OnFrameBegin()
 void CImguiAPI::RenderFrame()
 {
 	ImGui::Render();
-
-#ifdef USE_DX11
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-#else
 	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-#endif
-
-	m_pImGuiInputOutputParams = ImGui::GetIO();
 }
 
 void CImguiAPI::OnFrameEnd()
@@ -111,47 +87,21 @@ void CImguiAPI::OnFrameEnd()
 
 void CImguiAPI::OnResetBegin()
 {
-	Msg("Invalidating ImGuiAPI Device objects...");	
-
-#ifdef USE_DX11
-	ImGui_ImplDX11_InvalidateDeviceObjects();
-#else
+	Msg("Invalidating ImGuiAPI Device objects...");
 	ImGui_ImplDX9_InvalidateDeviceObjects();
-#endif
 }
 
 void CImguiAPI::OnResetEnd()
 {
 	Msg("Creating ImGuiAPI Device objects...");
-
-#ifdef USE_DX11
-	ImGui_ImplDX11_CreateDeviceObjects();
-#else
 	ImGui_ImplDX9_CreateDeviceObjects();
-#endif
 }
 
 void CImguiAPI::Destroy()
 {
 	Msg("Destroying ImGuiAPI...");
-	
-#ifdef USE_DX11
-	ImGui_ImplDX11_Shutdown();
-#else
 	ImGui_ImplDX9_Shutdown();
-#endif
-
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
-}
-
-void CImguiAPI::HideCursor()
-{
-	ImGui::SetMouseCursor(ImGuiMouseCursor_None);
-}
-
-void CImguiAPI::ShowCursor()
-{
-	ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
 }
 ///////////////////////////////////////////////////////////////

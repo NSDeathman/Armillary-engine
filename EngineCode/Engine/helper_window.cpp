@@ -5,25 +5,18 @@
 ///////////////////////////////////////////////////////////////
 #include "helper_window.h"
 #include "imgui_api.h"
+#include "render.h"
 #include "log.h"
 #include "camera.h"
 #include "main_window.h"
-#include "input.h"
-
-#ifdef USE_DX11
-#include "render_DX11.h"
-#else
-#include "render_DX9.h"
-#endif
-#include "OptickAPI.h"
 ///////////////////////////////////////////////////////////////
 extern bool g_bNeedCloseApplication;
 ///////////////////////////////////////////////////////////////
 bool g_bNeedRestart = false;
-bool g_bWireframeMode = false;
+bool g_bWireframeMode = true;
 ///////////////////////////////////////////////////////////////
-extern uint16_t g_ScreenWidth;
-extern uint16_t g_ScreenHeight;
+extern UINT g_ScreenWidth;
+extern UINT g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 static int SelectedResolution = 0;
 const char* screen_resolution_list[] = 
@@ -96,8 +89,6 @@ CHelperWindow::CHelperWindow()
 	m_bNeedDraw = false;
 	m_bNeedQuitToMainMenu = false;
 	m_bNeedDrawSettings = false;
-	m_bNeedDrawProfilingSettings = false;
-	m_bNeedLeaveToScene = false;
 }
 
 void CHelperWindow::DrawSettings()
@@ -115,8 +106,7 @@ void CHelperWindow::DrawSettings()
 			if (ImGui::Button("Orthographic camera"))
 				g_UseOrthogonalProjection = true;
 
-			if(ImGui::DragFloat("Camera fov", &g_Fov, 0.5f, 30.0f, 130.0f))
-				Camera->SetFov(g_Fov);
+			ImGui::DragFloat("Camera fov", &g_Fov, 0.5f, 30.0f, 130.0f);
 		}
 		else 
 		{
@@ -126,8 +116,7 @@ void CHelperWindow::DrawSettings()
 			ImGui::DragFloat("Orthogonal size", &g_OrthogonalProjectionSize, 0.01f, 1.0f, 4.0f);
 		}
 
-		if(ImGui::DragFloat("View distance", &g_FarPlane, 5.0f, 50.0f, 300.0f))
-			Camera->SetFarPlane(g_FarPlane);
+		ImGui::DragFloat("View distance", &g_FarPlane, 5.0f, 50.0f, 300.0f);
 
 		ImGui::TreePop();
 	}
@@ -140,8 +129,8 @@ void CHelperWindow::DrawSettings()
 		if (ImGui::Button("Reset render"))
 			Render->SetNeedReset();
 
-		if (ImGui::Button("Wireframe"))
-			g_bWireframeMode = !g_bWireframeMode;
+		//if (ImGui::Button("Wireframe"))
+		//	g_bWireframeMode = !g_bWireframeMode;
 
 		ImGui::TreePop();
 	}
@@ -159,22 +148,6 @@ void CHelperWindow::DrawSettings()
 	ImGui::End();
 }
 
-void CHelperWindow::DrawProfilingSettings()
-{
-	ImGui::PushFont(Imgui->font_letterica_big);
-	ImGui::Begin("Profiling settings window", &m_bNeedDrawProfilingSettings);
-	ImGui::PopFont();
-
-	ImGui::PushFont(Imgui->font_letterica_medium);
-
-	if (ImGui::Button("Capture 10 frames"))
-		OptickAPI->StartCapturing(10);
-
-	ImGui::PopFont();
-
-	ImGui::End();
-}
-
 void CHelperWindow::Draw()
 {
 	if (m_bNeedDraw)
@@ -182,23 +155,14 @@ void CHelperWindow::Draw()
 		if (m_bNeedDrawSettings)
 			DrawSettings();
 
-		if (m_bNeedDrawProfilingSettings)
-			DrawProfilingSettings();
-
 		ImGui::PushFont(Imgui->font_letterica_big);
 		ImGui::Begin("Helper window");
 		ImGui::PopFont();
 
 		ImGui::PushFont(Imgui->font_letterica_medium);
 
-		if (ImGui::Button("Leave to scene"))
-			m_bNeedLeaveToScene = true;
-
 		if (ImGui::Button("Settings"))
 			m_bNeedDrawSettings = !m_bNeedDrawSettings;
-
-		if (ImGui::Button("Profiling"))
-			m_bNeedDrawProfilingSettings = !m_bNeedDrawProfilingSettings;
 
 		if (ImGui::Button("Quit to main menu"))
 			m_bNeedQuitToMainMenu = true;
@@ -215,28 +179,21 @@ void CHelperWindow::Draw()
 void CHelperWindow::Show()
 {
 	m_bNeedDraw = true;
-	Input->SetNeedUpdateCursorWithGameController(true);
 }
 
 void CHelperWindow::Hide()
 {
 	m_bNeedDraw = false;
-	Input->SetNeedUpdateCursorWithGameController(false);
+}
+
+bool CHelperWindow::NeedToHide()
+{
+	return m_bNeedDraw == false;
 }
 
 bool CHelperWindow::NeedQuitToMainMenu()
 {
 	return m_bNeedQuitToMainMenu;
-}
-
-bool CHelperWindow::NeedLeaveToScene()
-{
-	return m_bNeedLeaveToScene;
-}
-
-void CHelperWindow::LeavingToSceneIsDone()
-{
-	m_bNeedLeaveToScene = false;
 }
 
 void CHelperWindow::QuitingToMainMenuIsDone()

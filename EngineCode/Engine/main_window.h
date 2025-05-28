@@ -13,8 +13,7 @@ class CMainWindow
   public:
 	SDL_Window* m_window;
 	SDL_SysWMinfo m_WindowInfo;
-	SDL_DisplayMode m_displayMode;
-	SDL_Cursor* m_cursor;
+
   public:
 	CMainWindow();
 	~CMainWindow();
@@ -26,10 +25,6 @@ class CMainWindow
 
 	HWND GetWindow();
 	SDL_Window* GetSDLWindow();
-	SDL_DisplayMode GetSDLDisplayMode();
-	void CreateCursor();
-	void HideCursor();
-	void ShowCursor();
 	void Reset();
 };
 ///////////////////////////////////////////////////////////////

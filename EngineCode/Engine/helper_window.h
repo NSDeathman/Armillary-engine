@@ -17,24 +17,20 @@ class CHelperWindow
 	bool m_bNeedQuitToMainMenu;
 
 	bool m_bNeedDrawSettings;
-	bool m_bNeedDrawProfilingSettings;
-
-	bool m_bNeedLeaveToScene;
 
   public:
 	CHelperWindow();
 	~CHelperWindow() = default;
 
 	void DrawSettings();
-	void DrawProfilingSettings();
 
 	void Draw();
 	void Show();
 	void Hide();
 
+	bool NeedToHide();
+
 	bool NeedQuitToMainMenu();
-	bool NeedLeaveToScene();
-	void LeavingToSceneIsDone();
 	void QuitingToMainMenuIsDone();
 };
 ///////////////////////////////////////////////////////////////

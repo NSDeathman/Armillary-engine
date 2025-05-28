@@ -34,8 +34,6 @@ public:
 	void OnResetBegin();
 	void OnResetEnd();
 	void Destroy();
-	void HideCursor();
-	void ShowCursor();
 };
 ///////////////////////////////////////////////////////////////
 extern CImguiAPI* Imgui;

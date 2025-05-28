@@ -12,8 +12,6 @@
 #include "scene.h"
 #include "log.h"
 #include "Input.h"
-#include "camera.h"
-#include "main_window.h"
 ///////////////////////////////////////////////////////////////
 CImguiAPI* Imgui = nullptr;
 CHelperWindow* HelperWindow = nullptr;
@@ -61,27 +59,12 @@ void CUserInterface::UpdateIngameUI()
 		LoadingScreen->Hide();
 
 		if (m_bHelperWndDraw)
-		{
-			Imgui->ShowCursor();
-			MainWindow->ShowCursor();
 			HelperWindow->Show();
-		}
 		else
-		{
-			Imgui->HideCursor();
-			MainWindow->HideCursor();
 			HelperWindow->Hide();
-		}
 
-		if (Input->KeyPressed(SDL_SCANCODE_ESCAPE) || Input->GamepadButtonPressed(SDL_CONTROLLER_BUTTON_START) || HelperWindow->NeedLeaveToScene())
-		{
-			if (HelperWindow->NeedLeaveToScene())
-				HelperWindow->LeavingToSceneIsDone();
-
+		if (Input->KeyPressed(SDL_SCANCODE_ESCAPE))
 			m_bHelperWndDraw = !m_bHelperWndDraw;
-			g_bNeedLockCursor = !m_bHelperWndDraw;
-			g_bNeedUpdateCameraInput = !m_bHelperWndDraw;
-		}
 	}
 
 	if (HelperWindow->NeedQuitToMainMenu())
@@ -89,11 +72,6 @@ void CUserInterface::UpdateIngameUI()
 		m_bNeedDestroyScene = true;
 		HelperWindow->QuitingToMainMenuIsDone();
 		HelperWindow->Hide();
-
-		g_bNeedLockCursor = false;
-		g_bNeedUpdateCameraInput = false;
-
-		Camera->SetDefaultParams();
 	}
 }
 

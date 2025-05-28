@@ -42,20 +42,9 @@ struct Material
 
 	bool bSpecular;
 
-	CHAR strTextureAlbedo[MAX_PATH];
-	IDirect3DTexture9* pTextureAlbedo;
-	CHAR strTextureNormal[MAX_PATH];
-	bool bHaveNormal;
-	IDirect3DTexture9* pTextureNormal;
-	CHAR strTextureRoughness[MAX_PATH];
-	bool bHaveRoughness;
-	IDirect3DTexture9* pTextureRoughness;
-	CHAR strTextureMetallic[MAX_PATH];
-	bool bHaveMetallic;
-	IDirect3DTexture9* pTextureMetallic;
-	CHAR strTextureAO[MAX_PATH];
-	bool bHaveAO;
-	IDirect3DTexture9* pTextureAO;
+	CHAR strTexture[MAX_PATH];
+	IDirect3DTexture9* pTexture;
+	D3DXHANDLE hTechnique;
 };
 
 class CMeshLoader

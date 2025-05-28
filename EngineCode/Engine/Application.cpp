@@ -7,14 +7,8 @@
 #include "Application.h"
 
 // Main engine parts
-#ifndef USE_DX11
-#include "render_DX9.h"
-#include "render_backend_DX9.h"
-#else
-#include "render_DX11.h"
-//#include "render_backend_DX11.h"
-#endif
-
+#include "render.h"
+#include "render_backend.h"
 #include "log.h"
 #include "Input.h"
 #include "filesystem.h"
@@ -40,20 +34,14 @@
 // Camera
 #include "camera.h"
 ///////////////////////////////////////////////////////////////
-uint16_t g_ScreenWidth = 720;
-uint16_t g_ScreenHeight = 480;
+UINT g_ScreenWidth = 720;
+UINT g_ScreenHeight = 480;
 ///////////////////////////////////////////////////////////////
 bool g_bNeedCloseApplication = false;
 SDL_Event g_WindowEvent;
 ///////////////////////////////////////////////////////////////
-#ifdef USE_DX11
-CRenderDX11* Render = nullptr;
-//CRenderBackendDX11* RenderBackend = nullptr;
-#else
-CRenderDX9* Render = nullptr;
-CRenderBackendDX9* RenderBackend = nullptr;
-#endif
-
+CRender* Render = nullptr;
+CBackend* RenderBackend = nullptr;
 CLog* Log = nullptr;
 COptickAPI* OptickAPI = nullptr;
 CFilesystem* Filesystem = nullptr;
@@ -62,6 +50,7 @@ CUserInterface* UserInterface = nullptr;
 CMainWindow* MainWindow = nullptr;
 CInput* Input = nullptr;
 CScheduler* Scheduler = nullptr;
+///////////////////////////////////////////////////////////////
 CCamera* Camera = nullptr;
 ///////////////////////////////////////////////////////////////
 void CApplication::Start()
@@ -69,9 +58,13 @@ void CApplication::Start()
 	Filesystem = new CFilesystem();
 	Log = new CLog();
 
+	Msg("Hello! My name is Deathman and i is author of this shit.");
+	Msg("This project exists to calm me down in stressful moments, \nimagining in these moments the sphere \nthat you will see when you load the scene.");
+	Msg("\n");
+
 	initializeCPU();
 
-	PrintBuildData();
+	//PrintBuildData();
 	
 	Msg("Starting Application...");
 
@@ -81,14 +74,8 @@ void CApplication::Start()
 
 	MainWindow = new CMainWindow();
 
-#ifdef USE_DX11
-	Render = new CRenderDX11();
-	//RenderBackend = new CRenderBackendDX11();
-#else
-	Render = new CRenderDX9();
-	RenderBackend = new CRenderBackendDX9();
-#endif
-
+	Render = new CRender();
+	RenderBackend = new CBackend();
     Render->Initialize();
 
 	UserInterface = new CUserInterface();
@@ -98,8 +85,6 @@ void CApplication::Start()
 	Camera->Initialize();
 	
 	Scene = new CScene();
-
-	OptickAPI = new COptickAPI();
 }
 
 void CApplication::Destroy()
@@ -125,9 +110,21 @@ void CApplication::Destroy()
 
 	Log->Destroy();
 	delete Log;
+}
 
-	OptickAPI->Destroy();
-	delete OptickAPI;
+void RenderFrame()
+{
+	OPTICK_THREAD("Armillary engine render thread")
+	OPTICK_FRAME("RenderThreadTask")
+	OPTICK_EVENT("RenderThreadTask")
+
+	Render->OnFrameBegin();
+
+	UserInterface->Render();
+
+	Render->RenderFrame();
+
+	Render->OnFrameEnd();
 }
 
 void CApplication::HandleSDLEvents()
@@ -143,19 +140,25 @@ void CApplication::HandleSDLEvents()
 
 void InputUpdateTask()
 {
+	OPTICK_THREAD("Armillary engine input thread")
 	OPTICK_FRAME("InputUpdateTask")
 	OPTICK_EVENT("InputUpdateTask")
 
 	Input->OnFrame();
 }
 
-void ProfilingTask()
+void RenderTask()
 {
-	OptickAPI->OnFrame();
+	OPTICK_THREAD("Armillary engine render thread")
+	OPTICK_FRAME("RenderTask")
+	OPTICK_EVENT("RenderTask")
+
+	RenderFrame();
 }
 
 void CApplication::OnFrame()
 {
+	OPTICK_THREAD("Armillary engine primary thread")
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
@@ -163,16 +166,12 @@ void CApplication::OnFrame()
 
 	Scheduler->Add(InputUpdateTask);
 
-	ProfilingTask();
-
-	//concurrency::task_group render_task;
-	//render_task.run([]() 
-	//{ 
-		
-	//});
-
-	Camera->OnFrame();
-	Render->OnFrame();
+	concurrency::task_group render_task;
+	render_task.run([]() 
+	{ 
+		Camera->OnFrame();
+		RenderTask();
+	});
 
 	UserInterface->OnFrame();
 
@@ -187,7 +186,7 @@ void CApplication::OnFrame()
 		UserInterface->SetNeedDestroyScene(false);
 	}
 
-	//render_task.wait();
+	render_task.wait();
 }
 
 void CApplication::EventLoop()

@@ -22,41 +22,25 @@ private:
 	float m_nearPlane;		// Near clipping plane
 	float m_farPlane;		// Far clipping plane
 
-	float m_yaw;			// Yaw angle (rotation around the Y axis)
-	float m_pitch;			// Pitch angle (rotation around the X axis)
-
-	POINT m_ptLastMousePosition;
-
-	void UpdateInput();
+	float m_yaw;   // Yaw angle (rotation around the Y axis)
+	float m_pitch; // Pitch angle (rotation around the X axis)
 
 public:
 	CCamera() = default;
 	~CCamera() = default;
 
 	void Initialize();
-	void SetDefaultParams();
 	void OnFrame();
-	void ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta);
 	void Reset();
-
-	void SetFov(float fov)
-	{
-		m_fov = D3DXToRadian(fov);
-	}
-
-	void SetFarPlane(float far_plane)
-	{
-		m_farPlane = far_plane;
-	}
 
 	D3DXMATRIX GetViewMatrix();
 	D3DXMATRIX GetProjectionMatrix();
+
+	void Move(const D3DXVECTOR3& direction, float amount);
 };
 ///////////////////////////////////////////////////////////////
 extern CCamera* Camera;
 ///////////////////////////////////////////////////////////////
-extern bool g_bNeedLockCursor;
-extern bool g_bNeedUpdateCameraInput;
 extern bool g_UseOrthogonalProjection;
 extern float g_OrthogonalProjectionSize;
 extern float g_Fov;

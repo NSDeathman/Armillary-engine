@@ -15,13 +15,16 @@ class CScene
 	bool m_bSceneLoadingInProcess;
 
   public:
-	CMeshLoader m_MeshLoader;
+	CMeshLoader SceneMeshesArray[8];
 
 	CScene();
 	~CScene() = default;
 
 	void Load();
+	void SetWorldMatrix();
+	void DrawMeshSubsets(CMeshLoader* Mesh);
 	void DrawGeometry();
+	void DestroyMeshes();
 	void Destroy();
 
 	void SetSceneLoaded(bool flag)
