@@ -13,7 +13,7 @@ extern UINT g_ScreenHeight;
 bool g_UseOrthogonalProjection = false;
 float g_OrthogonalProjectionSize = 3.0f;
 float g_Fov = 45.0f;
-float g_Aspect = float(g_ScreenWidth) / float(g_ScreenHeight);
+float g_Aspect = 1.0f; // float(g_ScreenWidth) / float(g_ScreenHeight);
 float g_NearPlane = 0.01f;
 float g_FarPlane = 100.0f;
 ///////////////////////////////////////////////////////////////
