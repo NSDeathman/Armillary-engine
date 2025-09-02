@@ -85,6 +85,21 @@
     <ClCompile Include="render_DX11_frame_pipeline.cpp">
       <Filter>Render\DirectX11\Core</Filter>
     </ClCompile>
+    <ClCompile Include="IniParser.cpp">
+      <Filter>Core\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineSettings.cpp">
+      <Filter>Core\EngineSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="ECSExample.cpp">
+      <Filter>GameAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Core\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Monitoring.cpp">
+      <Filter>Moitoring</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -182,6 +197,33 @@
     </ClInclude>
     <ClInclude Include="render_DX11_stdafx.h">
       <Filter>Render\DirectX11\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="IniParser.h">
+      <Filter>Core\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineSettings.h">
+      <Filter>Core\EngineSettings</Filter>
+    </ClInclude>
+    <ClInclude Include="IniWatchDog.h">
+      <Filter>Core\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityObject.h">
+      <Filter>GameAPI\ECS Implementation\EntityObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Coordinator.h">
+      <Filter>GameAPI\ECS Implementation\Coordinator</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS.h">
+      <Filter>GameAPI\ECS Implementation\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>GameAPI\ECS Implementation\EntityObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Core\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Monitoring.h">
+      <Filter>Moitoring</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +334,36 @@
     </Filter>
     <Filter Include="Render\DirectX11\Core">
       <UniqueIdentifier>{92e86566-1bc4-4f38-b67f-2ef62e1f205e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Config">
+      <UniqueIdentifier>{d45c19cd-ddc6-4d43-add9-a79dcc61fa79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\EngineSettings">
+      <UniqueIdentifier>{ba0844ce-6b8a-4dac-810b-eec2d8691b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameAPI">
+      <UniqueIdentifier>{6b2a319b-bde2-4b80-8452-efe507af325c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameAPI\ECS Implementation">
+      <UniqueIdentifier>{a3326786-cf1e-4cf8-9ba1-90cfc4441e3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameAPI\ECS Implementation\ECS">
+      <UniqueIdentifier>{692e6be9-ea26-4f10-b2ba-aca4520a1079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameAPI\ECS Implementation\EntityObject">
+      <UniqueIdentifier>{4bb683ad-ec02-4748-9d2d-5b75d7b93471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameAPI\ECS Implementation\Components">
+      <UniqueIdentifier>{37bdcb28-e6b3-4b69-bb71-1df0fb07e347}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameAPI\ECS Implementation\Coordinator">
+      <UniqueIdentifier>{b2375ef2-34a0-4c8f-b373-c71641326ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Timer">
+      <UniqueIdentifier>{e8f03cb6-4a2d-44cc-a02a-66d02bff0623}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Moitoring">
+      <UniqueIdentifier>{dbbba05f-1394-433a-84d8-d9b41db6f476}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

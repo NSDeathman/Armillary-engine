@@ -15,6 +15,7 @@ class CMainWindow
 	SDL_SysWMinfo m_WindowInfo;
 	SDL_DisplayMode m_displayMode;
 	SDL_Cursor* m_cursor;
+
   public:
 	CMainWindow();
 	~CMainWindow();
@@ -31,6 +32,7 @@ class CMainWindow
 	void HideCursor();
 	void ShowCursor();
 	void Reset();
+	void ChangeScreenResolution();
 };
 ///////////////////////////////////////////////////////////////
 extern CMainWindow* MainWindow;

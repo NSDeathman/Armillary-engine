@@ -36,12 +36,12 @@
 //https://www.xrhadertoy.com/view/3tlBW7
 #define safe_dot(a, b) max(dot((a), (b)), 0.00001f)
 ///////////////////////////////////////////////////////////////
-uniform float4x4 matView : register(c0);
-uniform float4x4 matProjection : register(c4);
-uniform float4x4 matWorld : register(c9);
-uniform float4x4 matWorldViewProjectionTransposed : register(c13);
-uniform float4x4 matViewProjectionTransposed : register(c17);
-uniform float4x4 matWorldViewTransposed : register(c21);
+uniform float4x4 matView;
+uniform float4x4 matProjection;
+uniform float4x4 matWorld;
+uniform float4x4 matWorldViewProjection;
+uniform float4x4 matViewProjection;
+uniform float4x4 matWorldView;
 ///////////////////////////////////////////////////////////////
 uniform sampler2D texAlbedo : register(s0);
 uniform sampler2D texNormal : register(s1);

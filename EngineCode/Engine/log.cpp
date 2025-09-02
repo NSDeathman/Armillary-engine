@@ -13,7 +13,7 @@ CLog::CLog()
 	Filesystem->CreateDir(LOGS);
 
 	// Create path to log file
-	std::string filePath = (std::string)LOGS + (std::string) "./armillary_engine" + (string) ".log";
+	string filePath = (string)LOGS + (string) "./armillary_engine" + (string) ".log";
 
 	// Erase text in log file
 	m_LogFileStream.open(filePath.c_str(), std::ofstream::out | std::ofstream::trunc);
@@ -63,6 +63,7 @@ void __cdecl CLog::Print(LPCSTR format, ...)
 	}
 }
 
+#pragma warning(disable : 4100)
 void __cdecl CLog::Debug_Print(LPCSTR format, ...)
 {
 #ifdef _DEBUG
@@ -79,6 +80,7 @@ void __cdecl CLog::Debug_Print(LPCSTR format, ...)
 	}
 #endif
 }
+#pragma warning(default : 4100)
 
 void CLog::CreateConsole()
 {

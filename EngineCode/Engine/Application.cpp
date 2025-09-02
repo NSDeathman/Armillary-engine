@@ -19,6 +19,7 @@
 #include "Input.h"
 #include "filesystem.h"
 #include "scene.h"
+#include "EngineSettings.h"
 
 // Windows
 #include "splash_screen.h"
@@ -39,6 +40,8 @@
 
 // Camera
 #include "camera.h"
+
+#include "Monitoring.h"
 ///////////////////////////////////////////////////////////////
 uint16_t g_ScreenWidth = 720;
 uint16_t g_ScreenHeight = 480;
@@ -63,7 +66,19 @@ CMainWindow* MainWindow = nullptr;
 CInput* Input = nullptr;
 CScheduler* Scheduler = nullptr;
 CCamera* Camera = nullptr;
+EngineSettings* Settings = nullptr;
+CMonitoring* Monitoring = nullptr;
 ///////////////////////////////////////////////////////////////
+CApplication::CApplication()
+{
+	m_LastTime = 0.0f;
+	m_CurrentTime = 0.0f;
+	m_TimeDelta = 0.0f;
+	m_FrameTime = 0.0f;
+	m_FPS = 0.0f;
+	m_Frame = 0;
+}
+
 void CApplication::Start()
 {
 	Filesystem = new CFilesystem();
@@ -80,6 +95,8 @@ void CApplication::Start()
 	Input = new CInput();
 
 	MainWindow = new CMainWindow();
+
+	Settings = new EngineSettings();
 
 #ifdef USE_DX11
 	Render = new CRenderDX11();
@@ -100,11 +117,17 @@ void CApplication::Start()
 	Scene = new CScene();
 
 	OptickAPI = new COptickAPI();
+
+	Monitoring = new CMonitoring();
+
+	m_Timer.Start();
 }
 
 void CApplication::Destroy()
 {
 	Scene->Destroy();
+
+	delete Monitoring;
 
 	UserInterface->Destroy();
 	delete UserInterface;
@@ -120,6 +143,8 @@ void CApplication::Destroy()
 
 	delete Scheduler;
 
+	delete Settings;
+
 	Filesystem->Destroy();
 	delete Filesystem;
 
@@ -132,26 +157,74 @@ void CApplication::Destroy()
 
 void CApplication::HandleSDLEvents()
 {
-	if (SDL_PollEvent(&g_WindowEvent))
+	if (SDL_PollEvent(&g_WindowEvent)) [[likely]]
 	{
-		if (g_WindowEvent.type == SDL_QUIT)
+		if (g_WindowEvent.type == SDL_QUIT) [[unlikely]]
 			g_bNeedCloseApplication = true;
 
 		ImGui_ImplSDL2_ProcessEvent(&g_WindowEvent);
 	}
 }
 
-void InputUpdateTask()
+void ProfilingTask()
 {
-	OPTICK_FRAME("InputUpdateTask")
-	OPTICK_EVENT("InputUpdateTask")
+	OptickAPI->OnFrame();
+}
+
+void CApplication::CalculateTimeStats()
+{
+	m_LastTime = m_CurrentTime;
+	m_CurrentTime = (float)m_Timer.GetTime();
+
+	m_TimeDelta = m_CurrentTime - m_LastTime;
+
+	m_FPS = 1.0f / m_TimeDelta;
+}
+
+CTimer SummaryTimer;
+CTimer RenderTimer;
+CTimer InputTimer;
+CTimer UITimer;
+
+void RenderTask()
+{
+	RenderTimer.Start();
+
+	Render->OnFrame();
+
+	float RenderTime = RenderTimer.GetElapsedTime();
+	RenderTimer.Stop();
+	Monitoring->AddToChart(RenderTime, MONITORING_CHART_RENDER);
+}
+
+void UITask()
+{
+	UITimer.Start();
+
+	UserInterface->OnFrame();
+
+	float UITime = UITimer.GetElapsedTime();
+	UITimer.Stop();
+	Monitoring->AddToChart(UITime, MONITORING_CHART_UI);
+}
+
+void InputUpdate()
+{
+	OPTICK_FRAME("InputUpdate")
+	OPTICK_EVENT("InputUpdate")
 
 	Input->OnFrame();
 }
 
-void ProfilingTask()
+void InputTask()
 {
-	OptickAPI->OnFrame();
+	InputTimer.Start();
+
+	Scheduler->Add(InputUpdate);
+
+	float InputTime = InputTimer.GetElapsedTime();
+	InputTimer.Stop();
+	Monitoring->AddToChart(InputTime, MONITORING_CHART_INPUT);
 }
 
 void CApplication::OnFrame()
@@ -161,7 +234,9 @@ void CApplication::OnFrame()
 
 	HandleSDLEvents();
 
-	Scheduler->Add(InputUpdateTask);
+	SummaryTimer.Start();
+
+	InputTask();
 
 	ProfilingTask();
 
@@ -172,20 +247,38 @@ void CApplication::OnFrame()
 	//});
 
 	Camera->OnFrame();
-	Render->OnFrame();
 
-	UserInterface->OnFrame();
+	UITask();
 
-	if (UserInterface->NeedLoadScene())
+	if (UserInterface->NeedLoadScene()) [[unlikely]]
 	{
 		Scene->Load();
 	}
 
-	if (UserInterface->NeedDestroyScene())
+	if (UserInterface->NeedDestroyScene()) [[unlikely]]
 	{
 		Scene->Destroy();
 		UserInterface->SetNeedDestroyScene(false);
 	}
+
+	RenderTask();
+
+	m_FrameTime = SummaryTimer.GetElapsedTime();
+
+	if (m_FrameTime < 0.01666666f) [[unlikely]]
+	{
+		float dt = 0.01666666f - m_FrameTime;
+		m_FrameTime += dt;
+		std::this_thread::sleep_for(std::chrono::milliseconds(int(dt * 1000)));
+	}
+
+	CalculateTimeStats();
+
+	SummaryTimer.Stop();
+
+	Monitoring->OnFrame();
+
+	m_Frame++;
 
 	//render_task.wait();
 }
@@ -208,8 +301,7 @@ void CApplication::Process()
 
 	delete (SplashScreen);
 
-	Msg("Application started successfully");
-	Msg("\n");
+	Msg("Application started successfully\n");
 
 	EventLoop();
 

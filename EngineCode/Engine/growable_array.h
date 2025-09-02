@@ -154,10 +154,10 @@ template <typename TYPE> HRESULT CGrowableArray<TYPE>::SetSize(int nNewMaxSize)
 {
 	int nOldSize = m_nSize;
 
-	if (nOldSize > nNewMaxSize)
+	if (nOldSize > nNewMaxSize) [[unlikely]]
 	{
 		assert(m_pData);
-		if (m_pData)
+		if (m_pData) [[likely]]
 		{
 			// Removing elements. Call dtor.
 
@@ -170,10 +170,10 @@ template <typename TYPE> HRESULT CGrowableArray<TYPE>::SetSize(int nNewMaxSize)
 	// since if it happens, nOldSize == nNewMaxSize will be true.)
 	HRESULT hr = SetSizeInternal(nNewMaxSize);
 
-	if (nOldSize < nNewMaxSize)
+	if (nOldSize < nNewMaxSize) [[likely]]
 	{
 		assert(m_pData);
-		if (m_pData)
+		if (m_pData) [[likely]]
 		{
 			// Adding elements. Call ctor.
 
@@ -237,7 +237,7 @@ template <typename TYPE> HRESULT CGrowableArray<TYPE>::Insert(int nIndex, const 
 template <typename TYPE> HRESULT CGrowableArray<TYPE>::SetAt(int nIndex, const TYPE& value)
 {
 	// Validate arguments
-	if (nIndex < 0 || nIndex >= m_nSize)
+	if (nIndex < 0 || nIndex >= m_nSize) [[unlikely]]
 	{
 		assert(false);
 		return E_INVALIDARG;
@@ -256,7 +256,7 @@ template <typename TYPE> HRESULT CGrowableArray<TYPE>::SetAt(int nIndex, const T
 template <typename TYPE> int CGrowableArray<TYPE>::IndexOf(const TYPE& value, int iStart, int nNumElements)
 {
 	// Validate arguments
-	if (iStart < 0 || iStart >= m_nSize || nNumElements < 0 || iStart + nNumElements > m_nSize)
+	if (iStart < 0 || iStart >= m_nSize || nNumElements < 0 || iStart + nNumElements > m_nSize) [[unlikely]]
 	{
 		assert(false);
 		return -1;
@@ -281,7 +281,7 @@ template <typename TYPE> int CGrowableArray<TYPE>::IndexOf(const TYPE& value, in
 template <typename TYPE> int CGrowableArray<TYPE>::LastIndexOf(const TYPE& value, int iEnd, int nNumElements)
 {
 	// Validate arguments
-	if (iEnd < 0 || iEnd >= m_nSize || nNumElements < 0 || iEnd - nNumElements < 0)
+	if (iEnd < 0 || iEnd >= m_nSize || nNumElements < 0 || iEnd - nNumElements < 0) [[unlikely]]
 	{
 		assert(false);
 		return -1;
@@ -301,7 +301,7 @@ template <typename TYPE> int CGrowableArray<TYPE>::LastIndexOf(const TYPE& value
 //--------------------------------------------------------------------------------------
 template <typename TYPE> HRESULT CGrowableArray<TYPE>::Remove(int nIndex)
 {
-	if (nIndex < 0 || nIndex >= m_nSize)
+	if (nIndex < 0 || nIndex >= m_nSize) [[unlikely]]
 	{
 		assert(false);
 		return E_INVALIDARG;

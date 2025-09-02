@@ -7,6 +7,7 @@
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "render_DX9_stdafx.h"
+#include "render_backend_DX9.h"
 ///////////////////////////////////////////////////////////////
 class CRenderDX9
 {
@@ -16,13 +17,15 @@ class CRenderDX9
 	D3DPRESENT_PARAMETERS m_pDirect3DPresentParams;
 	HWND m_hWindow;
 
-	DWORD MaxSimultaneousTextures;
+	int MaxSimultaneousTextures;
+	int MaxAnisotropy;
+	int Anisotropy;
 	D3DMULTISAMPLE_TYPE m_MaxMultiSamplingQuality;
-	UINT m_Frame;
 
 	IDirect3DVertexShader9* m_vertexShader;
 	IDirect3DPixelShader9* m_pixelShader;
-	ID3DXConstantTable* m_pConstantTable;
+	ID3DXConstantTable* m_pPixelShaderConstantTable;
+	ID3DXConstantTable* m_pVertexShaderConstantTable;
 	
   private:
 	BOOL m_bDeviceLost;
@@ -55,6 +58,12 @@ class CRenderDX9
 	void SetNeedReset()
 	{
 		m_bNeedReset = true;
+	}
+
+	void SetAnisotropy(int value)
+	{
+		Anisotropy = value;
+		RenderBackend->set_anisotropy_filtering(value);
 	}
 
 	CRenderDX9();

@@ -14,6 +14,7 @@
 #include "Input.h"
 #include "camera.h"
 #include "main_window.h"
+#include "Monitoring.h"
 ///////////////////////////////////////////////////////////////
 CImguiAPI* Imgui = nullptr;
 CHelperWindow* HelperWindow = nullptr;
@@ -33,10 +34,14 @@ void CUserInterface::Initialize()
 	SetNeedDestroyScene(false);
 
 	m_bHelperWndDraw = true;
+
+	HelperWindow->LoadSettings();
 }
 
 void CUserInterface::Destroy()
 {
+	HelperWindow->SaveSettings();
+
 	delete MainMenu;
 	delete HelperWindow;
 	delete LoadingScreen;
@@ -126,6 +131,7 @@ void CUserInterface::OnFrameEnd()
 
 void CUserInterface::Render()
 {
+	Monitoring->Draw();
 	MainMenu->Draw();
 	HelperWindow->Draw();
 	LoadingScreen->Draw();

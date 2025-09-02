@@ -7,12 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 #include "OptickAPI.h"
 #include "Log.h"
-
-#ifdef USE_DX11
-#include "render_DX11.h"
-#else
-#include "render_DX9.h"
-#endif
+#include "Application.h"
 ///////////////////////////////////////////////////////////////////////////////////
 void COptickAPI::Initialize()
 {
@@ -48,6 +43,7 @@ void COptickAPI::StartCapturing()
 }
 
 /* Saving in try-statement for avoiding game crash */
+#pragma warning(disable : 4100)
 void COptickAPI::TryToSaveCapture(str_c save_path)
 {
 	try
@@ -59,6 +55,7 @@ void COptickAPI::TryToSaveCapture(str_c save_path)
 		Msg("! An error occurred while saving optick capture");
 	}
 };
+#pragma warning(default : 4100)
 
 void COptickAPI::SaveCapture(str_c save_path)
 {
@@ -73,7 +70,7 @@ void COptickAPI::OnFrame()
 {
 	if (m_need_capture)
 	{
-		if (Render->m_Frame == m_end_capture_frame)
+		if (App->GetFrames() == m_end_capture_frame) [[unlikely]]
 		{
 			StopCapturing();
 			SaveCapturedFrames();
@@ -85,7 +82,7 @@ void COptickAPI::StartCapturing(int frames_to_capture)
 {
 	m_need_capture = true;
 	m_frames_to_capture = frames_to_capture;
-	m_start_capture_frame = Render->m_Frame;
+	m_start_capture_frame = App->GetFrames();
 	m_end_capture_frame = m_start_capture_frame + m_frames_to_capture;
 
 	StartCapturing();
@@ -138,7 +135,7 @@ void COptickAPI::SwitchProfiler()
 
 void COptickAPI::SwitchToCapturing()
 {
-	m_start_capture_frame = Render->m_Frame;
+	m_start_capture_frame = App->GetFrames();
 
 	StartCapturing();
 };
@@ -147,7 +144,7 @@ void COptickAPI::SwitchToSaving()
 {
 	StopCapturing();
 
-	m_frames_to_capture = Render->m_Frame - m_start_capture_frame;
+	m_frames_to_capture = App->GetFrames() - m_start_capture_frame;
 
 	Msg("- Saving %d frames", m_frames_to_capture);
 

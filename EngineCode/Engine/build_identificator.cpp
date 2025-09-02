@@ -9,18 +9,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 u32 computeBuildIdMajor()
 {
-	const char* buildDate = __DATE__;
-
 	int day = 0;
 	int monthIndex = 0;
 	int year = 0;
 	char month[16];
-
-	if (sscanf(buildDate, "%s %d %d", month, &day, &year) != 3)
-	{
-		// Error handling: unable to parse build date
-		return 0;
-	}
 
 	// Convert month name to index
 	for (int i = 0; i < 12; ++i)

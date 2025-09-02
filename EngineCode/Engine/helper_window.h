@@ -26,6 +26,8 @@ class CHelperWindow
 	~CHelperWindow() = default;
 
 	void DrawSettings();
+	void LoadSettings();
+	void SaveSettings();
 	void DrawProfilingSettings();
 
 	void Draw();

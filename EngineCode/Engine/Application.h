@@ -6,20 +6,55 @@
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include "Timer.h"
 ///////////////////////////////////////////////////////////////
 class CApplication
 {
 private:
+	CTimer m_Timer;
+	float m_LastTime;
+	float m_CurrentTime;
+	float m_TimeDelta;
+	float m_FrameTime;
+	float m_FPS;
+	int m_Frame;
+
+	void HandleSDLEvents();
+	void CalculateTimeStats();
+	void OnFrame();
+	void EventLoop();
 
 public:
 	void Start();
-	void HandleSDLEvents();
-	void OnFrame();
-	void EventLoop();
 	void Destroy();
 	void Process();
 
-	CApplication() = default;
+	float GetTimeDelta()
+	{
+		return m_TimeDelta;
+	}
+
+	int GetFrames()
+	{
+		return m_Frame;
+	}
+
+	float GetTime()
+	{
+		return (float)m_Timer.GetTime();
+	}
+
+	float GetFPS()
+	{
+		return m_FPS;
+	}
+
+	float GetFrameTime()
+	{
+		return m_FrameTime;
+	}
+
+	CApplication();
 	~CApplication() = default;
 };
 ///////////////////////////////////////////////////////////////

@@ -22,6 +22,10 @@ void CRenderDX9::GetCapabilities()
 
 	Msg("Maximum supported simultaneous textures: %d", MaxSimultaneousTextures);
 
+	MaxAnisotropy = Capabilities.MaxAnisotropy;
+
+	Msg("Maximum supported anisotropy: %d", MaxAnisotropy);
+
 	// Iterate through multi-sample types from highest to lowest
 	for (int samples = D3DMULTISAMPLE_16_SAMPLES; samples >= D3DMULTISAMPLE_NONE; samples--)
 	{
@@ -83,7 +87,7 @@ void CRenderDX9::InitializeDirect3D()
 		ERROR_MESSAGE("An error occurred while creating the Direct3D Device");
 
 	// Set multisample parameters
-	D3DMULTISAMPLE_TYPE multiSampleType = m_MaxMultiSamplingQuality;
+	D3DMULTISAMPLE_TYPE multiSampleType = D3DMULTISAMPLE_NONE; // m_MaxMultiSamplingQuality;
 	DWORD qualityLevels = 0;
 
 	// Check if the selected multi-sample type is supported
@@ -109,17 +113,17 @@ void CRenderDX9::InitializeDirect3D()
 	ID3DXBuffer* vertexShaderBuffer = NULL;
 	ID3DXBuffer* errorBuffer = NULL;
 
-	std::string ObjectStageShaderPath = SHADERS + (std::string) "object_stage.hlsl";
+	string ObjectStageShaderPath = SHADERS + (string) "object_stage.hlsl";
 
 	hresult = D3DXCompileShaderFromFile(ObjectStageShaderPath.c_str(), 
 										nullptr, 
 										nullptr, 
 										"VSMain", 
 										"vs_3_0", 
-										NULL, 
+										D3DXSHADER_PACKMATRIX_ROWMAJOR | D3DXSHADER_PREFER_FLOW_CONTROL | D3DXSHADER_OPTIMIZATION_LEVEL3, 
 										&vertexShaderBuffer, 
 										&errorBuffer, 
-										&m_pConstantTable);
+										&m_pVertexShaderConstantTable);
 
 	if (FAILED(hresult))
 	{
@@ -143,10 +147,10 @@ void CRenderDX9::InitializeDirect3D()
 										nullptr, 
 										"PSMain", 
 										"ps_3_0", 
-										NULL, 
+										D3DXSHADER_PACKMATRIX_ROWMAJOR | D3DXSHADER_PREFER_FLOW_CONTROL | D3DXSHADER_OPTIMIZATION_LEVEL3, 
 										&PixelShaderBuffer,
 										&errorBuffer, 
-										&m_pConstantTable);
+										&m_pPixelShaderConstantTable);
 
 	if (FAILED(hresult))
 	{

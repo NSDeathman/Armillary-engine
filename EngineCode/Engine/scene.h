@@ -15,7 +15,7 @@ class CScene
 	bool m_bSceneLoadingInProcess;
 
   public:
-	CMeshLoader m_MeshLoader;
+	CMesh m_Mesh;
 
 	CScene();
 	~CScene() = default;

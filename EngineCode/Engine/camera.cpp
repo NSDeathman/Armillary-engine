@@ -7,6 +7,7 @@
 #include "log.h"
 #include "main_window.h"
 #include "Input.h"
+#include "Application.h"
 ///////////////////////////////////////////////////////////////
 extern uint16_t g_ScreenWidth;
 extern uint16_t g_ScreenHeight;
@@ -30,6 +31,8 @@ void CCamera::Initialize()
 	m_aspectRatio = float(g_ScreenWidth) / float(g_ScreenHeight);
 
 	GetCursorPos(&m_ptLastMousePosition);
+
+	CalculateMatrices();
 }
 
 void CCamera::SetDefaultParams()
@@ -59,40 +62,14 @@ void CCamera::Reset()
 	m_aspectRatio = float(g_ScreenWidth) / float(g_ScreenHeight);
 }
 
-D3DXMATRIX CCamera::GetViewMatrix()
-{
-	D3DXMATRIX viewMatrix;
-	D3DXMatrixLookAtLH(&viewMatrix, &m_position, &m_direction, &m_upVec);
-	return viewMatrix;
-}
-
-D3DXMATRIX CCamera::GetProjectionMatrix()
-{
-	D3DXMATRIX projectionMatrix;
-
-	if (g_UseOrthogonalProjection)
-	{
-		float left = -g_OrthogonalProjectionSize * m_aspectRatio * 0.5f;
-		float right = g_OrthogonalProjectionSize * m_aspectRatio * 0.5f;
-		float bottom = -g_OrthogonalProjectionSize * 0.5f;
-		float top = g_OrthogonalProjectionSize * 0.5f;
-
-		D3DXMatrixOrthoLH(&projectionMatrix, right - left, top - bottom, m_nearPlane, m_farPlane);
-	}
-	else
-	{
-		D3DXMatrixPerspectiveFovLH(&projectionMatrix, m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
-	}
-
-	return projectionMatrix;
-}
-
 void CCamera::UpdateInput()
 {
+	float TimeDelta = App->GetTimeDelta();
+
 	//---------Moving---------\\
 
 	D3DXVECTOR3 MoveDirection = D3DXVECTOR3(0, 0, 0);
-	float MoveAmount = 0.5f;
+	float MoveAmount = 0.5f + TimeDelta;
 	float MoveSpeed = 1.0f;
 
 	// Speed Up/Down
@@ -162,12 +139,14 @@ void CCamera::UpdateInput()
 		m_ptLastMousePosition = ptCenter;
 	}
 
+	float MouseSens = 0.01f;
+
 	float RotateAmount = 0.1f;
 	float YawDelta = 0.0f;
 	float PitchDelta = 0.0f;
 
-	YawDelta += ptCurMouseDelta.x * 0.01f;
-	PitchDelta += ptCurMouseDelta.y * 0.01f;
+	YawDelta += ptCurMouseDelta.x * MouseSens;
+	PitchDelta += ptCurMouseDelta.y * MouseSens;
 
 	// Rotate Up/Down
 	if (Input->KeyHolded(SDL_SCANCODE_UP))
@@ -192,6 +171,8 @@ void CCamera::UpdateInput()
 	// Send data to movement code
 	ApplyMovement(MoveDirection, MoveSpeed, YawDelta, PitchDelta);
 
+	CalculateMatrices();
+
 	//---------Clearing---------\\
 	// Set direction and rotation zero value
 	MoveDirection = D3DXVECTOR3(0, 0, 0);
@@ -201,11 +182,11 @@ void CCamera::UpdateInput()
 
 void CCamera::ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta)
 {
-	// Simple euler method to calculate position delta
-	D3DXVECTOR3 vPosDelta = direction * amount;
-
 	m_yaw += yawdelta;
 	m_pitch += pitchdelta;
+
+	m_pitch = min(m_pitch, 1.5f);
+	m_pitch = max(m_pitch, -1.5f);
 
 	// Make a rotation matrix based on the camera's yaw & pitch
 	D3DXMATRIX mCameraRot;
@@ -221,6 +202,9 @@ void CCamera::ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta,
 	// Transform the position delta by the camera's rotation
 	D3DXVECTOR3 vPosDeltaWorld = D3DXVECTOR3(0, 0, 0);
 
+	// Simple euler method to calculate position delta
+	D3DXVECTOR3 vPosDelta = direction * amount;
+
 	D3DXVec3TransformCoord(&vPosDeltaWorld, &vPosDelta, &mCameraRot);
 
 	// Move the eye position
@@ -228,5 +212,24 @@ void CCamera::ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta,
 
 	// Update the lookAt position based on the eye position
 	m_direction = m_position + vWorldAhead;
+}
+
+void CCamera::CalculateMatrices()
+{
+	D3DXMatrixLookAtLH(&m_View, &m_position, &m_direction, &m_upVec);
+
+	if (g_UseOrthogonalProjection)
+	{
+		float left = -g_OrthogonalProjectionSize * m_aspectRatio * 0.5f;
+		float right = g_OrthogonalProjectionSize * m_aspectRatio * 0.5f;
+		float bottom = -g_OrthogonalProjectionSize * 0.5f;
+		float top = g_OrthogonalProjectionSize * 0.5f;
+
+		D3DXMatrixOrthoLH(&m_Projection, right - left, top - bottom, m_nearPlane, m_farPlane);
+	}
+	else
+	{
+		D3DXMatrixPerspectiveFovLH(&m_Projection, m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
+	}
 }
 ///////////////////////////////////////////////////////////////

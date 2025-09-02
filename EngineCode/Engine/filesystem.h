@@ -9,41 +9,30 @@
 #include "stdafx.h"
 #include <filesystem>
 ///////////////////////////////////////////////////////////////
-#define APPLICATION_DATA "..\\appdata\\"
-#define LOGS "..\\appdata\\logs\\"
-#define GAME_RESOURCES "..\\gameresources\\"
-#define TEXTURES "..//gameresources//textures\//"
+#define APPLICATION_DATA "..//appdata//"
+#define GAME_RESOURCES "..//gameresources//"
+#define LOGS "..//appdata//logs//"
+#define TEXTURES "..//gameresources//textures//"
 #define MESHES "..//GameResources//meshes//"
-#define SHADERS "..\\gameresources\\shaders\\"
-#define SOUNDS "..\\gameresources\\sounds\\"
-#define FONTS "..\\gameresources\\fonts\\"
-///////////////////////////////////////////////////////////////
-namespace fs = std::filesystem;
+#define CONFIGS "..//GameResources//configs//"
+#define SHADERS "..//gameresources//shaders//"
+#define SOUNDS "..//gameresources//sounds//"
+#define FONTS "..//gameresources//fonts//"
 ///////////////////////////////////////////////////////////////
 class CFilesystem
 {
 private:
-	bool CreateDirectoryRecursive(std::string const& dirName, std::error_code& err);
+	bool CreateDirectoryRecursive(string const& dirName, std::error_code& err);
 
 public:
-	void CreateDir(std::string const& dirName);
+	void CreateDir(string const& dirName);
+	string GetExecutableFilePath();
+	string GetAbsolutePath(string file_path, string file_name);
 	void Destroy();
 
 	CFilesystem() = default;
 	~CFilesystem() = default;
 };
-///////////////////////////////////////////////////////////////
-/*
-TCHAR GetAbsolutePath(TCHAR file_path)
-{
-	TCHAR* fileExt;
-	TCHAR filename[256];
-
-	GetFullPathName(file_path, 256, filename, &fileExt);
-
-	return filename;
-}
-*/
 ///////////////////////////////////////////////////////////////
 extern CFilesystem* Filesystem;
 ///////////////////////////////////////////////////////////////

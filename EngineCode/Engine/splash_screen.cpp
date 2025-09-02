@@ -5,6 +5,7 @@
 ///////////////////////////////////////////////////////////////
 #include "splash_screen.h"
 ///////////////////////////////////////////////////////////////
+#pragma warning(disable : 4100)
 INT_PTR CALLBACK SplashScreenDlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp)
 {
 	switch (msg)
@@ -23,16 +24,16 @@ INT_PTR CALLBACK SplashScreenDlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp)
 	}
 	return TRUE;
 }
+#pragma warning(default : 4100)
 ///////////////////////////////////////////////////////////////
 CSplashScreen::CSplashScreen()
 {
 	m_splash_screen_window = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, SplashScreenDlgProc);
+
 	SetWindowPos(m_splash_screen_window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 
 	ShowWindow(m_splash_screen_window, SW_SHOWDEFAULT);
 	UpdateWindow(m_splash_screen_window);
-
-	Sleep(500);
 }
 
 CSplashScreen::~CSplashScreen()

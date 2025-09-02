@@ -14,12 +14,12 @@ HWND g_splash_screen_window = NULL;
 extern uint16_t g_ScreenWidth;
 extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+//extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 ///////////////////////////////////////////////////////////////
 LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
-		return true;
+	//if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+	//	return true;
 
 	switch (msg)
 	{

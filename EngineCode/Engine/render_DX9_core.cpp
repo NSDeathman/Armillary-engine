@@ -23,15 +23,15 @@ CRenderDX9::CRenderDX9()
 	m_hWindow = nullptr;
 	m_pDirect3D = nullptr;
 	m_pDirect3dDevice = nullptr;
-	m_pConstantTable = nullptr;
+	m_pPixelShaderConstantTable = nullptr;
+	m_pVertexShaderConstantTable = nullptr;
 	ZeroMemory(&m_pDirect3DPresentParams, sizeof(m_pDirect3DPresentParams));
 
 	m_bDeviceLost = false;
 	m_bNeedReset = false;
 
 	m_bWireframe = false;
-
-	m_Frame = 0;
+	Anisotropy = 0;
 }
 
 void CRenderDX9::Initialize()

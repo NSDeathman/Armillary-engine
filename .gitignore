@@ -7,8 +7,7 @@
 *.ipch
 *.PVS-Studio
 
-intermediate/*
-libraries/*
+build/*
 appdata/*
 bin/*
 

@@ -27,6 +27,9 @@ private:
 
 	POINT m_ptLastMousePosition;
 
+	D3DXMATRIX m_View;
+	D3DXMATRIX m_Projection;
+
 	void UpdateInput();
 
 public:
@@ -37,6 +40,7 @@ public:
 	void SetDefaultParams();
 	void OnFrame();
 	void ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta);
+	void CalculateMatrices();
 	void Reset();
 
 	void SetFov(float fov)
@@ -49,8 +53,15 @@ public:
 		m_farPlane = far_plane;
 	}
 
-	D3DXMATRIX GetViewMatrix();
-	D3DXMATRIX GetProjectionMatrix();
+	D3DXMATRIX GetViewMatrix()
+	{
+		return m_View;
+	}
+
+	D3DXMATRIX GetProjectionMatrix()
+	{
+		return m_Projection;
+	}
 };
 ///////////////////////////////////////////////////////////////
 extern CCamera* Camera;

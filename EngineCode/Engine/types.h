@@ -24,7 +24,7 @@ typedef const char* pcstr;
 typedef char* const cpstr;
 typedef const char* const cpcstr;
 
-typedef char* string;
+//typedef char* string;
 typedef char string16[16];
 typedef char string32[32];
 typedef char string64[64];
@@ -36,4 +36,6 @@ typedef char string2048[2048];
 typedef char string4096[4096];
 
 typedef const char* str_c;
+
+typedef std::string string;
 ///////////////////////////////////////////////////////////////

@@ -5,15 +5,17 @@
 ///////////////////////////////////////////////////////////////
 #include "main_window.h"
 #include "log.h"
+#include "EngineSettings.h"
+#include "render_DX9.h"
 ///////////////////////////////////////////////////////////////
 extern uint16_t g_ScreenWidth;
 extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 SDL_WindowFlags g_WindowFlags = (SDL_WindowFlags)(SDL_WINDOW_SHOWN | 
-												SDL_WINDOW_INPUT_FOCUS | 
-												SDL_WINDOW_BORDERLESS | 
-												SDL_WINDOW_MAXIMIZED |
-												SDL_WINDOW_ALLOW_HIGHDPI);
+												  SDL_WINDOW_INPUT_FOCUS | 
+												  SDL_WINDOW_BORDERLESS | 
+												  SDL_WINDOW_MAXIMIZED |
+												  SDL_WINDOW_ALLOW_HIGHDPI);
 ///////////////////////////////////////////////////////////////
 CMainWindow::CMainWindow()
 {

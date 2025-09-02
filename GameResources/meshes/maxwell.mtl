@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd C:\\Indev\\Armillary-engine\\GameResources\\textures\\dingus_nowhiskers.dds
+map_Kd dingus_nowhiskers.dds

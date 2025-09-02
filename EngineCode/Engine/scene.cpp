@@ -11,7 +11,10 @@
 #include "render_DX11.h"
 #else
 #include "render_DX9.h"
+#include "render_backend_DX9.h"
 #endif
+
+#include "IniParser.h"
 ///////////////////////////////////////////////////////////////
 CScene::CScene()
 {
@@ -22,7 +25,7 @@ void LoadMesh()
 {
 	Scene->SetSceneLoadingState(true);
 
-	Scene->m_MeshLoader.Create(Device, MESHES, "debug_plane.obj");
+	Scene->m_Mesh.Create(MESHES, "debug_plane.obj");
 
 	Scene->SetSceneLoadingState(false);
 	Scene->SetSceneLoaded(true);
@@ -32,7 +35,7 @@ void LoadMesh()
 
 void DestroyMesh()
 {
-	Scene->m_MeshLoader.Destroy();
+	Scene->m_Mesh.Destroy();
 
 	Scene->SetSceneLoaded(false);
 
@@ -44,27 +47,22 @@ void CScene::Load()
 	Msg("Loading scene...");
 
 	Scheduler->Add(LoadMesh);
+
+	/*
+	IniParser* Config = new (IniParser);
+	Config->SetFloat(string("test_section"), string("test_float"), 1.79f);
+	Config->Save(string("test_config.ini"), CONFIGS);
+
+	Config->Load(string("test_config.ini"), CONFIGS);
+	float Value = Config->GetFloat(string("test_section"), string("test_float"));
+	Msg("Value = %f", Value);
+	delete (Config);
+	*/
 }
 
 void CScene::DrawGeometry()
 {
-	// Meshes are divided into subsets, one for each material. Render them in a loop
-	for (UINT iSubset = 0; iSubset < m_MeshLoader.GetNumMaterials(); iSubset++) 
-	{
-		ID3DXMesh* pMesh = m_MeshLoader.GetMesh();
-		if (pMesh)
-		{
-			Material* pMaterial = m_MeshLoader.GetMaterial(iSubset);
-
-			Device->SetTexture(0, pMaterial->pTextureAlbedo);
-			Device->SetTexture(1, pMaterial->pTextureNormal);
-			Device->SetTexture(2, pMaterial->pTextureRoughness);
-			Device->SetTexture(3, pMaterial->pTextureMetallic);
-			Device->SetTexture(4, pMaterial->pTextureAO);
-
-			pMesh->DrawSubset(iSubset);
-		}
-	}
+	Scene->m_Mesh.DrawSubsets();
 }
 
 void CScene::Destroy()

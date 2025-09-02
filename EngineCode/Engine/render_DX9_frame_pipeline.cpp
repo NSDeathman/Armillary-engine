@@ -45,7 +45,7 @@ void CRenderDX9::OnFrameBegin()
 
 	// Handle window resize (we don't resize directly in the WM_SIZE handler)
 	if (g_ScreenWidth != m_pDirect3DPresentParams.BackBufferWidth &&
-		g_ScreenHeight != m_pDirect3DPresentParams.BackBufferHeight)
+		g_ScreenHeight != m_pDirect3DPresentParams.BackBufferHeight) [[unlikely]]
 	{
 		m_pDirect3DPresentParams.BackBufferWidth = g_ScreenWidth;
 		m_pDirect3DPresentParams.BackBufferHeight = g_ScreenHeight;
@@ -67,31 +67,29 @@ void CRenderDX9::OnFrameBegin()
 void CRenderDX9::CreateMatrices()
 {
 	D3DXMATRIX matView = Camera->GetViewMatrix();
-	m_pDirect3dDevice->SetVertexShaderConstantF(0, matView, 4);
-	m_pDirect3dDevice->SetTransform(D3DTS_VIEW, &matView);
+	m_pVertexShaderConstantTable->SetMatrix(Device, "matView", &matView);
 
 	D3DXMATRIX matProjection = Camera->GetProjectionMatrix();
-	m_pDirect3dDevice->SetVertexShaderConstantF(4, matProjection, 4);
-	m_pDirect3dDevice->SetTransform(D3DTS_PROJECTION, &matProjection);
+	m_pVertexShaderConstantTable->SetMatrix(Device, "matProjection", &matProjection);
 
 	D3DXMATRIX matWorld;
 	//D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
 	D3DXMatrixTranslation(&matWorld, 0, 0, 0);
-	m_pDirect3dDevice->SetVertexShaderConstantF(9, matWorld, 4);
-	m_pDirect3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+	m_pVertexShaderConstantTable->SetMatrix(Device, "matWorld", &matWorld);
 
 	D3DXMATRIX matWorldViewProjection = matWorld * matView * matProjection;
-	D3DXMATRIX matWorldViewProjectionTransposed;
-	D3DXMatrixTranspose(&matWorldViewProjectionTransposed, &matWorldViewProjection);
-	m_pDirect3dDevice->SetVertexShaderConstantF(13, matWorldViewProjectionTransposed, 4);
+	m_pVertexShaderConstantTable->SetMatrix(Device, "matWorldViewProjection", &matWorldViewProjection);
 
 	D3DXMATRIX matViewProjection = matView * matProjection;
 	D3DXMATRIX matViewProjectionTransposed;
 	D3DXMatrixTranspose(&matViewProjectionTransposed, &matWorldViewProjection);
-	m_pDirect3dDevice->SetVertexShaderConstantF(17, matViewProjectionTransposed, 4);
+	m_pVertexShaderConstantTable->SetMatrix(Device, "matViewProjection", &matViewProjection);
 
-	D3DXMATRIX matWorldView = matWorld * matView;
-	m_pDirect3dDevice->SetVertexShaderConstantF(21, matWorldView, 4);
+	D3DXMATRIX matWorldView;
+	D3DXMATRIX matWorldViewTransposed;
+	matWorldView = matWorld * matView;
+	D3DXMatrixTranspose(&matWorldViewTransposed, &matWorldView);
+	m_pVertexShaderConstantTable->SetMatrix(Device, "matWorldView", &matWorldView);
 }
 
 void CRenderDX9::RenderFrame()
@@ -108,10 +106,11 @@ void CRenderDX9::RenderScene()
 {
 	OPTICK_EVENT("CRenderDX9::RenderScene")
 
-	// Turn on the zbuffer
 	m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
-	RenderBackend->set_CullMode(CRenderBackendDX9::CULL_NONE);
+	RenderBackend->set_CullMode(CRenderBackendDX9::CULL_FRONT);
+
+	RenderBackend->enable_anisotropy_filtering();
 
 	if (g_bWireframeMode)
 		RenderBackend->set_FillMode(CRenderBackendDX9::FILL_WIREFRAME);
@@ -123,6 +122,8 @@ void CRenderDX9::RenderScene()
 
 	if (g_bWireframeMode)
 		RenderBackend->set_FillMode(CRenderBackendDX9::FILL_SOLID);
+
+	RenderBackend->disable_anisotropy_filtering();
 }
 
 void CRenderDX9::OnFrameEnd()
@@ -139,7 +140,5 @@ void CRenderDX9::OnFrameEnd()
 
 	if (present_result == D3DERR_DEVICELOST)
 		m_bDeviceLost = true;
-
-	m_Frame++;
 }
 ///////////////////////////////////////////////////////////////

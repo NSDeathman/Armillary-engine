@@ -10,11 +10,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump C:\\Indev\\Armillary-engine\\GameResources\\textures\\dirty-flat-stonework_normal.dds
-map_Kd C:\\Indev\\Armillary-engine\\GameResources\\textures\\dirty-flat-stonework_albedo.dds
-map_Ns C:\\Indev\\Armillary-engine\\GameResources\\textures\\dirty-flat-stonework_roughness.dds
-refl C:\\Indev\\Armillary-engine\\GameResources\\textures\\dirty-flat-stonework_metallic.dds
-ao C:\\Indev\\Armillary-engine\\GameResources\\textures\\dirty-flat-stonework_ao.dds
+map_Bump dirty-flat-stonework_normal.dds
+map_Kd dirty-flat-stonework_albedo.dds
+map_Ns dirty-flat-stonework_roughness.dds
+refl dirty-flat-stonework_metallic.dds
+ao dirty-flat-stonework_ao.dds
 
 newmtl Material.001
 Ns 225.000000
@@ -25,11 +25,11 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump C:\\Indev\\Armillary-engine\\GameResources\\textures\\sloppy-mortar-stone-wall_normal.dds
-map_Kd C:\\Indev\\Armillary-engine\\GameResources\\textures\\sloppy-mortar-stone-wall_albedo.dds
-map_Ns C:\\Indev\\Armillary-engine\\GameResources\\textures\\sloppy-mortar-stone-wall_roughness.dds
-refl C:\\Indev\\Armillary-engine\\GameResources\\textures\\sloppy-mortar-stone-wall_metallic.dds
-ao C:\\Indev\\Armillary-engine\\GameResources\\textures\\sloppy-mortar-stone-wall_ao.dds
+map_Bump sloppy-mortar-stone-wall_normal.dds
+map_Kd sloppy-mortar-stone-wall_albedo.dds
+map_Ns sloppy-mortar-stone-wall_roughness.dds
+refl sloppy-mortar-stone-wall_metallic.dds
+ao sloppy-mortar-stone-wall_ao.dds
 
 newmtl dingus.004
 Ns 225.000000
@@ -40,7 +40,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd C:\\Indev\\Armillary-engine\\GameResources\\textures\\dingus_nowhiskers.dds
+map_Kd dingus_nowhiskers.dds
 
 newmtl nobody
 Ns 225.000000
@@ -51,4 +51,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Indev\\Armillary-engine\\GameResources\\textures\\nobody.dds
+map_Kd nobody.dds

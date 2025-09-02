@@ -22,6 +22,7 @@ void CImguiAPI::Initialize()
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImPlot::CreateContext();
 	m_pImGuiInputOutputParams = ImGui::GetIO();
 	(void)m_pImGuiInputOutputParams;
 	m_pImGuiInputOutputParams.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
@@ -60,22 +61,22 @@ void CImguiAPI::Initialize()
 	// ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr,
 	// io.Fonts->GetGlyphRangesJapanese()); IM_ASSERT(font != nullptr);
 
-	std::string LettericaPath = FONTS + (std::string) "letterica-3.ttf";
+	string LettericaPath = FONTS + (string) "letterica-3.ttf";
 	font_letterica = m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(LettericaPath.c_str(), 14.0f);
 	font_letterica_small = m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(LettericaPath.c_str(), 10.0f);
 	font_letterica_medium = m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(LettericaPath.c_str(), 14.0f);
 	font_letterica_big = m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(LettericaPath.c_str(), 18.0f);
 
-	std::string MavenProBlackPath = FONTS + (std::string) "MavenPro-Black.ttf";
+	string MavenProBlackPath = FONTS + (string) "MavenPro-Black.ttf";
 	font_maven_pro_back = m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(MavenProBlackPath.c_str(), 14.0f);
 
-	std::string MavenProBoldPath = FONTS + (std::string) "MavenPro-Bold.ttf";
+	string MavenProBoldPath = FONTS + (string) "MavenPro-Bold.ttf";
 	font_maven_pro_bold = m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(MavenProBoldPath.c_str(), 14.0f);
 
-	std::string MavenProMediumPath = FONTS + (std::string) "MavenPro-Medium.ttf";
+	string MavenProMediumPath = FONTS + (string) "MavenPro-Medium.ttf";
 	font_maven_pro_medium = m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(MavenProMediumPath.c_str(), 14.0f);
 
-	std::string MavenProRegularPath = FONTS + (std::string) "MavenPro-Regular.ttf";
+	string MavenProRegularPath = FONTS + (string) "MavenPro-Regular.ttf";
 	font_maven_pro_regular = m_pImGuiInputOutputParams.Fonts->AddFontFromFileTTF(MavenProRegularPath.c_str(), 14.0f);
 }
 
@@ -142,7 +143,9 @@ void CImguiAPI::Destroy()
 #endif
 
 	ImGui_ImplSDL2_Shutdown();
+
 	ImGui::DestroyContext();
+	ImPlot::DestroyContext();
 }
 
 void CImguiAPI::HideCursor()

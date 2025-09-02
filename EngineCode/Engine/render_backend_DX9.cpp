@@ -51,22 +51,28 @@ void CRenderBackendDX9::set_FillMode(u32 _mode)
 
 void CRenderBackendDX9::set_anisotropy_filtering(int max_anisothropy)
 {
-	//for (u32 i = 0; i < Render->MaxSimultaneousTextures; i++)
-	//	Device->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, max_anisothropy);
+	for (int i = 0; i < Render->MaxSimultaneousTextures; i++)
+		Device->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, max_anisothropy);
 }
 
-/*
 void CRenderBackendDX9::enable_anisotropy_filtering()
 {
-	for (u32 i = 0; i < Render->MaxSimultaneousTextures; i++)
-		Device->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, psAnisotropic);
+	for (int i = 0; i < Render->MaxSimultaneousTextures; i++)
+		Device->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, Render->Anisotropy);
 }
-*/
 
 void CRenderBackendDX9::disable_anisotropy_filtering()
 {
-	//for (u32 i = 0; i < Render->MaxSimultaneousTextures; i++)
-	//	Device->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, 1);
+	for (int i = 0; i < Render->MaxSimultaneousTextures; i++)
+		Device->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, 1);
+}
+
+void CRenderBackendDX9::SetTextureFiltration(DWORD Stage, DWORD MagFilter, DWORD Minfilter, DWORD Mipfilter)
+{
+    // Set texture sampler states to control texture filtering behavior.
+    Device->SetSamplerState(Stage, D3DSAMP_MAGFILTER, MagFilter); // Use anisotropic filtering for magnification.
+	Device->SetSamplerState(Stage, D3DSAMP_MINFILTER, Minfilter); // Use linear filtering for minification.
+	Device->SetSamplerState(Stage, D3DSAMP_MIPFILTER, Mipfilter); // Use linear filtering for mipmap levels.
 }
 ///////////////////////////////////////////////////////////////
 #endif

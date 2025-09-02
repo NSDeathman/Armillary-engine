@@ -17,8 +17,8 @@ private:
 public:
 	enum
 	{
-		CULL_CCW = D3DCULL_CCW,
-		CULL_CW = D3DCULL_CW,
+		CULL_BACK = D3DCULL_CCW,
+		CULL_FRONT = D3DCULL_CW,
 		CULL_NONE = D3DCULL_NONE
 	};
 
@@ -37,9 +37,7 @@ public:
 	void enable_anisotropy_filtering();
 	void disable_anisotropy_filtering();
 
-	void set_shader_constant(D3DXHANDLE constant, bool flag)
-	{
-	}
+	void SetTextureFiltration(DWORD Stage, DWORD MagFilter, DWORD Minfilter, DWORD Mipfilter);
 
 	CRenderBackendDX9();
 	~CRenderBackendDX9() = default;

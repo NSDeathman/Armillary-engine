@@ -16,6 +16,9 @@
 #include "render_DX9.h"
 #endif
 #include "OptickAPI.h"
+#include "EngineSettings.h"
+#include "Application.h"
+#include "Monitoring.h"
 ///////////////////////////////////////////////////////////////
 extern bool g_bNeedCloseApplication;
 ///////////////////////////////////////////////////////////////
@@ -25,20 +28,9 @@ bool g_bWireframeMode = false;
 extern uint16_t g_ScreenWidth;
 extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
-static int SelectedResolution = 0;
-const char* screen_resolution_list[] = 
-{
-	"854x480 FWVGA",
-	"720x480 SD", 
-	"800x600 SVGA",
-	"1280x720 HD", 
-	"1280x800 WXGA",
-	"1366x760 WXGA",
-	"1600x900 HD+",
-	"1920x1080 FULL HD",
-};
+int SelectedResolution = 0;
 
-enum 
+enum
 {
 	FWVGA = 0,
 	SD = 1,
@@ -48,6 +40,18 @@ enum
 	WXGA1 = 5,
 	HDPLUS = 6,
 	FULLHD = 7,
+};
+
+const char* screen_resolution_list[] =
+{
+	"854x480 FWVGA",
+	"720x480 SD", 
+	"800x600 SVGA",
+	"1280x720 HD", 
+	"1280x800 WXGA",
+	"1366x760 WXGA",
+	"1600x900 HD+",
+	"1920x1080 FULL HD",
 };
 
 void ChangeScreenResolution()
@@ -90,7 +94,7 @@ void ChangeScreenResolution()
 
 	Render->SetNeedReset();
 }
-///////////////////////////////////////////////////////////////
+
 CHelperWindow::CHelperWindow()
 {
 	m_bNeedDraw = false;
@@ -98,6 +102,26 @@ CHelperWindow::CHelperWindow()
 	m_bNeedDrawSettings = false;
 	m_bNeedDrawProfilingSettings = false;
 	m_bNeedLeaveToScene = false;
+}
+
+void CHelperWindow::LoadSettings()
+{
+	SelectedResolution = Settings->GetConfig()->GetInt(string("render_settings"), string("screen_resolution"), SelectedResolution);
+	ChangeScreenResolution();
+
+	Render->Anisotropy = Settings->GetConfig()->GetInt(string("render_settings"), string("anisotropy"), Render->Anisotropy);
+
+	g_Fov = Settings->GetConfig()->GetFloat(string("camera_settings"), string("fov"), g_Fov);
+	g_FarPlane = Settings->GetConfig()->GetFloat(string("camera_settings"), string("far_plane"), g_FarPlane);
+}
+
+void CHelperWindow::SaveSettings()
+{
+	Settings->GetConfig()->SetInt(string("render_settings"), string("screen_resolution"), SelectedResolution);
+	Settings->GetConfig()->SetInt(string("render_settings"), string("anisotropy"), Render->Anisotropy);
+
+	Settings->GetConfig()->SetFloat(string("camera_settings"), string("fov"), g_Fov);
+	Settings->GetConfig()->SetFloat(string("camera_settings"), string("far_plane"), g_FarPlane);
 }
 
 void CHelperWindow::DrawSettings()
@@ -137,11 +161,16 @@ void CHelperWindow::DrawSettings()
 		if (ImGui::Combo("Screen resolution", &SelectedResolution, screen_resolution_list, IM_ARRAYSIZE(screen_resolution_list)))
 			ChangeScreenResolution();
 
+		if (ImGui::DragInt("Anisotropy", &Render->Anisotropy, 1, 0, Render->MaxAnisotropy))
+			Render->SetAnisotropy(Render->Anisotropy);
+
 		if (ImGui::Button("Reset render"))
 			Render->SetNeedReset();
 
+#ifdef DEBUG_BUILD
 		if (ImGui::Button("Wireframe"))
 			g_bWireframeMode = !g_bWireframeMode;
+#endif
 
 		ImGui::TreePop();
 	}
@@ -150,6 +179,12 @@ void CHelperWindow::DrawSettings()
 	{
 		if (ImGui::Button("Flush log"))
 			Log->Flush();
+
+		if (ImGui::Button("Save settings"))
+		{
+			SaveSettings();
+			Settings->Save();
+		}
 
 		ImGui::TreePop();
 	}
@@ -167,8 +202,15 @@ void CHelperWindow::DrawProfilingSettings()
 
 	ImGui::PushFont(Imgui->font_letterica_medium);
 
+	if (ImGui::Button("Monitoring"))
+	{
+		bool flag = Monitoring->GetNeedDrawMonitoring();
+		flag = !flag;
+		Monitoring->SetNeedDrawMonitoring(flag);
+	}
+
 	if (ImGui::Button("Capture 10 frames"))
-		OptickAPI->StartCapturing(10);
+		OptickAPI->StartCapturing(10);	
 
 	ImGui::PopFont();
 
@@ -197,8 +239,10 @@ void CHelperWindow::Draw()
 		if (ImGui::Button("Settings"))
 			m_bNeedDrawSettings = !m_bNeedDrawSettings;
 
+//#ifdef DEBUG_BUILD
 		if (ImGui::Button("Profiling"))
 			m_bNeedDrawProfilingSettings = !m_bNeedDrawProfilingSettings;
+//#endif
 
 		if (ImGui::Button("Quit to main menu"))
 			m_bNeedQuitToMainMenu = true;
