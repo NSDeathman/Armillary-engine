@@ -1,6 +1,6 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // Created: 14.01.2025
-// Author: OpenXRay, ChatGPT, NS_Deathman
+// Author: DeepSeek, OpenXRay, ChatGPT, NS_Deathman
 // CPU Identification Code
 ////////////////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
@@ -18,229 +18,216 @@
 ////////////////////////////////////////////////////////////////////////////////
 namespace CPU
 {
-	enum class Feature : uint32_t
+enum class Feature : uint32_t
+{
+	MMX = 0x0001,
+	SSE = 0x0002,
+	SSE2 = 0x0004,
+	SSE3 = 0x0010,
+	SSSE3 = 0x0020,
+	SSE41 = 0x0040,
+	SSE42 = 0x0080,
+	AVX = 0x0100,
+	AVX2 = 0x0200,
+	AVX512 = 0x0400,
+};
+
+struct ProcessorInfo
+{
+	char vendor[12] = {};
+	char modelName[64] = {};
+	uint8_t family = 0;
+	uint8_t model = 0;
+	uint8_t stepping = 0;
+	uint32_t features = 0;
+	uint32_t coreCount = 0;
+	uint32_t threadCount = 0;
+
+	bool HasFeature(Feature feature) const
 	{
-		Mmx = 0x0001,
-		Sse = 0x0002,
-		Sse2 = 0x0004,
-		Sse3 = 0x0010,
-		Ssse3 = 0x0020,
-		Sse41 = 0x0040,
-		Sse42 = 0x0080,
-		Avx = 0x0100,
-		Avx2 = 0x0200,
-		Avx512 = 0x0400,
-	};
+		return (features & static_cast<uint32_t>(feature)) != 0;
+	}
+};
 
-	struct ProcessorInfo
+uint64_t clockFrequency = 0;
+uint64_t clockOverhead = 0;
+uint64_t qpcFrequency = 0;
+uint64_t qpcOverhead = 0;
+
+ProcessorInfo Info;
+
+void ExecuteCPUID(int registers[4], int functionId)
+{
+	__cpuid(registers, functionId);
+}
+
+uint32_t DetectFeatures(ProcessorInfo* info)
+{
+	int registers[4];
+
+	// Get vendor string and maximum function ID
+	ExecuteCPUID(registers, 0);
+	const int maxFunctionId = registers[0];
+
+	// Правильное копирование vendor string (12 байт из трех регистров)
+	memcpy(info->vendor, &registers[1], 4);		// EBX
+	memcpy(info->vendor + 4, &registers[2], 4); // EDX
+	memcpy(info->vendor + 8, &registers[3], 4); // ECX
+	info->vendor[12] = '\0';					// Vendor string всегда 12 символов
+
+	// Get processor info and basic features
+	if (maxFunctionId >= 1)
 	{
-		char vendor[32] = {};
-		char modelName[64] = {};
-		uint8_t family = 0;
-		uint8_t model = 0;
-		uint8_t stepping = 0;
-		uint32_t features = 0;
-		uint32_t n_cores = 0;
-		uint32_t n_threads = 0;
-		uint32_t affinity_mask = 0;
+		ExecuteCPUID(registers, 1);
 
-		bool hasFeature(CPU::Feature feature) const
-		{
-			return (features & static_cast<uint32_t>(feature)) != 0;
-		}
-	};
+		// Extract processor family, model, stepping
+		info->stepping = registers[0] & 0xF;
+		info->model = (registers[0] >> 4) & 0xF;
+		info->family = (registers[0] >> 8) & 0xF;
 
-	uint64_t clk_per_second = 0;
-	uint64_t clk_per_millisec = 0;
-	uint64_t clk_per_microsec = 0;
-	float clk_to_seconds = 0.0f;
-	float clk_to_milisec = 0.0f;
-	float clk_to_microsec = 0.0f;
-	uint64_t clk_overhead = 0;
-	uint64_t qpc_freq = 0;
-	uint64_t qpc_overhead = 0;
-	uint32_t qpc_counter = 0;
+		// Check feature flags
+		const uint32_t ecx = registers[2];
+		const uint32_t edx = registers[3];
 
-	ProcessorInfo ID;
-
-	void nativeCpuId(int regs[4], int i)
-	{
-		__cpuid(regs, i);
+		info->features |= (edx & (1 << 23)) ? (uint32_t)Feature::MMX : 0;
+		info->features |= (edx & (1 << 25)) ? (uint32_t)Feature::SSE : 0;
+		info->features |= (edx & (1 << 26)) ? (uint32_t)Feature::SSE2 : 0;
+		info->features |= (ecx & (1 << 0)) ? (uint32_t)Feature::SSE3 : 0;
+		info->features |= (ecx & (1 << 9)) ? (uint32_t)Feature::SSSE3 : 0;
+		info->features |= (ecx & (1 << 19)) ? (uint32_t)Feature::SSE41 : 0;
+		info->features |= (ecx & (1 << 20)) ? (uint32_t)Feature::SSE42 : 0;
 	}
 
-	DWORD countSetBits(ULONG_PTR bitMask)
+	// Check for extended features (AVX, AVX2, AVX512)
+	if (maxFunctionId >= 7)
 	{
-		DWORD count = 0;
-		while (bitMask)
-		{
-			count += bitMask & 1;
-			bitMask >>= 1;
-		}
-		return count;
+		ExecuteCPUID(registers, 7);
+		const uint32_t ebx = registers[1];
+
+		info->features |= (ebx & (1 << 5)) ? (uint32_t)Feature::AVX : 0;
+		info->features |= (ebx & (1 << 16)) ? (uint32_t)Feature::AVX2 : 0;
+		info->features |= (ebx & (1 << 30)) ? (uint32_t)Feature::AVX512 : 0;
 	}
 
-	#ifndef _M_AMD64
-	#pragma warning(disable : 4035)
-	uint64_t GetCLK(void)
+	// Get processor name (extended function 0x80000002-0x80000004)
+	int extendedMaxFunctionId;
+	ExecuteCPUID(registers, 0x80000000);
+	extendedMaxFunctionId = registers[0];
+
+	if (extendedMaxFunctionId >= 0x80000004)
 	{
-		_asm _emit 0x0F;
-		_asm _emit 0x31;
-	}
-	#pragma warning(default : 4035)
-	#else
-	uint64_t GetCLK(void)
-	{
-		return __rdtsc();
-	}
-	#endif
-
-	unsigned int queryProcessorInfo(ProcessorInfo* pinfo)
-	{
-		ZeroMemory(pinfo, sizeof(ProcessorInfo));
-
-		int cpui[4];
-		nativeCpuId(cpui, 0);
-		const int nIds = cpui[0];
-
-		for (int i = 0; i <= nIds; ++i)
-		{
-			nativeCpuId(cpui, i);
-			if (i == 0)
-			{
-				memcpy(pinfo->vendor, &cpui[1], sizeof(pinfo->vendor) - 1);
-			}
-			else if (i == 1)
-			{
-				std::bitset<32> f_ECX(cpui[2]);
-				std::bitset<32> f_EDX(cpui[3]);
-
-				// Set features based on flags
-				pinfo->features |= f_EDX[23] ? static_cast<uint32_t>(CPU::Feature::Mmx) : 0;
-				pinfo->features |= f_EDX[25] ? static_cast<uint32_t>(CPU::Feature::Sse) : 0;
-				pinfo->features |= f_EDX[26] ? static_cast<uint32_t>(CPU::Feature::Sse2) : 0;
-				pinfo->features |= f_ECX[0] ? static_cast<uint32_t>(CPU::Feature::Sse3) : 0;
-				pinfo->features |= f_ECX[9] ? static_cast<uint32_t>(CPU::Feature::Ssse3) : 0;
-				pinfo->features |= f_ECX[19] ? static_cast<uint32_t>(CPU::Feature::Sse41) : 0;
-				pinfo->features |= f_ECX[20] ? static_cast<uint32_t>(CPU::Feature::Sse42) : 0;
-			}
-			else if (i == 7) // Check for advanced features
-			{
-				std::bitset<32> f_EBX(cpui[1]);
-				std::bitset<32> f_ECX(cpui[2]);
-
-				pinfo->features |= f_EBX[5] ? static_cast<uint32_t>(CPU::Feature::Avx) : 0;		// AVX
-				pinfo->features |= f_EBX[16] ? static_cast<uint32_t>(CPU::Feature::Avx2) : 0;	// AVX2
-				pinfo->features |= f_EBX[30] ? static_cast<uint32_t>(CPU::Feature::Avx512) : 0; // AVX512
-			}
-		}
-
-		return pinfo->features;
+		char* namePtr = info->modelName;
+		ExecuteCPUID((int*)namePtr, 0x80000002);
+		ExecuteCPUID((int*)(namePtr + 16), 0x80000003);
+		ExecuteCPUID((int*)(namePtr + 32), 0x80000004);
+		info->modelName[48] = '\0'; // 16 байт × 3 = 48 символов
 	}
 
-	uint64_t QPC()
+	return info->features;
+}
+
+void DetectClockFrequency()
+{
+	// Elevate priority for accurate measurement
+	const HANDLE process = GetCurrentProcess();
+	const DWORD originalPriority = GetPriorityClass(process);
+	SetPriorityClass(process, REALTIME_PRIORITY_CLASS);
+
+	// Measure RDTSC frequency
+	const DWORD startTime = timeGetTime();
+	uint64_t startTsc, endTsc;
+
+	// Wait for time change to align measurement
+	while (timeGetTime() == startTime)
 	{
-		uint64_t _dest;
-		QueryPerformanceCounter((PLARGE_INTEGER)&_dest);
-		qpc_counter++;
-		return _dest;
 	}
 
-	void Detect()
+	startTsc = ReadTimeStampCounter();
+	while (timeGetTime() - startTime < 1000)
 	{
-		// Set process priority to real-time
-		SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+	} // Wait 1 second
+	endTsc = ReadTimeStampCounter();
 
-		// Detect frequency
-		uint64_t startTime, endTime;
-		uint32_t initialTime, currentTime;
+	clockFrequency = endTsc - startTsc;
 
-		// Wait for timeGetTime to change
-		initialTime = timeGetTime();
-		do
-		{
-			currentTime = timeGetTime();
-		} while (initialTime == currentTime);
-
-		startTime = GetCLK();
-		while (timeGetTime() - currentTime < 1000)
-			; // Busy wait for 1 second
-		endTime = GetCLK();
-
-		clk_per_second = endTime - startTime;
-
-		// Calculate RDTSC overhead
-		for (int i = 0; i < 256; ++i)
-		{
-			startTime = GetCLK();
-			clk_overhead += GetCLK() - startTime;
-		}
-		clk_overhead /= 256;
-
-		// Calculate QPC overhead
-		QueryPerformanceFrequency((PLARGE_INTEGER)&qpc_freq);
-		for (int i = 0; i < 256; ++i)
-		{
-			startTime = QPC();
-			qpc_overhead += QPC() - startTime;
-		}
-		qpc_overhead /= 256;
-
-		// Reset process priority to normal
-		SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
-
-		// Adjust clock counts
-		clk_per_second -= clk_overhead;
-		clk_per_millisec = clk_per_second / 1000;
-		clk_per_microsec = clk_per_millisec / 1000;
-
-	#ifndef WIN64
-		_control87(_PC_64, MCW_PC); // Ensure precision control for 32-bit builds
-	#endif
-
-		// Convert clock ticks to time units
-		clk_to_seconds = 1.0f / clk_per_second;
-		clk_to_milisec = 1000.0f / clk_per_second;
-		clk_to_microsec = 1000000.0f / clk_per_second;
+	// Measure RDTSC overhead
+	for (int i = 0; i < 100; ++i)
+	{
+		startTsc = ReadTimeStampCounter();
+		clockOverhead += ReadTimeStampCounter() - startTsc;
 	}
+	clockOverhead /= 100;
+
+	// Adjust for overhead
+	clockFrequency -= clockOverhead;
+
+	// Measure QPC frequency and overhead
+	QueryPerformanceFrequency((LARGE_INTEGER*)&qpcFrequency);
+
+	for (int i = 0; i < 100; ++i)
+	{
+		uint64_t startQpc;
+		QueryPerformanceCounter((LARGE_INTEGER*)&startQpc);
+		qpcOverhead += ReadTimeStampCounter() - startTsc;
+	}
+	qpcOverhead /= 100;
+
+	// Restore original priority
+	SetPriorityClass(process, originalPriority);
+}
+
+void Initialize()
+{
+	DetectClockFrequency();
+	DetectFeatures(&Info);
+
+	// Get core/thread count from system info
+	SYSTEM_INFO systemInfo;
+	GetSystemInfo(&systemInfo);
+	Info.coreCount = systemInfo.dwNumberOfProcessors;
+
+	// For thread count, we can use hardware_concurrency or WMI
+	Info.threadCount = std::thread::hardware_concurrency();
+}
 } // namespace CPU
-////////////////////////////////////////////////////////////////////////////////
+
 void initializeCPU()
 {
-	CPU::Detect();
+	CPU::Initialize();
 
-	if (!queryProcessorInfo(&CPU::ID))
+	Msg("CPU Information:");
+	Msg("Vendor: %s", CPU::Info.vendor);
+	Msg("Model: %s", CPU::Info.modelName);
+	Msg("Cores: %d", CPU::Info.coreCount);
+	Msg("Threads: %d", CPU::Info.threadCount);
+	Msg("Frequency: %f %s", ((float)CPU::clockFrequency / 1000000000), "GHz");
+
+	std::string features;
+	if (CPU::Info.HasFeature(CPU::Feature::MMX))
+		features += "MMX, ";
+	if (CPU::Info.HasFeature(CPU::Feature::SSE))
+		features += "SSE, ";
+	if (CPU::Info.HasFeature(CPU::Feature::SSE2))
+		features += "SSE2, ";
+	if (CPU::Info.HasFeature(CPU::Feature::SSE3))
+		features += "SSE3, ";
+	if (CPU::Info.HasFeature(CPU::Feature::SSSE3))
+		features += "SSSE3, ";
+	if (CPU::Info.HasFeature(CPU::Feature::SSE41))
+		features += "SSE4.1, ";
+	if (CPU::Info.HasFeature(CPU::Feature::SSE42))
+		features += "SSE4.2, ";
+	if (CPU::Info.HasFeature(CPU::Feature::AVX))
+		features += "AVX, ";
+	if (CPU::Info.HasFeature(CPU::Feature::AVX2))
+		features += "AVX2, ";
+	if (CPU::Info.HasFeature(CPU::Feature::AVX512))
+		features += "AVX512, ";
+
+	if (!features.empty())
 	{
-		Msg("Can't detect CPU/FPU");
-		return;
+		features = features.substr(0, features.length() - 2);
+		Msg("Features: %s \n", features.c_str());
 	}
-
-	Msg("CPU Info:");
-	Msg("CPU Thread count: %d", std::thread::hardware_concurrency());
-	Msg("CPU Frequency: %.2f MHZ", float(CPU::clk_per_second / u64(1000000)));
-
-	string256 features;
-	strcpy(features, "");
-	if (CPU::ID.hasFeature(CPU::Feature::Sse))
-		strcat(features, "SSE");
-	if (CPU::ID.hasFeature(CPU::Feature::Sse2))
-		strcat(features, ", SSE2");
-	if (CPU::ID.hasFeature(CPU::Feature::Sse3))
-		strcat(features, ", SSE3");
-	if (CPU::ID.hasFeature(CPU::Feature::Sse41))
-		strcat(features, ", SSE4.1");
-	if (CPU::ID.hasFeature(CPU::Feature::Sse42))
-		strcat(features, ", SSE4.2");
-	if (CPU::ID.hasFeature(CPU::Feature::Ssse3))
-		strcat(features, ", SSSE3");
-	if (CPU::ID.hasFeature(CPU::Feature::Mmx))
-		strcat(features, ", MMX");
-	if (CPU::ID.hasFeature(CPU::Feature::Avx))
-		strcat(features, ", AVX");
-	if (CPU::ID.hasFeature(CPU::Feature::Avx2))
-		strcat(features, ", AVX2");
-	if (CPU::ID.hasFeature(CPU::Feature::Avx512))
-		strcat(features, ", AVX512");
-
-	Msg("CPU features: %s\n", features);
 }
 ////////////////////////////////////////////////////////////////////////////////
