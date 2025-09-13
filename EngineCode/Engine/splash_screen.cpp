@@ -30,7 +30,7 @@ CSplashScreen::CSplashScreen()
 {
 	m_splash_screen_window = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, SplashScreenDlgProc);
 
-	SetWindowPos(m_splash_screen_window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+	SetWindowPos(m_splash_screen_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 
 	ShowWindow(m_splash_screen_window, SW_SHOWDEFAULT);
 	UpdateWindow(m_splash_screen_window);

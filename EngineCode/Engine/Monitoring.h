@@ -5,42 +5,108 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
+#include <array>
+#include <string_view>
 #include "Timer.h"
-///////////////////////////////////////////////////////////////
-#define MONITORING_CHART_RENDER 0
-#define MONITORING_CHART_INPUT 1
-#define MONITORING_CHART_UI 2
-#define MONITORING_CHART_OTHER 3
-#define MONITORING_CHARTS_COUNT 4
 ///////////////////////////////////////////////////////////////
 class CMonitoring
 {
-private:
-	bool m_NeedDraw;
+  public:
+	enum class ChartType : uint8_t
+	{
+		Render,
+		Input,
+		UI,
+		Other,
+		Count
+	};
 
-	float fFPS_Average;
-	int Frame;
+	static constexpr size_t CHART_HISTORY_SIZE = 100;
+	static constexpr size_t CHART_COUNT = static_cast<size_t>(ChartType::Count);
 
-public:
+	CMonitoring();
+	~CMonitoring() = default;
+
 	void OnFrame();
 	void Draw();
 	void CalcStatistic();
 
-	void AddToChart(float time, int chart);
+	void AddToChart(float time, ChartType chart);
 
 	void SetNeedDrawMonitoring(bool flag)
 	{
 		m_NeedDraw = flag;
 	}
-
-	bool GetNeedDrawMonitoring()
+	bool GetNeedDrawMonitoring() const
 	{
 		return m_NeedDraw;
 	}
 
-	CMonitoring();
-	~CMonitoring();
+	class ScopedTimer
+	{
+	  public:
+		ScopedTimer(CMonitoring* monitoring, ChartType chart) : m_Monitoring(monitoring), m_Chart(chart)
+		{
+			m_Timer.Start();
+		}
+
+		~ScopedTimer()
+		{
+			if (m_Monitoring)
+			{
+				float elapsedTime = m_Timer.GetElapsedTime();
+				m_Monitoring->AddToChart(elapsedTime, m_Chart);
+			}
+		}
+
+		// Запрещаем копирование и перемещение
+		ScopedTimer(const ScopedTimer&) = delete;
+		ScopedTimer& operator=(const ScopedTimer&) = delete;
+
+	  private:
+		CMonitoring* m_Monitoring;
+		ChartType m_Chart;
+		CTimer m_Timer;
+	};
+
+	// Создание scoped таймера
+	[[nodiscard]] ScopedTimer CreateScopedTimer(ChartType chart)
+	{
+		return ScopedTimer(this, chart);
+	}
+
+  private:
+	bool m_NeedDraw;
+	float m_FPSAverage;
+	size_t m_CurrentFrame;
+
+	std::array<float, CHART_HISTORY_SIZE> m_FPSData;
+	std::array<std::array<float, CHART_HISTORY_SIZE>, CHART_COUNT> m_ChartTimeData;
+	std::array<float, CHART_COUNT> m_CurrentChartData;
+	std::array<float, CHART_COUNT> m_StoredChartData;
+	std::array<float, CHART_COUNT> m_ChartPercentages;
+
+	static constexpr std::array<std::string_view, CHART_COUNT> CHART_LABELS = {"Render", "Input", "UI", "Other"};
+
+	static float GetPercent(float a, float b)
+	{
+		return (a / b) * 100.0f;
+	}
+	static float ConvertToMS(float time)
+	{
+		return time * 1000.0f;
+	}
 };
 ///////////////////////////////////////////////////////////////
 extern CMonitoring* Monitoring;
+///////////////////////////////////////////////////////////////
+// Макрос для удобного использования scoped таймера
+#define MONITOR_SCOPE(chart_type) auto ANONYMOUS_VARIABLE(monitoring_timer_) = Monitoring->CreateScopedTimer(chart_type)
+
+// Вспомогательный макрос для генерации уникальных имён
+#define CONCAT_(a, b) a##b
+#define CONCAT(a, b) CONCAT_(a, b)
+#define ANONYMOUS_VARIABLE(prefix) CONCAT(prefix, __LINE__)
+
+#define MONITORNG_CHART CMonitoring::ChartType
 ///////////////////////////////////////////////////////////////

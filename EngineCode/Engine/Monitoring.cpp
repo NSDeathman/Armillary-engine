@@ -7,119 +7,66 @@
 #include "Application.h"
 #include "imgui_api.h"
 #include "log.h"
+#include <algorithm>
+#include <numeric>
 ///////////////////////////////////////////////////////////////
 extern CImguiAPI* Imgui;
 ///////////////////////////////////////////////////////////////
-float FPS_Data[100] = {};
-float RenderTimeData[100] = {};
-float InputTimeData[100] = {};
-float UITimeData[100] = {};
-float OtherTimeData[100] = {};
-
-LPCSTR ChartLabels[MONITORING_CHARTS_COUNT];
-float ChartData[MONITORING_CHARTS_COUNT];
-float ChartDataStored[MONITORING_CHARTS_COUNT];
-float ChartDataPercents[MONITORING_CHARTS_COUNT];
-///////////////////////////////////////////////////////////////
-CMonitoring::CMonitoring()
+CMonitoring::CMonitoring() : m_NeedDraw(false), m_FPSAverage(60.0f), m_CurrentFrame(0)
 {
 #ifdef DEBUG_BUILD
 	m_NeedDraw = true;
-#else
-	m_NeedDraw = false;
 #endif
-			
-	fFPS_Average = 60.0f;
-	Frame = 0;
 
-	for (int i = 0; i < 99; i++)
+	// Инициализация данных
+	std::fill(m_FPSData.begin(), m_FPSData.end(), 65.0f);
+
+	for (auto& chartData : m_ChartTimeData)
 	{
-		FPS_Data[i] = 65.0f;
-		RenderTimeData[i] = 100.0f;
-		InputTimeData[i] = 100.0f;
-		UITimeData[i] = 100.0f;
-		OtherTimeData[i] = 100.0f;
+		std::fill(chartData.begin(), chartData.end(), 100.0f);
 	}
 
-	ChartLabels[MONITORING_CHART_RENDER] = LPCSTR("Render");
-	ChartLabels[MONITORING_CHART_INPUT] = LPCSTR("Input");
-	ChartLabels[MONITORING_CHART_UI] = LPCSTR("UI");
-	ChartLabels[MONITORING_CHART_OTHER] = LPCSTR("Other");
-
-	for (int j = 0; j < MONITORING_CHARTS_COUNT; j++)
-	{
-		ChartData[j] = 1.0f;
-		ChartDataStored[j] = 1.0f;
-		ChartDataPercents[j] = ChartData[j];
-	}
-}
-
-CMonitoring::~CMonitoring()
-{
-}
-
-float GetPercent(float a, float b)
-{
-	return (a / b) * 100.0f;
-}
-
-float ConvertToMS(float time)
-{
-	return time * 1000.0f;
+	std::fill(m_CurrentChartData.begin(), m_CurrentChartData.end(), 1.0f);
+	std::fill(m_StoredChartData.begin(), m_StoredChartData.end(), 1.0f);
+	std::fill(m_ChartPercentages.begin(), m_ChartPercentages.end(), 1.0f);
 }
 
 void CMonitoring::CalcStatistic()
 {
-	const float TimeDelta = App->GetTimeDelta();
-	const float FrameTimeMS = ConvertToMS(App->GetFrameTime());
-	const float FPS = App->GetFPS();
+	const float frameTime = App->GetFrameTime();
+	const float frameTimeMS = ConvertToMS(frameTime);
+	const float fps = App->GetFPS();
 
-	FPS_Data[Frame] = FPS;
+	// Обновление данных FPS
+	m_FPSData[m_CurrentFrame] = fps;
+	m_FPSAverage = std::accumulate(m_FPSData.begin(), m_FPSData.end(), 0.0f) / CHART_HISTORY_SIZE;
 
-	for (int i = 0; i < 99; i++)
-		fFPS_Average += FPS_Data[i];
-
-	fFPS_Average /= 101.0f;
-
-	float x = 0.0f;
-	ChartData[MONITORING_CHART_OTHER] = 0.0f;
-
-	for (int j = 0; j < MONITORING_CHARTS_COUNT; j++)
-		x += ChartData[j];
-
-	ChartData[MONITORING_CHART_OTHER] = App->GetFrameTime() - x;
-
-	for (int k = 0; k < MONITORING_CHARTS_COUNT; k++)
+	// Вычисление времени для "Other"
+	float totalTrackedTime = 0.0f;
+	for (size_t i = 0; i < CHART_COUNT - 1; ++i) // исключаем Other
 	{
-		ChartData[k] = ConvertToMS(ChartData[k]);
-		ChartDataStored[k] = ChartData[k];
-		ChartDataPercents[k] = GetPercent(ChartDataStored[k], FrameTimeMS);
+		totalTrackedTime += m_CurrentChartData[i];
+	}
+	m_CurrentChartData[static_cast<size_t>(ChartType::Other)] = max(0.0f, frameTime - totalTrackedTime);
+
+	// Конвертация в миллисекунды и проценты
+	for (size_t i = 0; i < CHART_COUNT; ++i)
+	{
+		m_StoredChartData[i] = ConvertToMS(m_CurrentChartData[i]);
+		m_ChartPercentages[i] = GetPercent(m_StoredChartData[i], frameTimeMS);
+		m_ChartTimeData[i][m_CurrentFrame] = m_ChartPercentages[i];
 	}
 
-	RenderTimeData[Frame] = ChartDataPercents[MONITORING_CHART_RENDER];
-	InputTimeData[Frame] = ChartDataPercents[MONITORING_CHART_INPUT];
-	UITimeData[Frame] = ChartDataPercents[MONITORING_CHART_UI];
-	OtherTimeData[Frame] = ChartDataPercents[MONITORING_CHART_OTHER];
-
-	if (Frame < 99) [[likely]]
-		Frame++;
-	else
-		Frame = 0;
+	// Обновление индекса кадра
+	m_CurrentFrame = (m_CurrentFrame + 1) % CHART_HISTORY_SIZE;
 }
 
-void CMonitoring::AddToChart(float time, int chart)
+void CMonitoring::AddToChart(float time, ChartType chart)
 {
-	switch (chart)
+	const size_t index = static_cast<size_t>(chart);
+	if (index < CHART_COUNT - 1) // Не позволяем напрямую устанавливать Other
 	{
-	case MONITORING_CHART_RENDER:
-		ChartData[MONITORING_CHART_RENDER] = time;
-		break;
-	case MONITORING_CHART_INPUT:
-		ChartData[MONITORING_CHART_INPUT] = time;
-		break;
-	case MONITORING_CHART_UI:
-		ChartData[MONITORING_CHART_UI] = time;
-		break;
+		m_CurrentChartData[index] = time;
 	}
 }
 
@@ -139,47 +86,39 @@ void CMonitoring::Draw()
 
 	ImGui::PushFont(Imgui->font_letterica_medium);
 
-	string FPSMessage = string("FPS: ") + std::to_string(App->GetFPS());
-	string FPSAverageMessage = string("FPS Average: ") + std::to_string(fFPS_Average);
+	// Отображение FPS
+	ImGui::Text("FPS: %.1f", App->GetFPS());
+	ImGui::Text("FPS Average: %.1f", m_FPSAverage);
 
-	ImGui::Text(FPSMessage.c_str());
-	ImGui::Text(FPSAverageMessage.c_str());
+	// График FPS
+	if (ImPlot::BeginPlot("FPS Stats", "Frame", "FPS", ImVec2(-1, 200)))
+	{
+		ImPlot::PlotLine("FPS", m_FPSData.data(), static_cast<int>(m_FPSData.size()));
+		ImPlot::EndPlot();
+	}
 
-	ImPlot::BeginPlot("Stats");
-	ImPlot::PlotBars("FPS", FPS_Data, 100);
-	ImPlot::EndPlot();
+	// Время кадра
+	const float frameTimeMS = ConvertToMS(App->GetFrameTime());
+	ImGui::Text("Frame time: %.2f ms", frameTimeMS);
 
-	string AllFrameTimeMessage = string("Frame time: ") + std::to_string(ConvertToMS(App->GetFrameTime())) + string(" ms ");
-	string RenderFrameTimeMessage = string("Render: ") + std::to_string(ChartDataStored[MONITORING_CHART_RENDER]) + string(" ms (") + std::to_string(ChartDataPercents[MONITORING_CHART_RENDER]) + string(" percents)");
-	string InputFrameTimeMessage = string("Input: ") + std::to_string(ChartDataStored[MONITORING_CHART_INPUT]) + string(" ms (") + std::to_string(ChartDataPercents[MONITORING_CHART_INPUT]) + string(" percents)");
-	string UIFrameTimeMessage = string("UI: ") + std::to_string(ChartDataStored[MONITORING_CHART_UI]) + string(" ms (") + std::to_string(ChartDataPercents[MONITORING_CHART_UI]) + string(" percents)");
-	string OtherFrameTimeMessage = string("Other: ") + std::to_string(ChartDataStored[MONITORING_CHART_OTHER]) + string(" ms (") + std::to_string(ChartDataPercents[MONITORING_CHART_OTHER]) + string(" percents)");
+	// Детализация по категориям
+	for (size_t i = 0; i < CHART_COUNT; ++i)
+	{
+		ImGui::Text("%s: %.2f ms (%.1f%%)", CHART_LABELS[i].data(), m_StoredChartData[i], m_ChartPercentages[i]);
+	}
 
-	ImGui::Text(AllFrameTimeMessage.c_str());
-	ImGui::Text(RenderFrameTimeMessage.c_str());
-	ImGui::Text(InputFrameTimeMessage.c_str());
-	ImGui::Text(UIFrameTimeMessage.c_str());
-	ImGui::Text(OtherFrameTimeMessage.c_str());
-
-	static ImPlotPieChartFlags flags = ImPlotFlags_NoTitle | ImPlotFlags_NoMouseText | ImPlotPieChartFlags_Normalize | ImPlotPieChartFlags_IgnoreHidden;
-
-	//ImPlot::PushColormap(ImPlotColormap_Dark);
-	//ImPlot::BeginPlot("Frametime chart:", ImVec2(-1, 0), flags);
-	//ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
-	//ImPlot::SetupAxesLimits(0, 1, 0, 1);
-	//ImPlot::PlotPieChart(ChartLabels, ChartDataPercents, MONITORING_CHARTS_COUNT, 0.5, 0.5, 0.4, "%.0f", 180, flags);
-	//ImPlot::EndPlot();
-	//ImPlot::PopColormap();
-
-	ImPlot::BeginPlot("Chart");
-	ImPlot::PlotBars("Render", RenderTimeData, 100);
-	ImPlot::PlotBars("Input", InputTimeData, 100);
-	ImPlot::PlotBars("UI", UITimeData, 100);
-	ImPlot::PlotBars("Other", OtherTimeData, 100);
-	ImPlot::EndPlot();
+	// График распределения времени
+	if (ImPlot::BeginPlot("Time Distribution", "Frame", "Percentage", ImVec2(-1, 200)))
+	{
+		for (size_t i = 0; i < CHART_COUNT; ++i)
+		{
+			ImPlot::PlotLine(CHART_LABELS[i].data(), m_ChartTimeData[i].data(),
+							 static_cast<int>(m_ChartTimeData[i].size()));
+		}
+		ImPlot::EndPlot();
+	}
 
 	ImGui::PopFont();
-
 	ImGui::End();
 }
 ///////////////////////////////////////////////////////////////

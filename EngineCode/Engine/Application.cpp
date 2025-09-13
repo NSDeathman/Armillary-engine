@@ -182,30 +182,17 @@ void CApplication::CalculateTimeStats()
 }
 
 CTimer SummaryTimer;
-CTimer RenderTimer;
-CTimer InputTimer;
-CTimer UITimer;
 
 void RenderTask()
 {
-	RenderTimer.Start();
-
+	MONITOR_SCOPE(MONITORNG_CHART::Render);
 	Render->OnFrame();
-
-	float RenderTime = RenderTimer.GetElapsedTime();
-	RenderTimer.Stop();
-	Monitoring->AddToChart(RenderTime, MONITORING_CHART_RENDER);
 }
 
 void UITask()
 {
-	UITimer.Start();
-
+	MONITOR_SCOPE(MONITORNG_CHART::UI);
 	UserInterface->OnFrame();
-
-	float UITime = UITimer.GetElapsedTime();
-	UITimer.Stop();
-	Monitoring->AddToChart(UITime, MONITORING_CHART_UI);
 }
 
 void InputUpdate()
@@ -218,13 +205,8 @@ void InputUpdate()
 
 void InputTask()
 {
-	InputTimer.Start();
-
+	MONITOR_SCOPE(MONITORNG_CHART::Input);
 	Scheduler->Add(InputUpdate);
-
-	float InputTime = InputTimer.GetElapsedTime();
-	InputTimer.Stop();
-	Monitoring->AddToChart(InputTime, MONITORING_CHART_INPUT);
 }
 
 void CApplication::OnFrame()
@@ -232,9 +214,9 @@ void CApplication::OnFrame()
 	OPTICK_FRAME("CApplication::OnFrame")
 	OPTICK_EVENT("CApplication::OnFrame")
 
-	HandleSDLEvents();
-
 	SummaryTimer.Start();
+
+	HandleSDLEvents();
 
 	InputTask();
 
@@ -264,6 +246,7 @@ void CApplication::OnFrame()
 	RenderTask();
 
 	m_FrameTime = SummaryTimer.GetElapsedTime();
+	SummaryTimer.Stop();
 
 	if (m_FrameTime < 0.01666666f) [[unlikely]]
 	{
@@ -273,8 +256,6 @@ void CApplication::OnFrame()
 	}
 
 	CalculateTimeStats();
-
-	SummaryTimer.Stop();
 
 	Monitoring->OnFrame();
 

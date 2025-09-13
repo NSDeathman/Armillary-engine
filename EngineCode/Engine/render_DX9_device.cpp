@@ -14,16 +14,25 @@ extern uint16_t g_ScreenHeight;
 ///////////////////////////////////////////////////////////////
 void CRenderDX9::GetCapabilities()
 {
-	D3DCAPS9 Capabilities;
+	Msg("\nGet render device capabilities");
 
+	D3DCAPS9 Capabilities;
 	m_pDirect3D->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &Capabilities);
 
-	MaxSimultaneousTextures = Capabilities.MaxSimultaneousTextures;
+	D3DADAPTER_IDENTIFIER9 adapterID;
+	m_pDirect3D->GetAdapterIdentifier(D3DADAPTER_DEFAULT, 0, &adapterID);
+	Msg("GPU [vendor:%X]-[device:%X]-[device name:%s]: %s", adapterID.VendorId, adapterID.DeviceId, adapterID.DeviceName, adapterID.Description);
+	Msg("Driver %s %d", adapterID.Driver, adapterID.DriverVersion);
 
+	Msg("Vertex shader version: %d.%d", D3DSHADER_VERSION_MAJOR(Capabilities.VertexShaderVersion), D3DSHADER_VERSION_MINOR(Capabilities.VertexShaderVersion));
+	Msg("Pixel shader version: %d.%d", D3DSHADER_VERSION_MAJOR(Capabilities.PixelShaderVersion), D3DSHADER_VERSION_MINOR(Capabilities.PixelShaderVersion));
+	Msg("Max vertex shader constants: %d", Capabilities.MaxVertexShaderConst);
+	Msg("Vertex shader instructions: %d", Capabilities.VertexShaderVersion ? 256 : 0);
+
+	MaxSimultaneousTextures = Capabilities.MaxSimultaneousTextures;
 	Msg("Maximum supported simultaneous textures: %d", MaxSimultaneousTextures);
 
 	MaxAnisotropy = Capabilities.MaxAnisotropy;
-
 	Msg("Maximum supported anisotropy: %d", MaxAnisotropy);
 
 	// Iterate through multi-sample types from highest to lowest
@@ -46,6 +55,8 @@ void CRenderDX9::GetCapabilities()
 			break;
 		}
 	}
+
+	Msg("\n");
 }
 
 void CRenderDX9::InitializeDirect3D()
