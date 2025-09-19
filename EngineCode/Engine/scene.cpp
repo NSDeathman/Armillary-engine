@@ -5,32 +5,54 @@
 ///////////////////////////////////////////////////////////////
 #include "scene.h"
 #include "log.h"
-#include "threading.h"
-
-#ifdef USE_DX11
-#include "render_DX11.h"
-#else
 #include "render_DX9.h"
 #include "render_backend_DX9.h"
-#endif
-
 #include "IniParser.h"
+#include "Monitoring.h"
+#include "AsyncExecutor.h"
+#include "user_interface.h"
 ///////////////////////////////////////////////////////////////
 CScene::CScene()
 {
 	m_bSceneLoadingInProcess = false;
 }
 
-void LoadMesh()
+void CScene::Load()
 {
-	Scene->SetSceneLoadingState(true);
+	Msg("Loading scene...");
 
-	Scene->m_Mesh.Create(MESHES, "debug_plane.obj");
+	AsyncExecutor->Execute([]() 
+	{
+		Monitoring->TaskMonitor.addTask("LoadMesh()");
 
-	Scene->SetSceneLoadingState(false);
-	Scene->SetSceneLoaded(true);
+		Scene->SetSceneLoadingState(true);
 
-	Msg("Scene loaded successfully");
+		Scene->m_Mesh.Create(MESHES, "debug_plane.obj");
+
+		Scene->SetSceneLoadingState(false);
+		Scene->SetSceneLoaded(true);
+
+		Msg("Scene loaded successfully");
+
+		Monitoring->TaskMonitor.completeTask("LoadMesh()");
+	});
+}
+
+void CScene::OnFrame()
+{
+	if (UserInterface->NeedLoadScene())
+		Load();
+
+	if (UserInterface->NeedDestroyScene())
+	{
+		Destroy();
+		UserInterface->SetNeedDestroyScene(false);
+	}
+}
+
+void CScene::DrawGeometry()
+{
+	Scene->m_Mesh.DrawSubsets();
 }
 
 void DestroyMesh()
@@ -42,33 +64,12 @@ void DestroyMesh()
 	Msg("Scene destroyed successfully");
 }
 
-void CScene::Load()
-{
-	Msg("Loading scene...");
-
-	Scheduler->Add(LoadMesh);
-
-	/*
-	IniParser* Config = new (IniParser);
-	Config->SetFloat(string("test_section"), string("test_float"), 1.79f);
-	Config->Save(string("test_config.ini"), CONFIGS);
-
-	Config->Load(string("test_config.ini"), CONFIGS);
-	float Value = Config->GetFloat(string("test_section"), string("test_float"));
-	Msg("Value = %f", Value);
-	delete (Config);
-	*/
-}
-
-void CScene::DrawGeometry()
-{
-	Scene->m_Mesh.DrawSubsets();
-}
-
 void CScene::Destroy()
 {
 	Msg("Destroying scene...");
 
 	DestroyMesh();
 }
+///////////////////////////////////////////////////////////////
+CScene* Scene = nullptr;
 ///////////////////////////////////////////////////////////////

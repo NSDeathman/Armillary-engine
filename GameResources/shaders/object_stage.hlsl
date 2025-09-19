@@ -25,52 +25,39 @@ struct Interpolators
     float3 Dir : TEXCOORD5;
 };
 ///////////////////////////////////////////////////////////////
-float3 transform_dir(float3 v)
-{
-    float3 dest = 0.0f;
-    dest.x = v.x * matView._11 + v.y * matView._21 + v.z * matView._31;
-    dest.y = v.x * matView._12 + v.y * matView._22 + v.z * matView._32;
-    dest.z = v.x * matView._13 + v.y * matView._23 + v.z * matView._33;
-    return dest;
-}
-
 Interpolators VSMain(VertexData Input)
 {
     Interpolators Output;
     
-    Output.HomogeniousPosition = mul(float4(Input.Position, 1.0f), matWorldViewProjection);
-    Output.Position = mul(float4(Input.Position, 1.0f), transpose(matWorldView)).xyz;
+    Output.HomogeniousPosition = mul(transpose(matWorldViewProjection), float4(Input.Position, 1.0f));
+    Output.Position = mul(transpose(matView), float4(Input.Position, 1.0f));
     
-    float3 Binormal = cross(Input.Normal, Input.Tangent);
-    float3x3 TBN = float3x3(Input.Tangent, Binormal, Input.Normal);
-    TBN = mul((float3x3) transpose(matWorldView), TBN);
+    float3 Tangent = mul((float3x3) transpose(matWorldView), Input.Tangent);
+    float3 Normal = mul((float3x3) transpose(matWorldView), Input.Normal);
+    float3 Binormal = cross(Normal, Tangent);
+    float3x3 TBN = float3x3(Tangent, Binormal, Normal);
     
     Output.TBN0 = TBN[0];
     Output.TBN1 = TBN[1];
     Output.TBN2 = TBN[2];
     
-    Output.UV = Input.UV;
+    Output.UV = float2(Input.UV.x, 1.0f - Input.UV.y);
 
-    Output.Dir = transform_dir(float3(0, 1, 0));
-    Output.Dir = normalize(Output.Dir);
+    Output.Dir.xyz = mul((float3x3) transpose(matView), float3(0.2, 0.8, 0.5));
     
     return Output;
 }
 
 float4 PSMain(Interpolators Input) : COLOR0
-{
-    float2 UV = float2(Input.UV.x, 1.0f - Input.UV.y);
-    
-    float3 Albedo = tex2D(texAlbedo, UV);
+{    
+    float3 Albedo = tex2D(texAlbedo, Input.UV);
     Albedo = sRgbToLinear(Albedo);
-    float AO = tex2D(texAO, UV);
+    float AO = tex2D(texAO, Input.UV);
     
-    float Roughness = tex2D(texRoughness, UV);
-    float Metallic = tex2D(texMetallic, UV);
+    float Roughness = tex2D(texRoughness, Input.UV);
+    float Metallic = tex2D(texMetallic, Input.UV);
     
-    float3 NormalMap = tex2D(texNormal, UV);
-    
-    NormalMap.y = 1.0f - NormalMap.y;
+    float3 NormalMap = tex2D(texNormal, Input.UV);
     
     NormalMap = NormalMap * 2.0f - 1.0f;
     
@@ -78,22 +65,19 @@ float4 PSMain(Interpolators Input) : COLOR0
     float3 Normal = normalize(mul(NormalMap, TBN));
     float3 FlatNormal = normalize(mul(float3(0, 0, 1), TBN));
         
-    float3 LightPosition = float3(1.0f, 20.0f, 10.0f);
     float3 LightColor = float3(1.0f, 1.0f, 1.0f);
-    float3 LightDirection = Input.Dir; //normalize(LightPosition - Input.Position);
-    //LightDirection = normalize(LightDirection);
+    float3 LightDirection = Input.Dir;//normalize(LightPosition - Input.Position);
     float AmbientBrightness = 0.1f;
-    float SphericalHarmonicsApproximation = saturate(max(Normal.y, 0.0f) + 0.5f);
+    float SphericalHarmonicsApproximation = saturate(max(FlatNormal.y, 0.0f) + 0.5f);
     
     LightComponents Light = Calculate_Lighting_Model(Roughness, Metallic, Albedo, Input.Position, Normal, LightDirection);
     
-    float NdotL = safe_dot(Normal, LightDirection);
     float SelfShadowing = safe_dot(FlatNormal, LightDirection);
-    float3 DirectLighting = (Light.Diffuse + Light.Specular) * SelfShadowing; //NdotL * SelfShadowing * LightColor * Albedo;
+    float3 DirectLighting = (Light.Diffuse + Light.Specular) * SelfShadowing * LightColor;
     float3 IndirectLighting = AmbientBrightness * AO * SphericalHarmonicsApproximation * Albedo;
     float3 FinalColor = (IndirectLighting + DirectLighting);
-    //FinalColor = LumaWeightedReinhard(FinalColor);
-    FinalColor = SelfShadowing; //LinearTosRgb(FinalColor);
+    FinalColor = LumaWeightedReinhard(FinalColor);
+    FinalColor = OETF_REC709(FinalColor);
     return FinalColor.xyzz;
 }
 ///////////////////////////////////////////////////////////////

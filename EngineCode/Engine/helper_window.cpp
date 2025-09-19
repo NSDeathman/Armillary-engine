@@ -9,12 +9,7 @@
 #include "camera.h"
 #include "main_window.h"
 #include "input.h"
-
-#ifdef USE_DX11
-#include "render_DX11.h"
-#else
 #include "render_DX9.h"
-#endif
 #include "OptickAPI.h"
 #include "EngineSettings.h"
 #include "Application.h"
@@ -106,6 +101,9 @@ CHelperWindow::CHelperWindow()
 
 void CHelperWindow::LoadSettings()
 {
+	float FPSLimit = Settings->GetConfig()->GetFloat(string("engine_settings"), string("fps_limit"), 60.0f);
+	App->SetFPSLimit(FPSLimit);
+
 	SelectedResolution = Settings->GetConfig()->GetInt(string("render_settings"), string("screen_resolution"), SelectedResolution);
 	ChangeScreenResolution();
 
@@ -113,15 +111,30 @@ void CHelperWindow::LoadSettings()
 
 	g_Fov = Settings->GetConfig()->GetFloat(string("camera_settings"), string("fov"), g_Fov);
 	g_FarPlane = Settings->GetConfig()->GetFloat(string("camera_settings"), string("far_plane"), g_FarPlane);
+
+	float mouse_sens = Settings->GetConfig()->GetFloat(string("input_settings"), string("mouse_sensivity"), Input->GetMouseSensivity());
+	Input->SetMouseSensivity(mouse_sens);
+
+	float gamepad_sens = Settings->GetConfig()->GetFloat(string("input_settings"), string("gamepad_sensivity"), Input->GetGamepadSensivity());
+	Input->SetGamepadSensivity(gamepad_sens);
+
+	float gamepad_deadzone = Settings->GetConfig()->GetFloat(string("input_settings"), string("gamepad_deadzone"), Input->GetGamepadDeadzone());
+	Input->SetGamepadDeadzone(gamepad_deadzone);
 }
 
 void CHelperWindow::SaveSettings()
 {
+	Settings->GetConfig()->SetFloat(string("engine_settings"), string("fps_limit"), App->GetFPSLimit());
+	
 	Settings->GetConfig()->SetInt(string("render_settings"), string("screen_resolution"), SelectedResolution);
 	Settings->GetConfig()->SetInt(string("render_settings"), string("anisotropy"), Render->Anisotropy);
 
 	Settings->GetConfig()->SetFloat(string("camera_settings"), string("fov"), g_Fov);
 	Settings->GetConfig()->SetFloat(string("camera_settings"), string("far_plane"), g_FarPlane);
+
+	Settings->GetConfig()->SetFloat(string("input_settings"), string("mouse_sensivity"), Input->GetMouseSensivity());
+	Settings->GetConfig()->SetFloat(string("input_settings"), string("gamepad_sensivity"), Input->GetGamepadSensivity());
+	Settings->GetConfig()->SetFloat(string("input_settings"), string("gamepad_deadzone"), Input->GetGamepadDeadzone());
 }
 
 void CHelperWindow::DrawSettings()
@@ -167,16 +180,35 @@ void CHelperWindow::DrawSettings()
 		if (ImGui::Button("Reset render"))
 			Render->SetNeedReset();
 
-#ifdef DEBUG_BUILD
 		if (ImGui::Button("Wireframe"))
 			g_bWireframeMode = !g_bWireframeMode;
-#endif
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNode("Input"))
+	{
+		float mouse_sens = Input->GetMouseSensivity();
+		if (ImGui::DragFloat("Mouse sensivity", &mouse_sens, 0.1f, 0.0f, 1.0f))
+			Input->SetMouseSensivity(mouse_sens);
+
+		float gamepad_sens = Input->GetGamepadSensivity();
+		if (ImGui::DragFloat("Gamepad sensivity", &gamepad_sens, 0.1f, 0.0f, 1.0f))
+			Input->SetGamepadSensivity(gamepad_sens);
+
+		float gamepad_deadzone = Input->GetGamepadDeadzone();
+		if (ImGui::DragFloat("Gamepad deadzone", &gamepad_deadzone, 0.1f, 0.0f, 0.7f))
+			Input->SetGamepadDeadzone(gamepad_deadzone);
 
 		ImGui::TreePop();
 	}
 
 	if (ImGui::TreeNode("System"))
 	{
+		float FPSLimit = App->GetFPSLimit();
+		if (ImGui::DragFloat("FPS Limit", &FPSLimit, 5.0f, 30.0f, 120.0f))
+			App->SetFPSLimit(FPSLimit);
+
 		if (ImGui::Button("Flush log"))
 			Log->Flush();
 
@@ -219,41 +251,39 @@ void CHelperWindow::DrawProfilingSettings()
 
 void CHelperWindow::Draw()
 {
-	if (m_bNeedDraw)
-	{
-		if (m_bNeedDrawSettings)
-			DrawSettings();
+	if (!m_bNeedDraw)
+		return;
 
-		if (m_bNeedDrawProfilingSettings)
-			DrawProfilingSettings();
+	if (m_bNeedDrawSettings)
+		DrawSettings();
 
-		ImGui::PushFont(Imgui->font_letterica_big);
-		ImGui::Begin("Helper window");
-		ImGui::PopFont();
+	if (m_bNeedDrawProfilingSettings)
+		DrawProfilingSettings();
 
-		ImGui::PushFont(Imgui->font_letterica_medium);
+	ImGui::PushFont(Imgui->font_letterica_big);
+	ImGui::Begin("Helper window");
+	ImGui::PopFont();
 
-		if (ImGui::Button("Leave to scene"))
-			m_bNeedLeaveToScene = true;
+	ImGui::PushFont(Imgui->font_letterica_medium);
 
-		if (ImGui::Button("Settings"))
-			m_bNeedDrawSettings = !m_bNeedDrawSettings;
+	if (ImGui::Button("Leave to scene"))
+		m_bNeedLeaveToScene = true;
 
-//#ifdef DEBUG_BUILD
-		if (ImGui::Button("Profiling"))
-			m_bNeedDrawProfilingSettings = !m_bNeedDrawProfilingSettings;
-//#endif
+	if (ImGui::Button("Settings"))
+		m_bNeedDrawSettings = !m_bNeedDrawSettings;
 
-		if (ImGui::Button("Quit to main menu"))
-			m_bNeedQuitToMainMenu = true;
+	if (ImGui::Button("Profiling"))
+		m_bNeedDrawProfilingSettings = !m_bNeedDrawProfilingSettings;
 
-		if (ImGui::Button("Close application"))
-			g_bNeedCloseApplication = true;
+	if (ImGui::Button("Quit to main menu"))
+		m_bNeedQuitToMainMenu = true;
 
-		ImGui::PopFont();
+	if (ImGui::Button("Close application"))
+		g_bNeedCloseApplication = true;
 
-		ImGui::End();
-	}
+	ImGui::PopFont();
+
+	ImGui::End();
 }
 
 void CHelperWindow::Show()

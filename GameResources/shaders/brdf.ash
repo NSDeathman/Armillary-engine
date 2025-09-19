@@ -202,9 +202,8 @@ LightComponents Calculate_Lighting_Model(float Roughness, float Metallic, float3
 {
     LightComponents Light;
 
-    Roughness = clamp(Roughness, 0.015f, 1.0f);
-    Normal = normalize(Normal);
-    LightDirection = -normalize(LightDirection);
+    Roughness = max(Roughness, 0.015f);
+    //LightDirection = -normalize(LightDirection);
     float3 ViewDirection = -normalize(Point);
     float3 HalfWayDirection = normalize(ViewDirection + LightDirection);
     float NdotL = safe_dot(Normal, LightDirection);
@@ -234,9 +233,9 @@ LightComponents Calculate_Lighting_Model(float Roughness, float Metallic, float3
 #endif
 
     // Fake effect of the light going through the thin foliage
-    float wrapNoL = saturate((-NdotL + 0.5f) / 2.25f);
-    float scatter = D_GGX(0.36f, saturate(-LdotV));
-    Light.Subsurface = wrapNoL * scatter;
+    //float wrapNoL = saturate((-NdotL + 0.5f) / 2.25f);
+    //float scatter = D_GGX(0.36f, saturate(-LdotV));
+    Light.Subsurface = 0; //wrapNoL * scatter;
 
     return Light;
 }
@@ -248,9 +247,9 @@ LightComponents Calculate_Lighting_Model_Fast(float Roughness, float Metallic, f
 {
     LightComponents Light;
 
-    Roughness = Roughness + 0.015f;
+    Roughness = max(Roughness, 0.015f);
     Normal = normalize(Normal);
-    LightDirection = -normalize(LightDirection);
+    //LightDirection = -normalize(LightDirection);
     float3 ViewDirection = -normalize(Point);
     float3 HalfWayDirection = normalize(ViewDirection + LightDirection);
     float NdotL = max(dot(Normal, LightDirection), 0.00001f);
@@ -261,15 +260,15 @@ LightComponents Calculate_Lighting_Model_Fast(float Roughness, float Metallic, f
     float F0 = 0.04f;
     float Fc = pow(1.0f - HdotV, 5.0f);
     float F = Fc + (1.0f - Fc) * F0;
-    float kD = (1.0f - F);
+    float kD = (1.0f - F) * (1.0f - Metallic);
     
     float a = Roughness * Roughness;
     float Vis_SmithV = NdotL * (NdotV * (1.0f - a) + a);
     float Vis_SmithL = NdotV * (NdotL * (1.0f - a) + a);
     float Vis = 0.5f * rcp(Vis_SmithV + Vis_SmithL);
 
-    Light.Specular = NdotL * F * Vis * GGX_Mobile(Roughness, NdotH);
-    Light.Diffuse = Albedo * NdotL / PI * 2.0f * kD;
+    Light.Specular = NdotL * F * Vis * GGX_Mobile(a, NdotH);
+    Light.Diffuse = Albedo * NdotL / PI * kD;
     Light.Subsurface = NULL;
 
     return Light;

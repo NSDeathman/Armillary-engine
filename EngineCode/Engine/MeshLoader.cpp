@@ -80,7 +80,7 @@ void CMesh::Destroy()
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CMesh::Create(string strFilePath, string strFilename)
+HRESULT CMesh::Create(const string& strFilePath, const string& strFilename)
 {
 	Msg("Creating mesh from OBJ file with name: %s", strFilename.c_str());
 
@@ -88,9 +88,6 @@ HRESULT CMesh::Create(string strFilePath, string strFilename)
 
 	Destroy();
 
-	// Load the vertex buffer, index buffer, and subset information from a file. In this case,
-	// an .obj file was chosen for simplicity, but it's meant to illustrate that ID3DXMesh objects
-	// can be filled from any mesh file format once the necessary data is extracted from file.
 	hr = LoadGeometryFromOBJ(strFilePath, strFilename);
 
 	ASSERT(SUCCEEDED(hr), "Can't load geometry from OBJ: %s", strFilePath + strFilename);
@@ -103,166 +100,222 @@ HRESULT CMesh::Create(string strFilePath, string strFilename)
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CMesh::LoadGeometryFromOBJ(string strFilepath, string strFileName)
+HRESULT CMesh::LoadGeometryFromOBJ(const string& strFilepath, const string& strFileName)
 {
 	CHAR strMaterialFilename[MAX_PATH] = {0};
-	HRESULT hr;
+	HRESULT hr = S_OK;
 
-	// Create temporary storage for the input data. Once the data has been loaded into
-	// a reasonable format we can create a D3DXMesh object and load it with the mesh data.
+	// Create temporary storage for the input data
 	CGrowableArray<D3DXVECTOR3> Positions;
 	CGrowableArray<D3DXVECTOR2> TexCoords;
 	CGrowableArray<D3DXVECTOR3> Normals;
 
+	// Pre-allocate memory for better performance
+	Positions.SetSize(2048);
+	TexCoords.SetSize(1024);
+	Normals.SetSize(1024);
+	m_Indices.SetSize(8192);
+	m_Attributes.SetSize(512);
+
 	DWORD dwCurSubset = 0;
 
-	// File input
-	CHAR strCommand[256] = {0};
-	ifstream InFile((string)strFilepath + strFileName);
-	if (!InFile)
+	// File input - use full path
+	string strFullPath = strFilepath + strFileName;
+	ifstream InFile(strFullPath.c_str());
+	if (!InFile) [[unlikely]]
 	{
-		ERROR_MESSAGE("Can't open ifstream in create mesh from OBJ: %s", strFilepath + strFilename);
+		ERROR_MESSAGE("Can't open file: %s", strFullPath.c_str());
 		return E_FAIL;
 	}
 
-	for (;;)
-	{
-		InFile >> strCommand;
-		if (!InFile)
-			break;
+	// Optimize material lookup
+	typedef std::unordered_map<std::string, DWORD> MaterialMap;
+	MaterialMap materialMap;
 
-		if (0 == strcmp(strCommand, "#"))
-		{
-			// Comment
-		}
-		else if (0 == strcmp(strCommand, "v"))
+	CHAR strCommand[256] = {0};
+	CHAR strLine[1024] = {0};
+
+	while (InFile.getline(strLine, sizeof(strLine)))
+	{
+		if (strLine[0] == '\0' || strLine[0] == '#')
+			continue;
+
+		// Parse command safely
+		if (sscanf_s(strLine, "%255s", strCommand, (unsigned)_countof(strCommand)) < 1)
+			continue;
+
+		const char* pData = strLine + strlen(strCommand);
+
+		while (*pData == ' ')
+			pData++; // Skip whitespace
+
+		if (strcmp(strCommand, "v") == 0)
 		{
 			// Vertex Position
-			float x, y, z;
-			InFile >> x >> y >> z;
-			Positions.Add(D3DXVECTOR3(-x, y, z));
+			D3DXVECTOR3 vec;
+			if (sscanf_s(pData, "%f %f %f", &vec.x, &vec.y, &vec.z) == 3)
+			{
+				vec.x = -vec.x; // Mirror X
+				Positions.Add(vec);
+			}
 		}
-		else if (0 == strcmp(strCommand, "vt"))
+		else if (strcmp(strCommand, "vt") == 0)
 		{
 			// Vertex TexCoord
-			float u, v;
-			InFile >> u >> v;
-			TexCoords.Add(D3DXVECTOR2(u, v));
+			D3DXVECTOR2 tex;
+			if (sscanf_s(pData, "%f %f", &tex.x, &tex.y) == 2)
+			{
+				TexCoords.Add(tex);
+			}
 		}
-		else if (0 == strcmp(strCommand, "vn"))
+		else if (strcmp(strCommand, "vn") == 0)
 		{
 			// Vertex Normal
-			float x, y, z;
-			InFile >> x >> y >> z;
-			Normals.Add(D3DXVECTOR3(x, y, z));
+			D3DXVECTOR3 norm;
+			if (sscanf_s(pData, "%f %f %f", &norm.x, &norm.y, &norm.z) == 3)
+			{
+				Normals.Add(norm);
+			}
 		}
-		else if (0 == strcmp(strCommand, "f"))
+		else if (strcmp(strCommand, "f") == 0)
 		{
-			// Face
-			UINT iPosition, iTexCoord, iNormal;
+			// Face - process all vertices in the face
 			VERTEX vertex;
+			vector<DWORD> faceIndices;
+			const char* pFaceData = pData;
 
-			for (UINT iFace = 0; iFace < 3; iFace++)
+			while (*pFaceData != '\0')
 			{
 				ZeroMemory(&vertex, sizeof(VERTEX));
 
-				// OBJ format uses 1-based arrays
-				InFile >> iPosition;
-				vertex.position = Positions[iPosition - 1];
+				// Parse vertex indices: position/texcoord/normal
+				int iPosition = 0, iTexCoord = 0, iNormal = 0;
+				int count = sscanf_s(pFaceData, "%d/%d/%d", &iPosition, &iTexCoord, &iNormal);
 
-				if ('/' == InFile.peek())
+				if (count >= 1 && iPosition > 0)
 				{
-					InFile.ignore();
+					// Get position (1-based to 0-based)
+					vertex.position = Positions[iPosition - 1];
 
-					if ('/' != InFile.peek())
+					// Get texture coordinate if available
+					if (count >= 2 && iTexCoord > 0 && iTexCoord <= TexCoords.GetSize())
 					{
-						// Optional texture coordinate
-						InFile >> iTexCoord;
 						vertex.texcoord = TexCoords[iTexCoord - 1];
 					}
 
-					if ('/' == InFile.peek())
+					// Get normal if available
+					if (count >= 3 && iNormal > 0 && iNormal <= Normals.GetSize())
 					{
-						InFile.ignore();
-
-						// Optional vertex normal
-						InFile >> iNormal;
 						vertex.normal = Normals[iNormal - 1];
 					}
+
+					// Add vertex and get index
+					DWORD index = AddVertex(iPosition, &vertex);
+					if (index == (DWORD)-1)
+					{
+						InFile.close();
+						return E_OUTOFMEMORY;
+					}
+
+					faceIndices.push_back(index);
 				}
 
-				// If a duplicate vertex doesn't exist, add this vertex to the Vertices
-				// list. Store the index in the Indices array. The Vertices and Indices
-				// lists will eventually become the Vertex Buffer and Index Buffer for
-				// the mesh.
-				DWORD index = AddVertex(iPosition, &vertex);
+				// Move to next vertex in face
+				while (*pFaceData != '\0' && *pFaceData != ' ')
+					pFaceData++;
 
-				if (index == (DWORD)-1)
-					return E_OUTOFMEMORY;
-
-				m_Indices.Add(index);
+				while (*pFaceData == ' ')
+					pFaceData++;
 			}
-			m_Attributes.Add(dwCurSubset);
+
+			// Triangulate face if it has more than 3 vertices
+			if (faceIndices.size() >= 3) [[unlikely]]
+			{
+				if (faceIndices.size() == 3)
+				{
+					m_Indices.Add(faceIndices[0]);
+					m_Indices.Add(faceIndices[2]);
+					m_Indices.Add(faceIndices[1]);
+					m_Attributes.Add(dwCurSubset);
+				}
+				else
+				{
+					for (size_t i = 1; i < faceIndices.size() - 1; ++i)
+					{
+						m_Indices.Add(faceIndices[0]);
+						m_Indices.Add(faceIndices[i + 1]);
+						m_Indices.Add(faceIndices[i]);
+						m_Attributes.Add(dwCurSubset);
+					}
+				}
+			}
 		}
-		else if (0 == strcmp(strCommand, "mtllib"))
+		else if (strcmp(strCommand, "mtllib") == 0)
 		{
 			// Material library
-			InFile >> strMaterialFilename;
+			sscanf_s(pData, "%255s", strMaterialFilename, (unsigned)_countof(strMaterialFilename));
 		}
-		else if (0 == strcmp(strCommand, "usemtl"))
+		else if (strcmp(strCommand, "usemtl") == 0)
 		{
 			// Material
 			CHAR strName[MAX_PATH] = {0};
-			InFile >> strName;
+			sscanf_s(pData, "%255s", strName, (unsigned)_countof(strName));
 
-			Msg("Processing material %s", strName);
-
-			bool bFound = false;
-			for (int iMaterial = 0; iMaterial < m_Materials.GetSize(); iMaterial++)
+			// Use hash map for faster material lookup
+			auto it = materialMap.find(strName);
+			if (it != materialMap.end())
 			{
-				Material* pCurMaterial = m_Materials.GetAt(iMaterial);
-				if (0 == strcmp(pCurMaterial->strName, strName))
+				dwCurSubset = it->second;
+			}
+			else
+			{
+				// Check existing materials first
+				bool bFound = false;
+				for (int iMaterial = 0; iMaterial < m_Materials.GetSize(); iMaterial++)
 				{
-					bFound = true;
-					dwCurSubset = iMaterial;
-					break;
+					Material* pCurMaterial = m_Materials.GetAt(iMaterial);
+					if (strcmp(pCurMaterial->strName, strName) == 0)
+					{
+						bFound = true;
+						dwCurSubset = iMaterial;
+						materialMap[strName] = dwCurSubset;
+						break;
+					}
+				}
+
+				if (!bFound)
+				{
+					Material* pMaterial = new (std::nothrow) Material();
+					if (pMaterial == nullptr)
+					{
+						InFile.close();
+						return E_OUTOFMEMORY;
+					}
+
+					InitMaterial(pMaterial);
+					strcpy_s(pMaterial->strName, MAX_PATH - 1, strName);
+
+					dwCurSubset = m_Materials.GetSize();
+					m_Materials.Add(pMaterial);
+					materialMap[strName] = dwCurSubset;
+
+					Msg("Added new material: %s", strName);
 				}
 			}
-
-			if (!bFound)
-			{
-				Material* pMaterial = new Material();
-				if (pMaterial == NULL)
-					return E_OUTOFMEMORY;
-
-				dwCurSubset = m_Materials.GetSize();
-
-				InitMaterial(pMaterial);
-				strcpy_s(pMaterial->strName, MAX_PATH - 1, strName);
-
-				m_Materials.Add(pMaterial);
-			}
 		}
-		else
-		{
-			// Unimplemented or unrecognized command
-		}
-
-		InFile.ignore(1000, '\n');
 	}
 
 	// Cleanup
 	InFile.close();
-
 	DeleteCache();
 
-	// If an associated material file was found, read that in as well.
-	if (strMaterialFilename[0])
+	// Load materials if specified
+	if (strMaterialFilename[0] != '\0')
 	{
 		hr = LoadMaterialsFromMTL(strFilepath, strMaterialFilename);
 
 		if (FAILED(hr))
-			Msg("Can't Load Materials From MTL in load mesh from OBJ: %s", strMaterialFilename);
+			Msg("Warning: Failed to load materials from: %s", strMaterialFilename);
 	}
 
 	return S_OK;
@@ -272,7 +325,8 @@ HRESULT CMesh::LoadGeometryFromOBJ(string strFilepath, string strFileName)
 void CMesh::DeleteCache()
 {
 	// Iterate through all the elements in the cache and subsequent linked lists
-	concurrency::parallel_for(int(0), m_VertexCache.GetSize(), [&](int i) {
+	for(int i = 0; i < m_VertexCache.GetSize(); i++) 
+	{
 		CacheEntry* pEntry = m_VertexCache.GetAt(i);
 		while (pEntry != NULL)
 		{
@@ -280,7 +334,7 @@ void CMesh::DeleteCache()
 			SAFE_DELETE(pEntry);
 			pEntry = pNext;
 		}
-	});
+	}
 
 	m_VertexCache.RemoveAll();
 }
@@ -452,7 +506,7 @@ DWORD CMesh::AddVertex(UINT hash, VERTEX* pVertex)
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT CMesh::LoadMaterialsFromMTL(string strFilePath, string strFileName)
+HRESULT CMesh::LoadMaterialsFromMTL(const string& strFilePath, const string& strFileName)
 {
 	Msg("Loading material from MTL file with name: %s", strFileName.c_str());
 

@@ -100,6 +100,9 @@
     <ClCompile Include="Monitoring.cpp">
       <Filter>Moitoring</Filter>
     </ClCompile>
+    <ClCompile Include="AsyncExecutor.cpp">
+      <Filter>Core\Threading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -224,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="Monitoring.h">
       <Filter>Moitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="AsyncExecutor.h">
+      <Filter>Core\Threading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -373,13 +379,13 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="armillary.ico">
-      <Filter>Core\Kernel\Application resources\Images</Filter>
+      <Filter>Core\Kernel\Application resources</Filter>
     </Image>
-    <Image Include="bitmap.bmp">
+    <Image Include="splash.bmp">
       <Filter>Core\Kernel\Application resources\Images</Filter>
     </Image>
     <Image Include="armillary.ico">
-      <Filter>Core\Kernel\Application resources</Filter>
+      <Filter>Core\Kernel\Application resources\Images</Filter>
     </Image>
   </ItemGroup>
 </Project>

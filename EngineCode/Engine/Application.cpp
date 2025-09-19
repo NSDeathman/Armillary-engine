@@ -7,14 +7,8 @@
 #include "Application.h"
 
 // Main engine parts
-#ifndef USE_DX11
 #include "render_DX9.h"
 #include "render_backend_DX9.h"
-#else
-#include "render_DX11.h"
-//#include "render_backend_DX11.h"
-#endif
-
 #include "log.h"
 #include "Input.h"
 #include "filesystem.h"
@@ -36,7 +30,7 @@
 #include "user_interface.h"
 
 // Threading
-#include "threading.h"
+#include "AsyncExecutor.h"
 
 // Camera
 #include "camera.h"
@@ -49,26 +43,6 @@ uint16_t g_ScreenHeight = 480;
 bool g_bNeedCloseApplication = false;
 SDL_Event g_WindowEvent;
 ///////////////////////////////////////////////////////////////
-#ifdef USE_DX11
-CRenderDX11* Render = nullptr;
-//CRenderBackendDX11* RenderBackend = nullptr;
-#else
-CRenderDX9* Render = nullptr;
-CRenderBackendDX9* RenderBackend = nullptr;
-#endif
-
-CLog* Log = nullptr;
-COptickAPI* OptickAPI = nullptr;
-CFilesystem* Filesystem = nullptr;
-CScene* Scene = nullptr;
-CUserInterface* UserInterface = nullptr;
-CMainWindow* MainWindow = nullptr;
-CInput* Input = nullptr;
-CScheduler* Scheduler = nullptr;
-CCamera* Camera = nullptr;
-EngineSettings* Settings = nullptr;
-CMonitoring* Monitoring = nullptr;
-///////////////////////////////////////////////////////////////
 CApplication::CApplication()
 {
 	m_LastTime = 0.0f;
@@ -76,12 +50,17 @@ CApplication::CApplication()
 	m_TimeDelta = 0.0f;
 	m_FrameTime = 0.0f;
 	m_FPS = 0.0f;
+	m_FPSLimit = 60.0f;
 	m_Frame = 0;
 }
 
 void CApplication::Start()
 {
+	SplashScreen = new (CSplashScreen);
+	SplashScreen->Show();
+
 	Filesystem = new CFilesystem();
+
 	Log = new CLog();
 
 	initializeCPU();
@@ -90,22 +69,20 @@ void CApplication::Start()
 	
 	Msg("Starting Application...");
 
-	Scheduler = new CScheduler();
+	AsyncExecutor = new CAsyncExecutor();
 
 	Input = new CInput();
 
-	MainWindow = new CMainWindow();
-
 	Settings = new EngineSettings();
 
-#ifdef USE_DX11
-	Render = new CRenderDX11();
-	//RenderBackend = new CRenderBackendDX11();
-#else
+	OptickAPI = new COptickAPI();
+
+	Monitoring = new CMonitoring();
+
+	MainWindow = new CMainWindow();
+
 	Render = new CRenderDX9();
 	RenderBackend = new CRenderBackendDX9();
-#endif
-
     Render->Initialize();
 
 	UserInterface = new CUserInterface();
@@ -116,11 +93,10 @@ void CApplication::Start()
 	
 	Scene = new CScene();
 
-	OptickAPI = new COptickAPI();
-
-	Monitoring = new CMonitoring();
-
 	m_Timer.Start();
+
+	SplashScreen->Hide();
+	delete (SplashScreen);
 }
 
 void CApplication::Destroy()
@@ -141,7 +117,7 @@ void CApplication::Destroy()
 
 	delete MainWindow;
 
-	delete Scheduler;
+	delete AsyncExecutor;
 
 	delete Settings;
 
@@ -166,11 +142,6 @@ void CApplication::HandleSDLEvents()
 	}
 }
 
-void ProfilingTask()
-{
-	OptickAPI->OnFrame();
-}
-
 void CApplication::CalculateTimeStats()
 {
 	m_LastTime = m_CurrentTime;
@@ -181,33 +152,19 @@ void CApplication::CalculateTimeStats()
 	m_FPS = 1.0f / m_TimeDelta;
 }
 
+void CApplication::ProcessFrameLimiter()
+{
+	float LimitFrametime = 1.0f / m_FPSLimit;
+
+	if (m_FrameTime < LimitFrametime) [[unlikely]]
+	{
+		float dt = LimitFrametime - m_FrameTime;
+		m_FrameTime += dt;
+		std::this_thread::sleep_for(std::chrono::milliseconds(int(dt * 1000)));
+	}
+}
+
 CTimer SummaryTimer;
-
-void RenderTask()
-{
-	MONITOR_SCOPE(MONITORNG_CHART::Render);
-	Render->OnFrame();
-}
-
-void UITask()
-{
-	MONITOR_SCOPE(MONITORNG_CHART::UI);
-	UserInterface->OnFrame();
-}
-
-void InputUpdate()
-{
-	OPTICK_FRAME("InputUpdate")
-	OPTICK_EVENT("InputUpdate")
-
-	Input->OnFrame();
-}
-
-void InputTask()
-{
-	MONITOR_SCOPE(MONITORNG_CHART::Input);
-	Scheduler->Add(InputUpdate);
-}
 
 void CApplication::OnFrame()
 {
@@ -218,69 +175,61 @@ void CApplication::OnFrame()
 
 	HandleSDLEvents();
 
-	InputTask();
+	concurrency::task_group input_task;
+	input_task.run([]()
+	{ 
+		MONITOR_SCOPE(MONITORNG_CHART::Input);
+		Input->OnFrame();
+	});
 
-	ProfilingTask();
+	// UI
+	{
+		MONITOR_SCOPE(MONITORNG_CHART::UI);
+		UserInterface->OnFrame();
+	}
 
-	//concurrency::task_group render_task;
-	//render_task.run([]() 
-	//{ 
-		
-	//});
+	input_task.wait();
 
 	Camera->OnFrame();
 
-	UITask();
+	Scene->OnFrame();
 
-	if (UserInterface->NeedLoadScene()) [[unlikely]]
+	// Rendering
 	{
-		Scene->Load();
+		MONITOR_SCOPE(MONITORNG_CHART::Render);
+		Render->OnFrame();
 	}
-
-	if (UserInterface->NeedDestroyScene()) [[unlikely]]
-	{
-		Scene->Destroy();
-		UserInterface->SetNeedDestroyScene(false);
-	}
-
-	RenderTask();
 
 	m_FrameTime = SummaryTimer.GetElapsedTime();
 	SummaryTimer.Stop();
 
-	if (m_FrameTime < 0.01666666f) [[unlikely]]
-	{
-		float dt = 0.01666666f - m_FrameTime;
-		m_FrameTime += dt;
-		std::this_thread::sleep_for(std::chrono::milliseconds(int(dt * 1000)));
-	}
+	ProcessFrameLimiter();
 
 	CalculateTimeStats();
 
 	Monitoring->OnFrame();
 
-	m_Frame++;
-
-	//render_task.wait();
+	OptickAPI->OnFrame();
 }
 
 void CApplication::EventLoop()
 {
 	Msg("Starting event loop...");
+	Msg("\n");
 
 	while (!g_bNeedCloseApplication)
 	{
 		OnFrame();
+		m_Frame++;
 	}
+
+	Msg("\n");
+	Msg("Ending event loop...");
 }   
 
 void CApplication::Process()
 {
-	SplashScreen = new (CSplashScreen);
-
 	Start();
-
-	delete (SplashScreen);
 
 	Msg("Application started successfully\n");
 

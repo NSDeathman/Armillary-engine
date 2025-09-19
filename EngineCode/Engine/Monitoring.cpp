@@ -97,6 +97,8 @@ void CMonitoring::Draw()
 		ImPlot::EndPlot();
 	}
 
+	ImGui::Separator();
+
 	// Время кадра
 	const float frameTimeMS = ConvertToMS(App->GetFrameTime());
 	ImGui::Text("Frame time: %.2f ms", frameTimeMS);
@@ -118,7 +120,18 @@ void CMonitoring::Draw()
 		ImPlot::EndPlot();
 	}
 
+	ImGui::Separator();
+
+	ImGui::Text("Async tasks:");
+
+	for (const auto& task : TaskMonitor.getActiveTasks())
+		ImGui::Text("%s", task);
+
+	ImGui::Separator();
+
 	ImGui::PopFont();
 	ImGui::End();
 }
+///////////////////////////////////////////////////////////////
+CMonitoring* Monitoring = nullptr;
 ///////////////////////////////////////////////////////////////

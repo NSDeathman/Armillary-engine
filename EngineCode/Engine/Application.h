@@ -17,10 +17,12 @@ private:
 	float m_TimeDelta;
 	float m_FrameTime;
 	float m_FPS;
+	float m_FPSLimit;
 	int m_Frame;
 
 	void HandleSDLEvents();
 	void CalculateTimeStats();
+	void ProcessFrameLimiter();
 	void OnFrame();
 	void EventLoop();
 
@@ -52,6 +54,16 @@ public:
 	float GetFrameTime()
 	{
 		return m_FrameTime;
+	}
+
+	void SetFPSLimit(float FPS)
+	{
+		m_FPSLimit = FPS;
+	}
+
+	float GetFPSLimit()
+	{
+		return m_FPSLimit;
 	}
 
 	CApplication();

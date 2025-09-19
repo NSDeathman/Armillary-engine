@@ -229,6 +229,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AsyncExecutor.cpp" />
     <ClCompile Include="build_identificator.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="cpu_identificator.cpp" />
@@ -264,6 +265,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
     <ClCompile Include="user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AsyncExecutor.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Coordinator.h" />
     <ClInclude Include="cpu_identificator.h" />
@@ -311,7 +313,7 @@ copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"<
   </ItemGroup>
   <ItemGroup>
     <Image Include="armillary.ico" />
-    <Image Include="bitmap.bmp" />
+    <Image Include="splash.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

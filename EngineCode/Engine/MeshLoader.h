@@ -56,8 +56,8 @@ class CMesh
   private:
 	void InitMaterial(Material* pMaterial);
 
-	HRESULT LoadGeometryFromOBJ(string strFilePath, string strFileName);
-	HRESULT LoadMaterialsFromMTL(string strFilePath, string strFileName);
+	HRESULT LoadGeometryFromOBJ(const string& strFilePath, const string& strFileName);
+	HRESULT LoadMaterialsFromMTL(const string& strFilePath, const string& strFileName);
 	HRESULT LoadTextures();
 	HRESULT CreateMesh();
 
@@ -73,7 +73,7 @@ class CMesh
 	CGrowableArray<Material*> m_Materials;	   // Holds material properties per subset
 
   public:
-	HRESULT Create(string strFilePath, string strFilename);
+	HRESULT Create(const string& strFilePath, const string& strFilename);
 
 	void DrawSubsets();
 

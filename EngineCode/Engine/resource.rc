@@ -30,12 +30,6 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "armillary.ico"
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_BITMAP2             BITMAP                  "bitmap.bmp"
 #endif    // Russian resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -90,15 +84,27 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDD_STARTUP DIALOGEX 0, 0, 333, 165
+IDB_SPLASH_BMP BITMAP "splash.bmp"
+
+IDD_SPLASH DIALOGEX 0, 0, 333, 165
 STYLE DS_ABSALIGN | DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_POPUP |
 WS_VISIBLE
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-CONTROL         116, IDC_STATIC, "Static", SS_BITMAP | SS_REALSIZEIMAGE, 0, 0,
+CONTROL "", IDB_SPLASH_BMP, IDC_STATIC, "Static", SS_BITMAP | SS_REALSIZEIMAGE, 0, 0,
 333, 165
 END
 
+IDB_SPLASH_EDITOR_BMP BITMAP "splash.bmp"
+
+IDD_SPLASH_EDITOR DIALOGEX 0, 0, 333, 165
+STYLE DS_ABSALIGN | DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_POPUP |
+WS_VISIBLE
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+CONTROL "", IDB_SPLASH_EDITOR_BMP, IDC_STATIC, "Static", SS_BITMAP | SS_REALSIZEIMAGE, 0, 0,
+333, 165
+END
 /////////////////////////////////////////////////////////////////////////////
 //
 // DESIGNINFO

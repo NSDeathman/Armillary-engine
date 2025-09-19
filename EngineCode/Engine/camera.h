@@ -3,6 +3,7 @@
 // Author: ChatGPT, NS_Deathman
 // Camera realization
 ///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
@@ -10,29 +11,43 @@
 ///////////////////////////////////////////////////////////////
 class CCamera
 {
-private:
+  private:
 	// Camera attributes
 	D3DXVECTOR3 m_position;
 	D3DXVECTOR3 m_direction;
 	D3DXVECTOR3 m_upVec;
 
 	// Camera settings
-	float m_fov;			// Field of view
-	float m_aspectRatio;	// Aspect ratio
-	float m_nearPlane;		// Near clipping plane
-	float m_farPlane;		// Far clipping plane
+	float m_fov;		 // Field of view
+	float m_aspectRatio; // Aspect ratio
+	float m_nearPlane;	 // Near clipping plane
+	float m_farPlane;	 // Far clipping plane
 
-	float m_yaw;			// Yaw angle (rotation around the Y axis)
-	float m_pitch;			// Pitch angle (rotation around the X axis)
+	float m_yaw;   // Yaw angle (rotation around the Y axis)
+	float m_pitch; // Pitch angle (rotation around the X axis)
 
 	POINT m_ptLastMousePosition;
 
 	D3DXMATRIX m_View;
 	D3DXMATRIX m_Projection;
 
-	void UpdateInput();
+	// Smoothing parameters
+	D3DXVECTOR3 m_targetPosition;
+	D3DXVECTOR3 m_currentVelocity;
+	float m_targetYaw;
+	float m_targetPitch;
+	float m_yawVelocity;
+	float m_pitchVelocity;
 
-public:
+	// Smoothing settings
+	float m_positionSmoothTime;
+	float m_rotationSmoothTime;
+	float m_maxSpeed;
+
+	void UpdateInput();
+	void ApplySmoothing(float deltaTime);
+
+  public:
 	CCamera() = default;
 	~CCamera() = default;
 
@@ -51,6 +66,14 @@ public:
 	void SetFarPlane(float far_plane)
 	{
 		m_farPlane = far_plane;
+	}
+
+	// Smoothing settings
+	void SetSmoothing(float positionSmoothTime = 0.1f, float rotationSmoothTime = 0.05f, float maxSpeed = 50.0f)
+	{
+		m_positionSmoothTime = positionSmoothTime;
+		m_rotationSmoothTime = rotationSmoothTime;
+		m_maxSpeed = maxSpeed;
 	}
 
 	D3DXMATRIX GetViewMatrix()

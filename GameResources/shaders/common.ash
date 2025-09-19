@@ -96,5 +96,20 @@ float3 LumaWeightedReinhard(float3 Color)
     return tone_mapped_luminance * pow(Color / pixel_luminance, luminance_saturation) * white_level;
 }
 ///////////////////////////////////////////////////////////////
+float3 OETF_REC709(float3 linearColor)
+{
+    float a = 0.0031308;
+    float b = 0.055;
+    float c = 12.92;
+    float m = 1.0 / 2.4;
+	
+    float3 color = clamp(linearColor, 0.0f, 1.0f);
+    color.x = color.x > a ? ((1.0f + b) * pow(color.x, m) - b) : (c * color.x);
+    color.y = color.y > a ? ((1.0f + b) * pow(color.y, m) - b) : (c * color.y);
+    color.z = color.z > a ? ((1.0f + b) * pow(color.z, m) - b) : (c * color.z);
+	
+    return color;
+}
+///////////////////////////////////////////////////////////////
 #endif//COMMON_H_INCLUDED
 ///////////////////////////////////////////////////////////////

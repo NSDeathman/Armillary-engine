@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDL", "Third-Party\Include\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Armillary Shaders", "..\GameResources\shaders\Armillary Shaders.vcxproj", "{E0F41BFF-6925-4934-A9DD-A043F13B0E97}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProjectManager", "ProjectManager\ProjectManager\ProjectManager.vcxproj", "{770F39BB-16DF-4A1C-A723-004314D64AF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -63,6 +65,14 @@ Global
 		{E0F41BFF-6925-4934-A9DD-A043F13B0E97}.Release|x64.Build.0 = Release|x64
 		{E0F41BFF-6925-4934-A9DD-A043F13B0E97}.Release|x86.ActiveCfg = Release|Win32
 		{E0F41BFF-6925-4934-A9DD-A043F13B0E97}.Release|x86.Build.0 = Release|Win32
+		{770F39BB-16DF-4A1C-A723-004314D64AF1}.Debug|x64.ActiveCfg = Debug|x64
+		{770F39BB-16DF-4A1C-A723-004314D64AF1}.Debug|x64.Build.0 = Debug|x64
+		{770F39BB-16DF-4A1C-A723-004314D64AF1}.Debug|x86.ActiveCfg = Debug|Win32
+		{770F39BB-16DF-4A1C-A723-004314D64AF1}.Debug|x86.Build.0 = Debug|Win32
+		{770F39BB-16DF-4A1C-A723-004314D64AF1}.Release|x64.ActiveCfg = Release|x64
+		{770F39BB-16DF-4A1C-A723-004314D64AF1}.Release|x64.Build.0 = Release|x64
+		{770F39BB-16DF-4A1C-A723-004314D64AF1}.Release|x86.ActiveCfg = Release|Win32
+		{770F39BB-16DF-4A1C-A723-004314D64AF1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -57,36 +57,35 @@ void CUserInterface::OnFrameBegin()
 void CUserInterface::UpdateIngameUI()
 {
 	if (Scene->isLoading() && NeedLoadScene())
-	{
 		SetNeedLoadScene(false);
+
+	if (!Scene->Ready())
+		return;
+
+	LoadingScreen->Hide();
+
+	if (m_bHelperWndDraw)
+	{
+		Imgui->ShowCursor();
+		MainWindow->ShowCursor();
+		HelperWindow->Show();
+	}
+	else
+	{
+		Imgui->HideCursor();
+		MainWindow->HideCursor();
+		HelperWindow->Hide();
 	}
 
-	if (Scene->Ready())
+	if (Input->KeyPressed(SDL_SCANCODE_ESCAPE) || Input->GamepadButtonPressed(SDL_CONTROLLER_BUTTON_START) ||
+		Input->GamepadButtonPressed(SDL_CONTROLLER_BUTTON_B) || HelperWindow->NeedLeaveToScene())
 	{
-		LoadingScreen->Hide();
+		if (HelperWindow->NeedLeaveToScene())
+			HelperWindow->LeavingToSceneIsDone();
 
-		if (m_bHelperWndDraw)
-		{
-			Imgui->ShowCursor();
-			MainWindow->ShowCursor();
-			HelperWindow->Show();
-		}
-		else
-		{
-			Imgui->HideCursor();
-			MainWindow->HideCursor();
-			HelperWindow->Hide();
-		}
-
-		if (Input->KeyPressed(SDL_SCANCODE_ESCAPE) || Input->GamepadButtonPressed(SDL_CONTROLLER_BUTTON_START) || HelperWindow->NeedLeaveToScene())
-		{
-			if (HelperWindow->NeedLeaveToScene())
-				HelperWindow->LeavingToSceneIsDone();
-
-			m_bHelperWndDraw = !m_bHelperWndDraw;
-			g_bNeedLockCursor = !m_bHelperWndDraw;
-			g_bNeedUpdateCameraInput = !m_bHelperWndDraw;
-		}
+		m_bHelperWndDraw = !m_bHelperWndDraw;
+		g_bNeedLockCursor = !m_bHelperWndDraw;
+		g_bNeedUpdateCameraInput = !m_bHelperWndDraw;
 	}
 
 	if (HelperWindow->NeedQuitToMainMenu())
@@ -146,4 +145,6 @@ void CUserInterface::OnResetEnd()
 {
 	Imgui->OnResetEnd();
 }
+///////////////////////////////////////////////////////////////
+CUserInterface* UserInterface = nullptr;
 ///////////////////////////////////////////////////////////////

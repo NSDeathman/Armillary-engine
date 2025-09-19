@@ -9,7 +9,6 @@
 #define IDDEBUG                         3
 #define IDD_STARTUP                     106
 #define IDI_ICON1                       111
-#define IDB_BITMAP2                     116
 #define IDC_LIST                        1000
 #define IDC_FILE                        1001
 #define IDC_LINE                        1002
@@ -18,6 +17,13 @@
 #define IDC_STACK                       1006
 #define RC_VIRT_MEM_ERROR               2071
 #define RC_VIRT_MEM_TEXT                2072
+
+#define IDC_PROGRESS_BAR 2073
+#define IDC_STATUS_TEXT 2074
+#define IDB_SPLASH_BMP 2075
+#define IDD_SPLASH 2076
+#define IDB_SPLASH_EDITOR_BMP 2078
+#define IDB_SPLASH_EDITOR 2079
 
 // Next default values for new objects
 //

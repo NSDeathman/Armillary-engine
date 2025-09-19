@@ -78,6 +78,7 @@ void CRenderDX9::InitializeDirect3D()
 	m_pDirect3DPresentParams.BackBufferFormat = D3DFMT_UNKNOWN;
 	m_pDirect3DPresentParams.EnableAutoDepthStencil = TRUE;
 	m_pDirect3DPresentParams.AutoDepthStencilFormat = D3DFMT_D24X8;
+	m_pDirect3DPresentParams.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	GetCapabilities();
 

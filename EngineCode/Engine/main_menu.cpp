@@ -7,12 +7,7 @@
 #include "imgui_api.h"
 #include "log.h"
 #include "input.h"
-
-#ifdef USE_DX11
-#include "render_DX11.h"
-#else
 #include "render_DX9.h"
-#endif
 ///////////////////////////////////////////////////////////////
 extern bool g_bNeedCloseApplication;
 ///////////////////////////////////////////////////////////////
@@ -24,25 +19,24 @@ CMainMenu::CMainMenu()
 
 void CMainMenu::Draw()
 {
-	if (m_bNeedDraw)
-	{
+	if (!m_bNeedDraw)
+		return;
 
-		ImGui::PushFont(Imgui->font_letterica_big);
-		ImGui::Begin("Main menu window");
-		ImGui::PopFont();
+	ImGui::PushFont(Imgui->font_letterica_big);
+	ImGui::Begin("Main menu window");
+	ImGui::PopFont();
 
-		ImGui::PushFont(Imgui->font_letterica_medium);
+	ImGui::PushFont(Imgui->font_letterica_medium);
 
-		if (ImGui::Button("Load scene"))
-			SetNeedLoadScene(true);
+	if (ImGui::Button("Load scene"))
+		SetNeedLoadScene(true);
 
-		if (ImGui::Button("Close application"))
-			g_bNeedCloseApplication = true;
+	if (ImGui::Button("Close application"))
+		g_bNeedCloseApplication = true;
 
-		ImGui::PopFont();
+	ImGui::PopFont();
 
-		ImGui::End();
-	}
+	ImGui::End();
 }
 
 void CMainMenu::Show()

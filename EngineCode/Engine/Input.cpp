@@ -21,6 +21,10 @@ CInput::CInput()
 	m_bNeedUpdateInput = true;
 	m_bNeedHandleCursorWithGameController = false;
 
+	m_gamepad_deadzone = DEFAULT_GAMEPAD_DEADZONE;
+	m_gamepad_sensivity = DEFAULT_GAMEPAD_SENSIVITY;
+	m_mouse_sensivity = DEFAULT_MOUSE_SENSIVITY;
+
 	GetCursorPos(&m_ptLastCursorPosition);
 }
 
@@ -159,6 +163,11 @@ bool CInput::GamepadButtonReleased(int button)
 	return m_GameController && SDL_GameControllerGetButton(m_GameController, static_cast<SDL_GameControllerButton>(button)) == SDL_RELEASED;
 }
 
+float Length(float x, float y)
+{
+	return std::sqrt(x * x + y * y);
+}
+
 // New method to get left stick position
 void CInput::GetLeftStick(float& x, float& y)
 {
@@ -166,6 +175,14 @@ void CInput::GetLeftStick(float& x, float& y)
 	{
 		x = SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_LEFTX) / 32767.0f; // Normalize to [-1, 1]
 		y = SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_LEFTY) / 32767.0f; // Normalize to [-1, 1]
+
+		if (Length(x, y) < m_gamepad_deadzone)
+		{
+			x = y = 0.0f;
+		}
+
+		x *= m_gamepad_sensivity;
+		y *= m_gamepad_sensivity;
 	}
 	else
 	{
@@ -181,6 +198,14 @@ void CInput::GetRightStick(float& x, float& y)
 	{
 		x = SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f; // Normalize to [-1, 1]
 		y = SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_RIGHTY) / 32767.0f; // Normalize to [-1, 1]
+
+		if (Length(x, y) < m_gamepad_deadzone)
+		{
+			x = y = 0.0f;
+		}
+
+		x *= m_gamepad_sensivity;
+		y *= m_gamepad_sensivity;
 	}
 	else
 	{
@@ -193,4 +218,6 @@ bool CInput::NeedUpdateInput()
 {
 	return true; // m_bNeedUpdateInput;
 }
+///////////////////////////////////////////////////////////////
+CInput* Input = nullptr;
 ///////////////////////////////////////////////////////////////

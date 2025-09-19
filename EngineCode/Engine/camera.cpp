@@ -32,6 +32,17 @@ void CCamera::Initialize()
 
 	GetCursorPos(&m_ptLastMousePosition);
 
+	// Initialize smoothing targets
+	m_targetPosition = m_position;
+	m_targetYaw = m_yaw;
+	m_targetPitch = m_pitch;
+	m_currentVelocity = D3DXVECTOR3(0, 0, 0);
+	m_yawVelocity = 0.0f;
+	m_pitchVelocity = 0.0f;
+
+	// Default smoothing settings
+	SetSmoothing(0.1f, 0.05f, 50.0f);
+
 	CalculateMatrices();
 }
 
@@ -47,6 +58,8 @@ void CCamera::SetDefaultParams()
 
 void CCamera::OnFrame()
 {
+	float deltaTime = App->GetTimeDelta();
+
 	if (g_bNeedUpdateCameraInput)
 	{
 		UpdateInput();
@@ -55,6 +68,10 @@ void CCamera::OnFrame()
 	{
 		GetCursorPos(&m_ptLastMousePosition);
 	}
+
+	// Apply smoothing every frame
+	ApplySmoothing(deltaTime);
+	CalculateMatrices();
 }
 
 void CCamera::Reset()
@@ -171,8 +188,6 @@ void CCamera::UpdateInput()
 	// Send data to movement code
 	ApplyMovement(MoveDirection, MoveSpeed, YawDelta, PitchDelta);
 
-	CalculateMatrices();
-
 	//---------Clearing---------\\
 	// Set direction and rotation zero value
 	MoveDirection = D3DXVECTOR3(0, 0, 0);
@@ -182,15 +197,16 @@ void CCamera::UpdateInput()
 
 void CCamera::ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta, float pitchdelta)
 {
-	m_yaw += yawdelta;
-	m_pitch += pitchdelta;
+	// Update target rotation
+	m_targetYaw += yawdelta;
+	m_targetPitch += pitchdelta;
 
-	m_pitch = min(m_pitch, 1.5f);
-	m_pitch = max(m_pitch, -1.5f);
+	m_targetPitch = min(m_targetPitch, 1.5f);
+	m_targetPitch = max(m_targetPitch, -1.5f);
 
-	// Make a rotation matrix based on the camera's yaw & pitch
+	// Make a rotation matrix based on the target yaw & pitch
 	D3DXMATRIX mCameraRot;
-	D3DXMatrixRotationYawPitchRoll(&mCameraRot, m_yaw, m_pitch, 0);
+	D3DXMatrixRotationYawPitchRoll(&mCameraRot, m_targetYaw, m_targetPitch, 0);
 
 	// Transform vectors based on camera's rotation matrix
 	D3DXVECTOR3 vWorldUp, vWorldAhead;
@@ -207,10 +223,76 @@ void CCamera::ApplyMovement(D3DXVECTOR3 direction, float amount, float yawdelta,
 
 	D3DXVec3TransformCoord(&vPosDeltaWorld, &vPosDelta, &mCameraRot);
 
-	// Move the eye position
-	m_position += vPosDeltaWorld;
+	// Update target position
+	m_targetPosition += vPosDeltaWorld;
 
-	// Update the lookAt position based on the eye position
+	// Update the lookAt position based on the target position
+	m_direction = m_targetPosition + vWorldAhead;
+}
+
+void CCamera::ApplySmoothing(float deltaTime)
+{
+	// SmoothDamp for position
+	D3DXVECTOR3 smoothPosition = m_position;
+
+	// Calculate smooth position using exponential decay
+	if (deltaTime > 0.0f)
+	{
+		D3DXVECTOR3 positionError = m_targetPosition - m_position;
+		D3DXVECTOR3 acceleration = positionError / (m_positionSmoothTime * m_positionSmoothTime);
+
+		m_currentVelocity += acceleration * deltaTime;
+
+		// Apply damping
+		float damping = 2.0f * sqrtf(1.0f / (m_positionSmoothTime * m_positionSmoothTime));
+		m_currentVelocity -= m_currentVelocity * damping * deltaTime;
+
+		// Limit maximum speed
+		float currentSpeed = D3DXVec3Length(&m_currentVelocity);
+		if (currentSpeed > m_maxSpeed)
+		{
+			m_currentVelocity = m_currentVelocity * (m_maxSpeed / currentSpeed);
+		}
+
+		smoothPosition += m_currentVelocity * deltaTime;
+	}
+	else
+	{
+		smoothPosition = m_targetPosition;
+	}
+
+	// SmoothDamp for rotation (simplified version)
+	float smoothYaw = m_yaw;
+	float smoothPitch = m_pitch;
+
+	if (deltaTime > 0.0f)
+	{
+		// Exponential smoothing for rotation
+		float yawAlpha = 1.0f - expf(-deltaTime / m_rotationSmoothTime);
+		float pitchAlpha = 1.0f - expf(-deltaTime / m_rotationSmoothTime);
+
+		smoothYaw = m_yaw + (m_targetYaw - m_yaw) * yawAlpha;
+		smoothPitch = m_pitch + (m_targetPitch - m_pitch) * pitchAlpha;
+	}
+	else
+	{
+		smoothYaw = m_targetYaw;
+		smoothPitch = m_targetPitch;
+	}
+
+	// Apply smoothed values
+	m_position = smoothPosition;
+	m_yaw = smoothYaw;
+	m_pitch = smoothPitch;
+
+	// Update direction vector with smoothed rotation
+	D3DXMATRIX mCameraRot;
+	D3DXMatrixRotationYawPitchRoll(&mCameraRot, m_yaw, m_pitch, 0);
+
+	D3DXVECTOR3 vWorldAhead;
+	D3DXVECTOR3 vLocalAhead = D3DXVECTOR3(0, 0, 1);
+	D3DXVec3TransformCoord(&vWorldAhead, &vLocalAhead, &mCameraRot);
+
 	m_direction = m_position + vWorldAhead;
 }
 
@@ -232,4 +314,6 @@ void CCamera::CalculateMatrices()
 		D3DXMatrixPerspectiveFovLH(&m_Projection, m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 	}
 }
+///////////////////////////////////////////////////////////////
+CCamera* Camera = nullptr;
 ///////////////////////////////////////////////////////////////

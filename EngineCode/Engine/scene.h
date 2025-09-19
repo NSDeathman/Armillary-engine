@@ -21,6 +21,7 @@ class CScene
 	~CScene() = default;
 
 	void Load();
+	void OnFrame();
 	void DrawGeometry();
 	void Destroy();
 

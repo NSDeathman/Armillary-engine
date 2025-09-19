@@ -75,6 +75,62 @@ class CMonitoring
 		return ScopedTimer(this, chart);
 	}
 
+	class CTaskMonitor
+	{
+	  private:
+		std::unordered_map<std::string, size_t> task_counts;
+		std::vector<std::string> task_names;
+		std::mutex mtx;
+
+	  public:
+		// Добавить задачу по имени
+		void addTask(const std::string& name)
+		{
+			std::lock_guard<std::mutex> lock(mtx);
+			if (task_counts.find(name) == task_counts.end())
+			{
+				task_names.push_back(name);
+				task_counts[name] = 1;
+			}
+			else
+			{
+				task_counts[name]++;
+			}
+		}
+
+		// Пометить задачу как выполненную по имени
+		void completeTask(const std::string& name)
+		{
+			std::lock_guard<std::mutex> lock(mtx);
+			auto it = task_counts.find(name);
+			if (it != task_counts.end())
+			{
+				if (--it->second == 0)
+				{
+					task_counts.erase(it);
+					// Удаляем имя из вектора
+					for (auto vit = task_names.begin(); vit != task_names.end(); ++vit)
+					{
+						if (*vit == name)
+						{
+							task_names.erase(vit);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		// Получить копию списка активных задач
+		std::vector<std::string> getActiveTasks()
+		{
+			std::lock_guard<std::mutex> lock(mtx);
+			return task_names;
+		}
+	};
+
+	CTaskMonitor TaskMonitor;
+
   private:
 	bool m_NeedDraw;
 	float m_FPSAverage;

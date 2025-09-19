@@ -108,7 +108,7 @@ void CRenderDX9::RenderScene()
 
 	m_pDirect3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
-	RenderBackend->set_CullMode(CRenderBackendDX9::CULL_FRONT);
+	RenderBackend->set_CullMode(CRenderBackendDX9::CULL_BACK);
 
 	RenderBackend->enable_anisotropy_filtering();
 
