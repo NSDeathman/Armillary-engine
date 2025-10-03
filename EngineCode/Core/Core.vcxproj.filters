@@ -1,0 +1,552 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Application._Deprecatedcpp">
+      <Filter>Deprecated\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="render_backend_DX9_deprecated.cpp">
+      <Filter>Deprecated\Render\DirectX9\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="render_DX9_core.cpp">
+      <Filter>Deprecated\Render\DirectX9\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Core\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="splash_screen.cpp">
+      <Filter>Windows\Splash screen</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_api.cpp">
+      <Filter>Third-party implementations\Imgui implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="OptickAPI.cpp">
+      <Filter>Third-party implementations\Optick implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="helper_window.cpp">
+      <Filter>Deprecated\User interface\Windows\Helper window</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem.cpp">
+      <Filter>Core\Filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="main_menu.cpp">
+      <Filter>Deprecated\User interface\Windows\Main menu</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>Deprecated\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>Deprecated\Render\Resource manager</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu_identificator.cpp">
+      <Filter>Core\CPU Identification</Filter>
+    </ClCompile>
+    <ClCompile Include="user_interface.cpp">
+      <Filter>Deprecated\User interface\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="loading_screen_window.cpp">
+      <Filter>Deprecated\User interface\Windows\Loading window</Filter>
+    </ClCompile>
+    <ClCompile Include="window_implementation.cpp">
+      <Filter>Windows\Window Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="build_identificator.cpp">
+      <Filter>Core\Build identification</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Deprecated\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="render_DX9_device.cpp">
+      <Filter>Deprecated\Render\DirectX9\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="render_DX9_frame_pipeline.cpp">
+      <Filter>Deprecated\Render\DirectX9\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="render_DX9_reset.cpp">
+      <Filter>Deprecated\Render\DirectX9\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="IniParser.cpp">
+      <Filter>Core\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineSettings.cpp">
+      <Filter>Deprecated\EngineSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="ECSExample.cpp">
+      <Filter>Deprecated\GameAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Core\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Monitoring.cpp">
+      <Filter>Deprecated\Moitoring</Filter>
+    </ClCompile>
+    <ClCompile Include="AsyncExecutor.cpp">
+      <Filter>Core\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>Core\Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeSystem.cpp">
+      <Filter>Core\Time system</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Render\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="render_backend_DX9.cpp">
+      <Filter>Render\Backend\API Implementations\DirectX9</Filter>
+    </ClCompile>
+    <ClCompile Include="render_backend_factory.cpp">
+      <Filter>Render\Backend\Core\Backend factory</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_exeption_error_handler.cpp">
+      <Filter>Core\Debug\Error handler</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_stack_walker.cpp">
+      <Filter>Core\Debug\Stack trace</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Core\Kernel</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application_Deprecated.h">
+      <Filter>Deprecated\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="render_backend_DX9_deprecated.h">
+      <Filter>Deprecated\Render\DirectX9\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="render_DX9.h">
+      <Filter>Deprecated\Render\DirectX9\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Core\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem.h">
+      <Filter>Core\Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
+      <Filter>Core\Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="splash_screen.h">
+      <Filter>Windows\Splash screen</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_api.h">
+      <Filter>Third-party implementations\Imgui implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="OptickAPI.h">
+      <Filter>Third-party implementations\Optick implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="helper_window.h">
+      <Filter>Deprecated\User interface\Windows\Helper window</Filter>
+    </ClInclude>
+    <ClInclude Include="main_menu.h">
+      <Filter>Deprecated\User interface\Windows\Main menu</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>Deprecated\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>Deprecated\Render\Resource manager</Filter>
+    </ClInclude>
+    <ClInclude Include="growable_array.h">
+      <Filter>Core\Math\Types\Growable array</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu_identificator.h">
+      <Filter>Core\CPU Identification</Filter>
+    </ClInclude>
+    <ClInclude Include="user_interface.h">
+      <Filter>Deprecated\User interface\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="loading_screen_window.h">
+      <Filter>Deprecated\User interface\Windows\Loading window</Filter>
+    </ClInclude>
+    <ClInclude Include="window_implementation.h">
+      <Filter>Windows\Window Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="build_identificator.h">
+      <Filter>Core\Build identification</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Deprecated\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="render_DX9_stdafx.h">
+      <Filter>Deprecated\Render\DirectX9\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="IniParser.h">
+      <Filter>Core\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineSettings.h">
+      <Filter>Deprecated\EngineSettings</Filter>
+    </ClInclude>
+    <ClInclude Include="IniWatchDog.h">
+      <Filter>Core\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityObject.h">
+      <Filter>Deprecated\GameAPI\ECS Implementation\EntityObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Coordinator.h">
+      <Filter>Deprecated\GameAPI\ECS Implementation\Coordinator</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS.h">
+      <Filter>Deprecated\GameAPI\ECS Implementation\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Deprecated\GameAPI\ECS Implementation\EntityObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Core\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Monitoring.h">
+      <Filter>Deprecated\Moitoring</Filter>
+    </ClInclude>
+    <ClInclude Include="AsyncExecutor.h">
+      <Filter>Core\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Core\Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreAPI.h">
+      <Filter>Core\Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeSystem.h">
+      <Filter>Core\Time system</Filter>
+    </ClInclude>
+    <ClInclude Include="IGame.h">
+      <Filter>Game interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>Render\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Noncopyable.h">
+      <Filter>Core\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Core\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="render_backend_factory.h">
+      <Filter>Render\Backend\Core\Backend factory</Filter>
+    </ClInclude>
+    <ClInclude Include="render_backend_interface.h">
+      <Filter>Render\Backend\Core\Backend interface</Filter>
+    </ClInclude>
+    <ClInclude Include="render_backend_DX9.h">
+      <Filter>Render\Backend\API Implementations\DirectX9</Filter>
+    </ClInclude>
+    <ClInclude Include="render_backend_buffer_types.h">
+      <Filter>Render\Backend\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="math_fast_trigonometry.h">
+      <Filter>Core\Math\Fast trigonometry</Filter>
+    </ClInclude>
+    <ClInclude Include="math_float2.h">
+      <Filter>Core\Math\Types\Vectors\float</Filter>
+    </ClInclude>
+    <ClInclude Include="math_float3.h">
+      <Filter>Core\Math\Types\Vectors\float</Filter>
+    </ClInclude>
+    <ClInclude Include="math_float4.h">
+      <Filter>Core\Math\Types\Vectors\float</Filter>
+    </ClInclude>
+    <ClInclude Include="math_half.h">
+      <Filter>Core\Math\Types\Vectors\half</Filter>
+    </ClInclude>
+    <ClInclude Include="math_half2.h">
+      <Filter>Core\Math\Types\Vectors\half</Filter>
+    </ClInclude>
+    <ClInclude Include="math_half3.h">
+      <Filter>Core\Math\Types\Vectors\half</Filter>
+    </ClInclude>
+    <ClInclude Include="math_half4.h">
+      <Filter>Core\Math\Types\Vectors\half</Filter>
+    </ClInclude>
+    <ClInclude Include="MathAPI.h">
+      <Filter>Core\Math\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="math_constants.h">
+      <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="math_color_functions.h">
+      <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="math_float4x4.h">
+      <Filter>Core\Math\Types\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="math_functions.h">
+      <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="math_defines.h">
+      <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="math_type_convertations.h">
+      <Filter>Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="math_float3x3.h">
+      <Filter>Core\Math\Types\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="math_types.h">
+      <Filter>Core\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="math_quaternion.h">
+      <Filter>Core\Math\Types\Quaternions</Filter>
+    </ClInclude>
+    <ClInclude Include="application_interface.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_base.h">
+      <Filter>Core\Debug\Exeption management\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_base_inline.h">
+      <Filter>Core\Debug\Exeption management\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_macros.h">
+      <Filter>Core\Debug\Exeption management\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_error_handler.h">
+      <Filter>Core\Debug\Error handler</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_decorator.h">
+      <Filter>Core\Debug\Exeption management\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_module_decorator.h">
+      <Filter>Core\Debug\Exeption management\Exeption types</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_base_types.h">
+      <Filter>Core\Debug\Exeption management\Exeption types</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_base_types_inline.h">
+      <Filter>Core\Debug\Exeption management\Exeption types</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugAPI.h">
+      <Filter>Core\Debug\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_decorator_macros.h">
+      <Filter>Core\Debug\Exeption management\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_error_handler_macros.h">
+      <Filter>Core\Debug\Error handler</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_stack_walker.h">
+      <Filter>Core\Debug\Stack trace</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Core\Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="render_backend_DX9_include.h">
+      <Filter>Render\Backend\API Implementations\DirectX9</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Third-party implementations">
+      <UniqueIdentifier>{bac53889-5198-456c-9abf-3782ef11cde1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third-party implementations\Imgui implementation">
+      <UniqueIdentifier>{b4ad1769-255a-45d7-a74c-e9a01d43e20d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third-party implementations\Optick implementation">
+      <UniqueIdentifier>{a9c9402a-5026-4c55-92fd-71046794f0b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{f9560477-1197-4143-afa5-08b533773a17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{a5bbe24e-4b17-4718-baf7-420a937e956a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Splash screen">
+      <UniqueIdentifier>{75c5282f-2199-4ca4-95b1-1b05b2524355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{43324e7b-7e09-422a-8d5b-57575fa49216}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math">
+      <UniqueIdentifier>{0dfdcdce-8148-473b-a5f0-4036ce36458f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Log">
+      <UniqueIdentifier>{2317b261-7bed-4dd9-8250-cb988031028e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Kernel">
+      <UniqueIdentifier>{94c682e7-0deb-4193-bf29-c70fb1c8f42b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Filesystem">
+      <UniqueIdentifier>{0deecb8c-381f-47ec-a335-f339a87c9832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\CPU Identification">
+      <UniqueIdentifier>{c3b742b3-2de4-44ed-a3f7-63e1609df15c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Build identification">
+      <UniqueIdentifier>{04e2061b-a258-4172-a411-c221137ed653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Time system">
+      <UniqueIdentifier>{e908c66f-0809-4a88-a9b4-ba939f48304b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Timer">
+      <UniqueIdentifier>{e8f03cb6-4a2d-44cc-a02a-66d02bff0623}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Threading">
+      <UniqueIdentifier>{d9c2cbd1-daa3-41da-9954-c4463d30902a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Config">
+      <UniqueIdentifier>{d45c19cd-ddc6-4d43-add9-a79dcc61fa79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game interface">
+      <UniqueIdentifier>{5b146add-321e-4ebf-baf3-b3fe49e21e98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated">
+      <UniqueIdentifier>{56f07ff7-4c3f-47b4-9188-8814629b3301}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\GameAPI">
+      <UniqueIdentifier>{6b2a319b-bde2-4b80-8452-efe507af325c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\GameAPI\ECS Implementation">
+      <UniqueIdentifier>{a3326786-cf1e-4cf8-9ba1-90cfc4441e3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\GameAPI\ECS Implementation\ECS">
+      <UniqueIdentifier>{692e6be9-ea26-4f10-b2ba-aca4520a1079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\GameAPI\ECS Implementation\EntityObject">
+      <UniqueIdentifier>{4bb683ad-ec02-4748-9d2d-5b75d7b93471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\GameAPI\ECS Implementation\Components">
+      <UniqueIdentifier>{37bdcb28-e6b3-4b69-bb71-1df0fb07e347}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\GameAPI\ECS Implementation\Coordinator">
+      <UniqueIdentifier>{b2375ef2-34a0-4c8f-b373-c71641326ed1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\EngineSettings">
+      <UniqueIdentifier>{ba0844ce-6b8a-4dac-810b-eec2d8691b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Camera">
+      <UniqueIdentifier>{ae38b1d2-c99e-49bc-8bf8-53965320a2bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Application">
+      <UniqueIdentifier>{4c79aad6-7d67-402e-803c-fc3245e03771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Moitoring">
+      <UniqueIdentifier>{dbbba05f-1394-433a-84d8-d9b41db6f476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Scene">
+      <UniqueIdentifier>{1866c7c7-7d3c-47dc-8eae-074d374bf42c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\User interface">
+      <UniqueIdentifier>{6f8e98cb-902a-4912-8d00-0496bf2c246c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\User interface\Core">
+      <UniqueIdentifier>{34517174-8f86-48d7-b971-8468f25b83da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\User interface\Windows">
+      <UniqueIdentifier>{9bbee05f-b4db-4123-b4d3-272f54d46a97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\User interface\Windows\Helper window">
+      <UniqueIdentifier>{8601af56-afb2-4e10-b351-00d6c367bf60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\User interface\Windows\Main menu">
+      <UniqueIdentifier>{4be4ee3b-a3e7-459d-bc92-5a3926077f4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\User interface\Windows\Loading window">
+      <UniqueIdentifier>{bade395a-b27c-467f-9def-c806e348535c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Render">
+      <UniqueIdentifier>{66eb38e2-6b9d-4e97-b6fd-c98d28adf8d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Render\Resource manager">
+      <UniqueIdentifier>{67763e31-4f6d-48a6-9a73-73e79d1f95c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Render\DirectX9">
+      <UniqueIdentifier>{447d0564-579d-4835-85a4-0a101e3e6f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Render\DirectX9\Core">
+      <UniqueIdentifier>{674f84b9-f680-4b8a-8f22-cd53c563025e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Render\DirectX9\Backend">
+      <UniqueIdentifier>{ec946da8-b1fb-4be3-982d-a6014d92fe9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{7a201ed5-2439-4276-af55-c31670565559}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Core">
+      <UniqueIdentifier>{2b7039f9-af64-439d-a4a8-3c85b7b99678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Patterns">
+      <UniqueIdentifier>{c8e06dba-64ca-4708-b433-fc379e08a16f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Backend">
+      <UniqueIdentifier>{2522fa10-bdc4-42a9-9bed-c56aefc324ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Backend\Core">
+      <UniqueIdentifier>{595d755f-b89e-4979-9f6a-6d31ae904751}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Backend\Core\Backend factory">
+      <UniqueIdentifier>{688a8239-8680-45f1-bd0f-a39ac7287d23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Backend\API Implementations">
+      <UniqueIdentifier>{1fb97a53-7f2c-411f-9414-96015c40f678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Backend\API Implementations\DirectX9">
+      <UniqueIdentifier>{a084ea28-f868-4e5f-854e-7ba5306046ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Backend\Core\Backend interface">
+      <UniqueIdentifier>{c07a21d9-b1dc-4883-9ea6-6aaf1e0b3866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Window Implementation">
+      <UniqueIdentifier>{8424f532-b525-410e-86b8-4e335d7fcce1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Backend\Resources">
+      <UniqueIdentifier>{185997b9-a77e-4c37-987a-2e574e56360a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Fast trigonometry">
+      <UniqueIdentifier>{935d39f0-86fc-4b78-b68a-009d9c33b814}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Include">
+      <UniqueIdentifier>{d6957929-8398-4aa3-8341-719f7024618a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Types">
+      <UniqueIdentifier>{aafd5402-609f-4749-95fe-4a5f16ef7e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Types\Growable array">
+      <UniqueIdentifier>{9fe9d30a-e7bd-4ed6-a7c7-c950e026c76d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Types\Matrix">
+      <UniqueIdentifier>{83dada92-dae9-45fa-b8f0-cb1a39b63624}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Types\Vectors">
+      <UniqueIdentifier>{2a41d156-c504-4070-8f24-deb11e513a5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Types\Vectors\float">
+      <UniqueIdentifier>{58713231-be39-4244-b193-028d522e4960}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Types\Vectors\half">
+      <UniqueIdentifier>{1b19e05a-dc51-4a63-a4f2-be1f4f7902d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Math\Types\Quaternions">
+      <UniqueIdentifier>{32265d89-0561-42f0-ac34-8667b630acc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{ca1a934f-72e1-42c7-99e2-3eabf7999275}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Debug">
+      <UniqueIdentifier>{9829b16e-54ca-482d-850a-fadb73bb58c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Debug\Exeption management">
+      <UniqueIdentifier>{1fd3e919-6489-41d0-97e5-910b908cfdee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Debug\Exeption management\Core">
+      <UniqueIdentifier>{02efc090-9819-425e-9cd8-8e9df2a272d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Debug\Exeption management\Exeption types">
+      <UniqueIdentifier>{ba8ecf30-79d1-43d6-bf65-c234955cfef8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Debug\Stack trace">
+      <UniqueIdentifier>{6653b745-ca84-4e67-b67d-11a49aea1d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Debug\Error handler">
+      <UniqueIdentifier>{bd789b84-5b3a-4891-aa16-0e64fcd63f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Debug\Include">
+      <UniqueIdentifier>{57813536-c34d-4b4b-a3d5-f4c9b644ac02}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

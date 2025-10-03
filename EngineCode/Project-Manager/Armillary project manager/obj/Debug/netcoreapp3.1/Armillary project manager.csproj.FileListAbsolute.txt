@@ -1,0 +1,16 @@
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\bin\Debug\netcoreapp3.1\Armillary project manager.exe
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\bin\Debug\netcoreapp3.1\Armillary project manager.deps.json
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\bin\Debug\netcoreapp3.1\Armillary project manager.runtimeconfig.json
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\bin\Debug\netcoreapp3.1\Armillary project manager.runtimeconfig.dev.json
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\bin\Debug\netcoreapp3.1\Armillary project manager.dll
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\bin\Debug\netcoreapp3.1\Armillary project manager.pdb
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.csproj.AssemblyReference.cache
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary_project_manager.Form1.resources
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.csproj.GenerateResource.cache
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.AssemblyInfoInputs.cache
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.AssemblyInfo.cs
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.csproj.CoreCompileInputs.cache
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.dll
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.pdb
+C:\Indev\Armillary-engine\EngineCode\Project-Manager\Armillary project manager\obj\Debug\netcoreapp3.1\Armillary project manager.genruntimeconfig.cache
