@@ -1,0 +1,28 @@
+///////////////////////////////////////////////////////////////
+// Created: 23.09.2025
+// Author: DeepSeek, NS_Deathman
+///////////////////////////////////////////////////////////////
+#pragma once
+///////////////////////////////////////////////////////////////
+#include "architect_pattern_noncopyable.h"
+///////////////////////////////////////////////////////////////
+namespace Core
+{
+	namespace Patterns
+	{
+		template <typename T> class Singleton : public Noncopyable
+		{
+		  public:
+			static T& GetInstance()
+			{
+				static T instance;
+				return instance;
+			}
+
+		  protected:
+			Singleton() = default;
+			virtual ~Singleton() = default;
+		};
+	} // namespace Patterns
+} // namespace Core
+///////////////////////////////////////////////////////////////

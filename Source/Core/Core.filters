@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{a8fd2569-9055-4d17-b7d6-96ab4d8d7512}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core">
+      <UniqueIdentifier>{f3b02362-9e2c-4ed5-a1c9-5f8bd865264d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Application">
+      <UniqueIdentifier>{b1ab522f-728a-4404-8ace-27bb237d39f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Kernel">
+      <UniqueIdentifier>{155fff49-869e-4a8f-9c0b-a3b2ef28d03c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Trash">
+      <UniqueIdentifier>{adf92f99-cbdc-4488-a3dc-a349ca4abf4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Render">
+      <UniqueIdentifier>{f918738c-cba4-42e9-ab9d-67504fae9a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Render\Core">
+      <UniqueIdentifier>{506c6c0a-31bc-4ce4-9ca3-2179e0505992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Render\Backend">
+      <UniqueIdentifier>{bebb2172-053a-4bd2-b11f-bdfda3de66e9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="entry_point.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Engine\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Trash</Filter>
+    </ClCompile>
+    <ClCompile Include="render_DX9.cpp">
+      <Filter>Engine\Render\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="render_backend_DX9.cpp">
+      <Filter>Engine\Render\Backend</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h">
+      <Filter>Engine\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Engine\Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="render_DX9.h">
+      <Filter>Engine\Render\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="render_backend_DX9.h">
+      <Filter>Engine\Render\Backend</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

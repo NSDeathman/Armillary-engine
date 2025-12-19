@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="debug_exeption_base.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_base_types.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_base_types_inline.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_decorator.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_decorator_macros.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_error_handler.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_error_handler_macros.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_macros.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_exeption_module_decorator.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_stack_walker.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugAPI.h">
+      <Filter>DebugAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="AsyncExecutor.h">
+      <Filter>Multithreading</Filter>
+    </ClInclude>
+    <ClInclude Include="architect_pattern_noncopyable.h">
+      <Filter>Architector patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="architect_pattern_singleton.h">
+      <Filter>Architector patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="build_identificator.h">
+      <Filter>Utils\BuildID</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu_identificator.h">
+      <Filter>Utils\CPUID</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreAPI.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="IniParser.h">
+      <Filter>Configs\Ini</Filter>
+    </ClInclude>
+    <ClInclude Include="IniWatchDog.h">
+      <Filter>Configs\Ini</Filter>
+    </ClInclude>
+    <ClInclude Include="OptickAPI.h">
+      <Filter>API Integrations\Optick</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeSystem.h">
+      <Filter>Utils\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="IGame.h">
+      <Filter>Interfaces\Game interface</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem.h">
+      <Filter>Filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_api.h">
+      <Filter>API Integrations\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="application_interface.h">
+      <Filter>Interfaces\Application interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Systems\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Systems\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="architect_patterns.h">
+      <Filter>Architector patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="splash_screen.h">
+      <Filter>Splash screen</Filter>
+    </ClInclude>
+    <ClInclude Include="window_implementation.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_config.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_constants.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_fast_functions.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_float2.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_float2x2.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_float3.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_float3x3.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_float4.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_float4x4.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_functions.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_half.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_half2.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_half3.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_half4.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\math_quaternion.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\MathAPI\MathAPI.h">
+      <Filter>Third-Party\MathAPI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="debug_exeption_error_handler.cpp">
+      <Filter>DebugAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_stack_walker.cpp">
+      <Filter>DebugAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="AsyncExecutor.cpp">
+      <Filter>Multithreading</Filter>
+    </ClCompile>
+    <ClCompile Include="build_identificator.cpp">
+      <Filter>Utils\BuildID</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu_identificator.cpp">
+      <Filter>Utils\CPUID</Filter>
+    </ClCompile>
+    <ClCompile Include="Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="IniParser.cpp">
+      <Filter>Configs\Ini</Filter>
+    </ClCompile>
+    <ClCompile Include="OptickAPI.cpp">
+      <Filter>API Integrations\Optick</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeSystem.cpp">
+      <Filter>Utils\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem.cpp">
+      <Filter>Filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_api.cpp">
+      <Filter>API Integrations\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Systems\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Systems\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="splash_screen.cpp">
+      <Filter>Splash screen</Filter>
+    </ClCompile>
+    <ClCompile Include="window_implementation.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="DebugAPI">
+      <UniqueIdentifier>{4bdd6b56-9796-4887-9420-de7bbe58009d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Multithreading">
+      <UniqueIdentifier>{7a71e3c7-5844-4309-82eb-60838b090275}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Architector patterns">
+      <UniqueIdentifier>{a78cf51a-ef17-45c2-b326-3bc3325badee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{741d37c5-3c88-453d-b751-697fbb3f4a70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\BuildID">
+      <UniqueIdentifier>{2afd0f1a-4aaf-41ba-9a6e-0764b290efc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\CPUID">
+      <UniqueIdentifier>{e78b382a-55a7-423e-abff-37bf36bcde06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{892856b6-4dd5-4662-b624-aa9729b17c93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Configs">
+      <UniqueIdentifier>{83eca5a4-1c95-4ef7-8da4-27d5d3aa76fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Configs\Ini">
+      <UniqueIdentifier>{12229ed1-7782-44b1-b360-a760346495d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API Integrations">
+      <UniqueIdentifier>{fc56d146-cb3b-4ae7-a83b-707c331cbc1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API Integrations\Optick">
+      <UniqueIdentifier>{f2d0b963-fa6f-40ae-b2eb-fcf7b9bc814b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\Time">
+      <UniqueIdentifier>{ba6f3055-e860-405c-8704-e3547836287c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filesystem">
+      <UniqueIdentifier>{d6d79ebc-5b1d-4cdc-876f-b48fddd13943}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="API Integrations\ImGui">
+      <UniqueIdentifier>{7b6125e6-eb67-4753-8647-3f96c57bec46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{ce77b7b3-89fb-4e8e-add9-946ffb4cb51d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces\Game interface">
+      <UniqueIdentifier>{f9ef2f47-e2d1-4e37-87cf-4214fd6111b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces\Application interface">
+      <UniqueIdentifier>{694a47f9-6f25-440e-a752-4ee88974534f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Systems">
+      <UniqueIdentifier>{14a4a729-1c95-4438-b085-3671adfdc47b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Systems\Input">
+      <UniqueIdentifier>{45a4cea1-c13e-49d3-bb51-517d20716fcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Systems\Logger">
+      <UniqueIdentifier>{3ef66d45-45da-4998-8a50-099b425490f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Splash screen">
+      <UniqueIdentifier>{f7c983ad-29e9-4bfe-a1ba-380104ab3aae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{d3781ff4-b4ee-4233-8e78-0129707b1997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third-Party">
+      <UniqueIdentifier>{b36f3cf6-55b1-44b3-a9d4-77e7d8fe2b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third-Party\MathAPI">
+      <UniqueIdentifier>{e8f26dd0-0de5-42d2-ba70-9bdf70f49e2a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Third-Party\Include\MathAPI\math_float2.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+    <None Include="..\Third-Party\Include\MathAPI\math_float2x2.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+    <None Include="..\Third-Party\Include\MathAPI\math_float3.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+    <None Include="..\Third-Party\Include\MathAPI\math_float3x3.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+    <None Include="..\Third-Party\Include\MathAPI\math_float4.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+    <None Include="..\Third-Party\Include\MathAPI\math_float4x4.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+    <None Include="..\Third-Party\Include\MathAPI\math_half2.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+    <None Include="..\Third-Party\Include\MathAPI\math_half3.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+    <None Include="..\Third-Party\Include\MathAPI\math_half4.inl">
+      <Filter>Third-Party\MathAPI</Filter>
+    </None>
+  </ItemGroup>
+</Project>

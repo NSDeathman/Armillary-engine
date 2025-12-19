@@ -1,0 +1,39 @@
+///////////////////////////////////////////////////////////////
+#pragma once
+///////////////////////////////////////////////////////////////
+#define WIN32_LEAN_AND_MEAN
+///////////////////////////////////////////////////////////////
+#include <iostream>
+#include <ppl.h>
+#include <cstddef>
+#include <Windows.h>
+#include <mmsystem.h>
+#include <vector>
+#include <array>
+#include <iomanip>
+#include <ctime>
+#include <string>
+#include <random>
+#include <csignal>
+#include <cstdlib>
+#include <sstream>
+#include <filesystem>
+
+#if defined(_WIN32) && defined(_DEBUG)
+#include <windows.h>
+#include <dbghelp.h>
+#pragma comment(lib, "dbghelp.lib")
+#endif
+
+#pragma warning(disable : 4996) // disable deprecated warning
+#include <strsafe.h>
+#pragma warning(default : 4996)
+///////////////////////////////////////////////////////////////
+#pragma comment(lib, "winmm.lib")
+///////////////////////////////////////////////////////////////
+#include <SDL/SDL.h>
+///////////////////////////////////////////////////////////////
+#pragma comment(lib, "SDL2.lib")
+///////////////////////////////////////////////////////////////
+
+#include <MathAPI/MathAPI.h>
