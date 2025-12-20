@@ -94,7 +94,7 @@
     <ClInclude Include="splash_screen.h">
       <Filter>Splash screen</Filter>
     </ClInclude>
-    <ClInclude Include="window_implementation.h">
+    <ClInclude Include="Window.h">
       <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="..\Third-Party\Include\MathAPI\math_config.h">
@@ -145,6 +145,9 @@
     <ClInclude Include="..\Third-Party\Include\MathAPI\MathAPI.h">
       <Filter>Third-Party\MathAPI</Filter>
     </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug_exeption_error_handler.cpp">
@@ -192,8 +195,11 @@
     <ClCompile Include="splash_screen.cpp">
       <Filter>Splash screen</Filter>
     </ClCompile>
-    <ClCompile Include="window_implementation.cpp">
+    <ClCompile Include="Window.cpp">
       <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +274,9 @@
     </Filter>
     <Filter Include="Third-Party\MathAPI">
       <UniqueIdentifier>{e8f26dd0-0de5-42d2-ba70-9bdf70f49e2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{34512814-6017-47fb-89ef-66b9a2b2bb19}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

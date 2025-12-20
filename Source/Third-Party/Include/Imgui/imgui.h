@@ -74,6 +74,10 @@ ImDrawFlags, ImDrawListFlags, ImDrawList, ImDrawData)
 
 #ifndef IMGUI_DISABLE
 
+#ifndef INFINITY
+#define INFINITY (std::numeric_limits<float>::infinity())
+#endif
+
 //-----------------------------------------------------------------------------
 // [SECTION] Header mess
 //-----------------------------------------------------------------------------

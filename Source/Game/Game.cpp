@@ -6,6 +6,8 @@
 ///////////////////////////////////////////////////////////////
 bool CGame::Initialize()
 {
+	Core::InitializeImGuiFromCore();
+
 	return true;
 }
 
@@ -15,9 +17,8 @@ void CGame::Shutdown()
 
 void CGame::Update()
 {
-}
-
-void CGame::Render()
-{
+	ImGui::Begin("Game Window");
+	ImGui::Text("Hello from Game DLL!");
+	ImGui::End();
 }
 ///////////////////////////////////////////////////////////////

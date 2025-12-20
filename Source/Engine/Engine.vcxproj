@@ -119,7 +119,8 @@
       <ImportLibrary>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"
+</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -152,7 +153,8 @@
       <ImportLibrary>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x86\SDL2.dll" "$(OutDir)SDL2.dll"
+</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -182,7 +184,8 @@
       <ImportLibrary>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"
+</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -217,7 +220,8 @@
       <ImportLibrary>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)\Third-Party\Libraries\x64\SDL2.dll" "$(OutDir)SDL2.dll"
+</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>

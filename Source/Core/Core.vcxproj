@@ -63,10 +63,11 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="OptickAPI.h" />
+    <ClInclude Include="Render.h" />
     <ClInclude Include="splash_screen.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TimeSystem.h" />
-    <ClInclude Include="window_implementation.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AsyncExecutor.cpp" />
@@ -77,15 +78,16 @@
     <ClCompile Include="debug_stack_walker.cpp" />
     <ClCompile Include="filesystem.cpp" />
     <ClCompile Include="imgui_api.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="IniParser.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
+    <ClCompile Include="Render.cpp" />
     <ClCompile Include="splash_screen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -94,7 +96,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TimeSystem.cpp" />
-    <ClCompile Include="window_implementation.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Third-Party\Include\MathAPI\math_float2.inl" />
@@ -164,26 +166,26 @@
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(SolutionDir)..\build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
-    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x86\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x86\;$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(WindowsSDK_IncludePath);$(DXSDK_DIR)Include\;$(SolutionDir)\Third-Party\Include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(SolutionDir)..\build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
-    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x86\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x86\;$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\</LibraryPath>
     <IncludePath>$(WindowsSDK_IncludePath);$(DXSDK_DIR)Include\;$(SolutionDir)\Third-Party\Include\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x64\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x64\;$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(WindowsSDK_IncludePath);$(DXSDK_DIR)Include\;$(SolutionDir)\Third-Party\Include\;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)..\build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x64\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(SolutionDir)\Third-Party\Libraries\x64\;$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(WindowsSDK_IncludePath);$(DXSDK_DIR)Include\;$(SolutionDir)\Third-Party\Include\;$(IncludePath)</IncludePath>
     <IntDir>$(SolutionDir)..\build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\bin\</OutDir>
@@ -196,7 +198,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -266,7 +268,7 @@
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <IncludeInUnityFile>true</IncludeInUnityFile>
+      <IncludeInUnityFile>false</IncludeInUnityFile>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>

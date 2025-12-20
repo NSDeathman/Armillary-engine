@@ -9,13 +9,15 @@
 ///////////////////////////////////////////////////////////////
 // Основные макросы для бросания исключений
 #define ENGINE_THROW(exception_type, message) \
-    throw Engine::exception_type(message, std::source_location::current())
+    throw Core::Debug::exception_type(message, std::source_location::current())
 
 // Специализированные макросы
 #define THROW_GRAPHICS(message) ENGINE_THROW(GraphicsException, message)
 #define THROW_RESOURCE(message) ENGINE_THROW(ResourceException, message)
 #define THROW_AUDIO(message) ENGINE_THROW(AudioException, message)
 #define THROW_NETWORK(message) ENGINE_THROW(NetworkException, message)
+#define THROW_GAME(message) ENGINE_THROW(GameException, message)
+#define THROW_ENGINE(message) ENGINE_THROW(EngineException, message)
 
 // Макросы для проверки условий
 #define ENGINE_CHECK(condition, exception_type, message) \

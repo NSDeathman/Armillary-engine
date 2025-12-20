@@ -20,7 +20,8 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
-#include "CoreAPI.h"
+#include "Core.h"
+#include "architect_patterns.h"
 #include <fstream>
 #include "filesystem.h"
 #include "windows.h"
@@ -99,12 +100,12 @@ namespace Core
 	};
 } // namespace Core
 ///////////////////////////////////////////////////////////////
-#define Log CLog::GetInstance().Print
-#define Log2 CLog::GetInstance().PrintWithLevel
-#define DbgLog CLog::GetInstance().Debug_Print
-#define WarnLog CLog::GetInstance().Warning_Print
-#define ErrLog CLog::GetInstance().Error_Print
-#define LogInit(directory) CLog::GetInstance().Initialize(directory)
+#define Log Core::CLog::GetInstance().Print
+#define Log2 Core::CLog::GetInstance().PrintWithLevel
+#define DbgLog Core::CLog::GetInstance().Debug_Print
+#define WarnLog Core::CLog::GetInstance().Warning_Print
+#define ErrLog Core::CLog::GetInstance().Error_Print
+#define LogInit(directory) Core::CLog::GetInstance().Initialize(directory)
 #define LogFlush() CLog::GetInstance().Flush()
 #define LogDestroy() CLog::GetInstance().Destroy()
 ///////////////////////////////////////////////////////////////

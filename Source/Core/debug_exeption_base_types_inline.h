@@ -24,5 +24,15 @@ namespace Core::Debug
     inline NetworkException::NetworkException(const std::string& message, 
                                             std::source_location location)
         : Exception("Network: " + message, location) {}
-} // namespace Core::Debug
+
+    inline GameException::GameException(const std::string& message, std::source_location location)
+		: Exception("Game: " + message, location)
+	{
+	}
+
+    inline EngineException::EngineException(const std::string& message, std::source_location location)
+		: Exception("Engine: " + message, location)
+	{
+	}
+	} // namespace Core::Debug
 ///////////////////////////////////////////////////////////////

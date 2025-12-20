@@ -36,5 +36,20 @@ namespace Core::Debug
         NetworkException(const std::string& message,
                         std::source_location location = std::source_location::current());
     };
+
+    class GameException : public Exception
+	{
+	  public:
+		using Exception::Exception;
+		GameException(const std::string& message, std::source_location location = std::source_location::current());
+	};
+
+    class EngineException : public Exception
+	{
+	  public:
+		using Exception::Exception;
+		EngineException(const std::string& message, std::source_location location = std::source_location::current());
+	};
+
 } // namespace Core::Debug
 ///////////////////////////////////////////////////////////////

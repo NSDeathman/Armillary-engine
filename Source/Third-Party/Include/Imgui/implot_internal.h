@@ -36,6 +36,7 @@
 #endif
 
 #ifndef IMGUI_DISABLE
+#include <corecrt_math.h>
 #include <time.h>
 #include "imgui_internal.h"
 

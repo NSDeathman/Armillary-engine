@@ -3,6 +3,7 @@
 // Author: DeepSeek, NS_Deathman
 // Splash screen realization
 ///////////////////////////////////////////////////////////////
+#include "stdafx.h"
 #include <commctrl.h>
 #include "splash_screen.h"
 #include "..\Engine\resource.h"

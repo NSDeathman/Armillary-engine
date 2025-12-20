@@ -145,19 +145,19 @@ namespace Core
 } // namespace Core
 ///////////////////////////////////////////////////////////////
 // Макросы для удобства
-#define INPUT CInput::GetInstance()
+#define INPUT Core::CInput::GetInstance()
 
 // Удобные макросы для ввода
-#define KEY_PRESSED(key) CInput::GetInstance().IsKeyPressed(key)
-#define KEY_HELD(key) CInput::GetInstance().IsKeyHeld(key)
-#define KEY_RELEASED(key) CInput::GetInstance().IsKeyReleased(key)
+#define KEY_PRESSED(key) Core::CInput::GetInstance().IsKeyPressed(key)
+#define KEY_HELD(key) Core::CInput::GetInstance().IsKeyHeld(key)
+#define KEY_RELEASED(key) Core::CInput::GetInstance().IsKeyReleased(key)
 
-#define GAMEPAD_BUTTON_PRESSED(button) CInput::GetInstance().IsGamepadButtonPressed(button)
-#define GAMEPAD_BUTTON_HELD(button) CInput::GetInstance().IsGamepadButtonHeld(button)
-#define GAMEPAD_BUTTON_RELEASED(button) CInput::GetInstance().IsGamepadButtonReleased(button)
+#define GAMEPAD_BUTTON_PRESSED(button) Core::CInput::GetInstance().IsGamepadButtonPressed(button)
+#define GAMEPAD_BUTTON_HELD(button) Core::CInput::GetInstance().IsGamepadButtonHeld(button)
+#define GAMEPAD_BUTTON_RELEASED(button) Core::CInput::GetInstance().IsGamepadButtonReleased(button)
 
-#define MOUSE_BUTTON_PRESSED(button) CInput::GetInstance().IsMouseButtonPressed(button)
-#define MOUSE_BUTTON_HELD(button) CInput::GetInstance().IsMouseButtonHeld(button)
+#define MOUSE_BUTTON_PRESSED(button) Core::CInput::GetInstance().IsMouseButtonPressed(button)
+#define MOUSE_BUTTON_HELD(button) Core::CInput::GetInstance().IsMouseButtonHeld(button)
 ///////////////////////////////////////////////////////////////
 /*
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡶⠓⢷⡀⠀⠀⠀⠀⠀⠀⠀

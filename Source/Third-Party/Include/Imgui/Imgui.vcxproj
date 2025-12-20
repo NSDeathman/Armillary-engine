@@ -18,32 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="backends\imgui_impl_dx11.h" />
-    <ClInclude Include="backends\imgui_impl_dx9.h" />
-    <ClInclude Include="backends\imgui_impl_sdl2.h" />
-    <ClInclude Include="imconfig.h" />
-    <ClInclude Include="imgui.h" />
-    <ClInclude Include="imgui_internal.h" />
-    <ClInclude Include="implot.h" />
-    <ClInclude Include="implot_internal.h" />
-    <ClInclude Include="imstb_rectpack.h" />
-    <ClInclude Include="imstb_textedit.h" />
-    <ClInclude Include="imstb_truetype.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="backends\imgui_impl_dx11.cpp" />
-    <ClCompile Include="backends\imgui_impl_dx9.cpp" />
-    <ClCompile Include="backends\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="imgui.cpp" />
-    <ClCompile Include="imgui_demo.cpp" />
-    <ClCompile Include="imgui_draw.cpp" />
-    <ClCompile Include="imgui_tables.cpp" />
-    <ClCompile Include="imgui_widgets.cpp" />
-    <ClCompile Include="implot.cpp" />
-    <ClCompile Include="implot_demo.cpp" />
-    <ClCompile Include="implot_items.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{416E416C-4CE6-4163-888B-884D8AD77F7B}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>

@@ -3,9 +3,10 @@
 // Author: DeepSeek, ChatGPT, NS_Deathman
 // Input realization
 ///////////////////////////////////////////////////////////////
+#include "stdafx.h"
 #include "Input.h"
 #include "log.h"
-#include "window_implementation.h"
+#include "window.h"
 ///////////////////////////////////////////////////////////////
 namespace Core
 {

@@ -3,6 +3,7 @@
 // Author: DeepSeek, NS_Deathman
 // Filesystem implementation
 ///////////////////////////////////////////////////////////////
+#include "stdafx.h"
 #include "filesystem.h"
 #include "log.h"
 ///////////////////////////////////////////////////////////////
@@ -35,9 +36,12 @@ namespace Core
 		{
 			char path[MAX_PATH];
 			GetModuleFileNameA(NULL, path, MAX_PATH);
-			m_ExecutableDir = std::string(path);
-			m_WorkingDir = fs::current_path().parent_path();
-			m_WorkingDir = m_WorkingDir / "";
+
+			fs::path exeDir = fs::path(path).parent_path();
+
+			m_ExecutableDir = exeDir.parent_path();
+
+			m_WorkingDir = fs::current_path();
 
 			Log("Filesystem initialized successfully");
 			Log("Executable dir: %s", m_ExecutableDir.string().c_str());

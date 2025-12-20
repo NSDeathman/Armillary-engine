@@ -34,6 +34,10 @@ void CEngine::Start()
 
 	INPUT.Initialize();
 
+	LoadRender();
+
+	IMGUI.Initialize();
+
 	LoadGameModule();
 
 	Log("Engine started\n");
@@ -60,7 +64,7 @@ bool CEngine::LoadGameModule()
 	m_createGameFn = (CreateGameFn)GetProcAddress(m_GameModule, "CreateGame");
 	if (!m_createGameFn)
 	{
-		std::cerr << "Failed to find CreateGame function in Game.dll" << std::endl;
+		THROW_ENGINE("Failed to find CreateGame function in Game.dll");
 		FreeLibrary(m_GameModule);
 		m_GameModule = nullptr;
 		return false;
@@ -70,7 +74,7 @@ bool CEngine::LoadGameModule()
 	m_Game.reset(m_createGameFn());
 	if (!m_Game)
 	{
-		std::cerr << "Failed to create game instance" << std::endl;
+		THROW_ENGINE("Failed to create game instance");
 		FreeLibrary(m_GameModule);
 		m_GameModule = nullptr;
 		return false;
@@ -79,7 +83,7 @@ bool CEngine::LoadGameModule()
 	// 4. Инициализируем игру
 	if (!m_Game->Initialize())
 	{
-		std::cerr << "Game initialization failed" << std::endl;
+		THROW_ENGINE("Game initialization failed");
 		FreeLibrary(m_GameModule);
 		m_Game.reset();
 		m_GameModule = nullptr;
@@ -93,7 +97,12 @@ bool CEngine::LoadGameModule()
 
 void CEngine::LoadRender()
 {
-
+	RenderConfig Config;
+	Config.API = RenderAPI::DirectX11;
+	Config.Height = 720;
+	Config.Width = 1280;
+	Config.ScreenMode = ScreenMode::Windowed;
+	Renderer.Initialize(Config);
 }
 
 void CEngine::Process()
@@ -109,12 +118,12 @@ void CEngine::Process()
 void CEngine::HandleSDLEvents()
 {
 	SDL_Event SDLEvent;
-	if (SDL_PollEvent(&SDLEvent)) [[likely]]
+	while (SDL_PollEvent(&SDLEvent))
 	{
-		if (SDLEvent.type == SDL_QUIT) [[unlikely]]
-			g_bNeedCloseApplication = true;
+		IMGUI.ProcessEvent(&SDLEvent);
 
-		//ImGui_ImplSDL2_ProcessEvent(&SDLEvent);
+		if (SDLEvent.type == SDL_QUIT)
+			g_bNeedCloseApplication = true;
 	}
 }
 
@@ -126,14 +135,18 @@ void CEngine::Update()
 
 	INPUT.Update();
 
+	IMGUI.OnFrameBegin();
+
 	m_Game->Update();
 
-	m_Game->Render();
+	Renderer.DrawFrame();
 }
 
 void CEngine::Destroy()
 {
 	m_Game->Shutdown();
+
+	IMGUI.Destroy();
 
 	LogDestroy();
 

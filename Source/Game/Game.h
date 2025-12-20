@@ -13,7 +13,6 @@ class CGame : public IGame
 	bool Initialize() override;
 	void Shutdown() override;
 	void Update() override;
-	void Render() override;
 };
 ///////////////////////////////////////////////////////////////
 extern "C" __declspec(dllexport) IGame* CreateGame()

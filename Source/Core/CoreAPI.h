@@ -13,7 +13,7 @@
 #include "Core.h"
 ///////////////////////////////////////////////////////////////
 #include "splash_screen.h"
-#include "window_implementation.h"
+#include "window.h"
 #include "TimeSystem.h"
 #include "log.h"
 #include "filesystem.h"
@@ -22,6 +22,8 @@
 #include "AsyncExecutor.h"
 #include "Input.h"
 #include "architect_patterns.h"
+#include "Render.h"
+#include "imgui_api.h"
 ///////////////////////////////////////////////////////////////
 // List of things whats we will exports
 // from Core.dll to other engine components
@@ -36,10 +38,10 @@ namespace Core
 	class CORE_API CAsyncExecutor;
 	class CORE_API CInput;
 	class CORE_API CFilesystem;
+	class CORE_API CRender;
 
 	// Functions
 	CORE_API void PrintBuildData();
 	CORE_API void InitializeCPU();
 } // namespace Core
 ///////////////////////////////////////////////////////////////
-
