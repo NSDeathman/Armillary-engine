@@ -189,12 +189,12 @@ void CImguiAPI::ShowCursor()
 	ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
 }
 
-CORE_API ImGuiContext* Core_GetImGuiContext()
+ ImGuiContext* Core_GetImGuiContext()
 {
 	return ImGui::GetCurrentContext();
 }
 
-CORE_API ImPlotContext* Core_GetImPlotContext()
+ ImPlotContext* Core_GetImPlotContext()
 {
 	return ImPlot::GetCurrentContext();
 }
@@ -203,4 +203,5 @@ void Core_GetImGuiAllocators(ImGuiMemAllocFunc* allocFunc, ImGuiMemFreeFunc* fre
 {
 	ImGui::GetAllocatorFunctions(allocFunc, freeFunc, userData);
 }
+
 } // namespace Core

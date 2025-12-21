@@ -3,6 +3,7 @@
 // Author: DeepSeek, NS_Deathman
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include <eh.h>
 #include "Log.h"
 #include "filesystem.h"
 #include "debug_stack_walker.h"
@@ -15,13 +16,93 @@ bool ErrorHandler::m_terminateOnCritical = true;
 std::unique_ptr<ErrorHandler::CrashCallback> ErrorHandler::m_crashHandler = nullptr;
 std::unique_ptr<std::function<void(const std::string&)>> ErrorHandler::m_assertionHandler = nullptr;
 
+void SEHTranslator(unsigned int u, _EXCEPTION_POINTERS* pExp)
+{
+	// 1. Формируем сообщение об ошибке
+	std::string error = "CRITICAL HARDWARE ERROR: 0x" + std::to_string(u);
+	switch (u)
+	{
+	case 0xC0000005:
+		error = "ACCESS VIOLATION (Invalid Memory Read/Write)";
+		break;
+	case 0xC00000FD:
+		error = "STACK OVERFLOW";
+		break;
+	case 0xC0000094:
+		error = "INTEGER DIVIDE BY ZERO";
+		break;
+	}
+
+	std::cerr << "\n!!! " << error << " !!!\n";
+
+	// 2. Получаем стек (используя PCONTEXT из исключения, это важно!)
+	PCONTEXT ctx = pExp->ContextRecord;
+	std::string stackTrace = "Failed to capture stack trace.";
+
+	try
+	{
+		// Используем уже исправленный StackWalker
+		stackTrace = Core::Debug::StackWalker::getInstance().getStackTraceString(64, 0, ctx);
+	}
+	catch (...)
+	{
+	}
+
+	// 3. ПИШЕМ В ЛОГ И СОХРАНЯЕМ СРАЗУ
+	ErrLog("================ CRASH REPORT ================");
+	ErrLog("%s", error.c_str());
+	ErrLog("----------------------------------------------");
+	ErrLog("%s", stackTrace.c_str());
+	ErrLog("==============================================");
+
+	// 4. Создаем минидамп памяти (это полезнее лога, его можно открыть в VS)
+#if defined(_WIN32) && defined(_DEBUG)
+	// Эмуляция объекта Exception для вызова crash handler'а (если нужно)
+	// Но лучше написать дамп прямо здесь, так как память может быть испорчена
+
+	std::string dumpDir = std::string(DEBUG_DATA) + "memory_dmps/";
+	std::filesystem::create_directories(dumpDir);
+	std::string dumpPath = dumpDir + "CRASH_" + std::to_string(GetTickCount()) + ".dmp";
+
+	HANDLE hFile = CreateFileA(dumpPath.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		MINIDUMP_EXCEPTION_INFORMATION mdei;
+		mdei.ThreadId = GetCurrentThreadId();
+		mdei.ExceptionPointers = pExp; // <-- Самое важное: передаем реальный контекст сбоя
+		mdei.ClientPointers = FALSE;
+
+		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, (pExp ? &mdei : nullptr),
+						  nullptr, nullptr);
+		CloseHandle(hFile);
+
+		std::cerr << "Minidump saved to: " << dumpPath << std::endl;
+	}
+#endif
+
+	Core::CLog::GetInstance().Flush();
+
+	Sleep(100); 
+
+	// 5. Убиваем процесс
+	// Не используем throw, так как стек может быть поврежден.
+	// Показываем сообщение и выходим.
+	MessageBoxA(NULL, (error + "\n\nSee console/log for stack trace.").c_str(), "Armillary Engine Crash",
+				MB_OK | MB_ICONERROR);
+
+	TerminateProcess(GetCurrentProcess(), u);
+}
+
 // Инициализация системы обработки ошибок
 void ErrorHandler::initialize(CrashCallback customCrashHandler)
 {
 	if (m_initialized)
 		return;
 
-	// Установка обработчиков
+	// 1. Установка транслятора SEH (превращает крэши в try-catch)
+	_set_se_translator(SEHTranslator);
+
+	// 2. Установка обработчиков
 	if (customCrashHandler)
 	{
 		m_crashHandler = std::make_unique<CrashCallback>(customCrashHandler);
@@ -31,28 +112,17 @@ void ErrorHandler::initialize(CrashCallback customCrashHandler)
 		initializeDefaultCrashHandler();
 	}
 
-	// Установка обработчика ассертов по умолчанию
 	m_assertionHandler = std::make_unique<std::function<void(const std::string&)>>(defaultAssertionHandler);
 
-	// Установка обработчиков сигналов (опционально)
-	try
-	{
-		std::signal(SIGSEGV, [](int signal) { handleCriticalError("Segmentation fault (SIGSEGV)"); });
-
-		std::signal(SIGABRT, [](int signal) { handleCriticalError("Abort signal (SIGABRT)"); });
-
-		std::signal(SIGFPE, [](int signal) { handleCriticalError("Floating point exception (SIGFPE)"); });
-	}
-	catch (...)
-	{
-		// Игнорируем ошибки при установке обработчиков сигналов
-	}
+	// 3. Стандартные сигналы (на всякий случай)
+	signal(SIGSEGV, [](int) { throw Core::Debug::Exception("Segmentation Fault (SIGSEGV)"); });
+	signal(SIGABRT, [](int) { throw Core::Debug::Exception("Abort (SIGABRT)"); });
+	signal(SIGFPE, [](int) { throw Core::Debug::Exception("Floating Point Exception"); });
 
 	Core::Debug::StackWalker::getInstance().initialize();
 
 	m_initialized = true;
-
-	Log("Error handling system initialized");
+	Log("Error handling system initialized (SEH Enabled)");
 }
 
 // Завершение работы
@@ -119,44 +189,34 @@ void ErrorHandler::handleCriticalError(const Exception& e)
 {
 	logException(e, Core::LogLevel::error);
 
-	Debug::StackWalker::logStackTrace("Critical error additional context");
-
-	if (m_crashHandler && *m_crashHandler)
+	if (e.getStackTrace().empty())
 	{
-		try
-		{
-			(*m_crashHandler)(e);
-		}
-		catch (...)
-		{
-			ErrLog("Error in crash handler!");
-		}
+		Debug::StackWalker::logStackTrace("Critical error context");
 	}
 	else
 	{
-		defaultCrashHandler(e);
+		ErrLog("Captured Stack Trace:\n%s", e.getStackTrace().c_str());
 	}
 
+	Debug::StackWalker::logStackTrace("CRITICAL ERROR CONTEXT");
+
+	if (m_crashHandler && *m_crashHandler)
+		(*m_crashHandler)(e);
+	else
+		defaultCrashHandler(e);
+
 	if (m_terminateOnCritical)
-	{
 		std::terminate();
-	}
 }
 
 void ErrorHandler::handleCriticalError(const std::exception& e)
 {
-	logStdException(e, Core::LogLevel::error);
-
-	std::string Message = std::string("\nCritical: ") + std::string(e.what());
-	Core::Debug::Exception wrappedException(Message);
-	handleCriticalError(wrappedException);
+	handleCriticalError(Core::Debug::Exception(e.what()));
 }
 
 void ErrorHandler::handleCriticalError(const std::string& message)
 {
-	std::string Message = std::string("\nCritical: ") + message;
-	Core::Debug::Exception criticalException(Message);
-	handleCriticalError(criticalException);
+	handleCriticalError(Core::Debug::Exception(message));
 }
 
 void ErrorHandler::setCrashHandler(CrashCallback handler)

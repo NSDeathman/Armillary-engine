@@ -11,7 +11,7 @@
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
-	class CORE_API CSplashScreen : public Patterns::Singleton<CSplashScreen>
+	class  CSplashScreen : public Patterns::Singleton<CSplashScreen>
 	{
 		friend class Patterns::Singleton<CSplashScreen>;
 

@@ -1,450 +1,428 @@
 ///////////////////////////////////////////////////////////////
-// Created: 21.01.2025
-// Author: DeepSeek, ChatGPT, NS_Deathman
-// Input realization
+// Created: [Текущая дата]
+// Author: NS_Deathman
+// Async input system for FPS games
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Input.h"
 #include "log.h"
-#include "window.h"
+#include <SDL/SDL.h>
+#include <cmath>
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
-	///////////////////////////////////////////////////////////////
-	CInput::CInput()
-	{
-		// Конструктор вызывается только через GetInstance()
-	}
-
-	CInput::~CInput()
-	{
-		Destroy();
-	}
-
-	///////////////////////////////////////////////////////////////
-	bool CInput::Initialize()
-	{
-		if (m_Initialized)
-		{
-			Log("Input system already initialized!");
-			return true;
-		}
-
-		try
-		{
-			// Инициализация SDL подсистемы ввода
-			if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER | SDL_INIT_JOYSTICK) < 0)
-			{
-				throw std::runtime_error(std::string("SDL input initialization failed: ") + SDL_GetError());
-			}
-
-			// Включение обработки событий геймпада
-			SDL_GameControllerEventState(SDL_ENABLE);
-			SDL_JoystickEventState(SDL_ENABLE);
-
-			// Поиск подключенных геймпадов
-			int numJoysticks = SDL_NumJoysticks();
-			for (int i = 0; i < numJoysticks; ++i)
-			{
-				if (SDL_IsGameController(i))
-				{
-					m_GameController = SDL_GameControllerOpen(i);
-					if (m_GameController)
-					{
-						m_GameControllerInstanceID = SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(m_GameController));
-						Log("Game controller connected: %s", SDL_GameControllerName(m_GameController));
-						break;
-					}
-				}
-			}
-
-			// Получение начальной позиции курсора
-			GetCursorPos(&m_LastCursorPosition);
-
-			m_Initialized = true;
-			Log("Input system initialized successfully");
-			Log("Gamepads detected: %d", numJoysticks);
-
-			return true;
-		}
-		catch (const std::exception& e)
-		{
-			Log("Failed to initialize input system: %s", e.what());
-			return false;
-		}
-	}
-
-	///////////////////////////////////////////////////////////////
-	void CInput::Destroy()
-	{
-		/*
-		if (m_Initialized)
-		{
-			m_Initialized = false;
-
-			Log("Destroying input system...");
-
-			// Закрытие геймпада
-			if (m_GameController)
-			{
-				SDL_GameControllerClose(m_GameController);
-
-				// Выключение SDL подсистемы ввода
-				SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER | SDL_INIT_JOYSTICK);
-			}
-		}
-		*/
-	}
-
-	///////////////////////////////////////////////////////////////
-	void CInput::Update()
-	{
-		if (!m_Initialized)
-			return;
-
-		// Сохраняем предыдущее состояние
-		m_PreviousKeyState = m_CurrentKeyState;
-		m_PreviousGamepadButtonState = m_CurrentGamepadButtonState;
-		m_PreviousMouseButtonState = m_MouseButtonState;
-
-		// Обрабатываем события SDL
-		ProcessSDLEvents();
-
-		// Обновляем состояние устройств
-		UpdateKeyboard();
-		UpdateGamepad();
-		UpdateMouse();
-
-		// Обработка курсора через геймпад
-		if (m_HandleCursorWithGameController)
-		{
-			HandleCursorWithGameController();
-		}
-	}
-
-	///////////////////////////////////////////////////////////////
-	void CInput::ProcessSDLEvents()
-	{
-		if (!m_Initialized)
-			return;
-
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			switch (event.type)
-			{
-			case SDL_CONTROLLERDEVICEADDED:
-				if (!m_GameController && SDL_IsGameController(event.cdevice.which))
-				{
-					m_GameController = SDL_GameControllerOpen(event.cdevice.which);
-					if (m_GameController)
-					{
-						m_GameControllerInstanceID =
-							SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(m_GameController));
-						Log("Game controller connected: %s", SDL_GameControllerName(m_GameController));
-					}
-				}
-				break;
-
-			case SDL_CONTROLLERDEVICEREMOVED:
-				if (m_GameController && event.cdevice.which == m_GameControllerInstanceID)
-				{
-					Log("Game controller disconnected: %s", SDL_GameControllerName(m_GameController));
-					SDL_GameControllerClose(m_GameController);
-					m_GameController = nullptr;
-					m_GameControllerInstanceID = -1;
-				}
-				break;
-
-			case SDL_MOUSEMOTION:
-				m_MouseX = event.motion.x;
-				m_MouseY = event.motion.y;
-				m_MouseDeltaX = event.motion.xrel;
-				m_MouseDeltaY = event.motion.yrel;
-				break;
-
-			case SDL_MOUSEBUTTONDOWN:
-			case SDL_MOUSEBUTTONUP:
-				m_MouseButtonState = SDL_GetMouseState(nullptr, nullptr);
-				break;
-			}
-		}
-	}
-
-	///////////////////////////////////////////////////////////////
-	void CInput::UpdateKeyboard()
-	{
-		if (!m_Initialized)
-			return;
-
-		// Получаем текущее состояние клавиатуры
-		int numKeys = 0;
-		const Uint8* keyboardState = SDL_GetKeyboardState(&numKeys);
-
-		for (int i = 0; i < numKeys && i < SDL_NUM_SCANCODES; ++i)
-		{
-			m_CurrentKeyState[i] = (keyboardState[i] != 0);
-		}
-	}
-
-	///////////////////////////////////////////////////////////////
-	void CInput::UpdateGamepad()
-	{
-		if (!m_Initialized)
-			return;
-
-		if (!m_GameController)
-			return;
-
-		// Обновляем состояние кнопок геймпада
-		for (int button = 0; button < SDL_CONTROLLER_BUTTON_MAX; ++button)
-		{
-			m_CurrentGamepadButtonState[button] =
-				(SDL_GameControllerGetButton(m_GameController, static_cast<SDL_GameControllerButton>(button)) ==
-				 SDL_PRESSED);
-		}
-	}
-
-	///////////////////////////////////////////////////////////////
-	void CInput::UpdateMouse()
-	{
-		if (!m_Initialized)
-			return;
-
-		// Состояние мыши уже обновляется через события
-		// Дополнительная логика может быть добавлена здесь
-	}
-
-	///////////////////////////////////////////////////////////////
-	// Клавиатура
-	bool CInput::IsKeyPressed(int key)
-	{
-		if (!m_Initialized)
-			return false;
-
-		if (key < 0 || key >= SDL_NUM_SCANCODES)
-			return false;
-
-		return m_CurrentKeyState[key] && !m_PreviousKeyState[key];
-	}
-
-	bool CInput::IsKeyHeld(int key)
-	{
-		if (!m_Initialized)
-			return false;
-
-		if (key < 0 || key >= SDL_NUM_SCANCODES)
-			return false;
-
-		return m_CurrentKeyState[key];
-	}
-
-	bool CInput::IsKeyReleased(int key)
-	{
-		if (!m_Initialized)
-			return false;
-
-		if (key < 0 || key >= SDL_NUM_SCANCODES)
-			return false;
-
-		return !m_CurrentKeyState[key] && m_PreviousKeyState[key];
-	}
-
-	///////////////////////////////////////////////////////////////
-	// Геймпад
-	bool CInput::IsGamepadButtonPressed(int button)
-	{
-		if (!m_Initialized)
-			return false;
-
-		if (button < 0 || button >= SDL_CONTROLLER_BUTTON_MAX || !m_GameController)
-			return false;
-
-		return m_CurrentGamepadButtonState[button] && !m_PreviousGamepadButtonState[button];
-	}
-
-	bool CInput::IsGamepadButtonHeld(int button)
-	{
-		if (!m_Initialized)
-			return false;
-
-		if (button < 0 || button >= SDL_CONTROLLER_BUTTON_MAX || !m_GameController)
-			return false;
-
-		return m_CurrentGamepadButtonState[button];
-	}
-
-	bool CInput::IsGamepadButtonReleased(int button)
-	{
-		if (!m_Initialized)
-			return false;
-
-		if (button < 0 || button >= SDL_CONTROLLER_BUTTON_MAX || !m_GameController)
-			return false;
-
-		return !m_CurrentGamepadButtonState[button] && m_PreviousGamepadButtonState[button];
-	}
-
-	///////////////////////////////////////////////////////////////
-	// Вспомогательные методы
-	float CInput::ApplyDeadzone(float value, float deadzone)
-	{
-		if (!m_Initialized)
-			return 0.0f;
-
-		return (std::fabs(value) < deadzone) ? 0.0f : value;
-	}
-
-	///////////////////////////////////////////////////////////////
-	// Стики геймпада
-	void CInput::GetLeftStick(float& x, float& y)
-	{
-		x = y = 0.0f;
-
-		if (!m_Initialized)
-			return;
-
-		if (!m_GameController)
-			return;
-
-		x = ApplyDeadzone(SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_LEFTX) / 32767.0f,
-						  m_GamepadDeadzone);
-		y = ApplyDeadzone(SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_LEFTY) / 32767.0f,
-						  m_GamepadDeadzone);
-
-		x *= m_GamepadSensitivity;
-		y *= m_GamepadSensitivity;
-	}
-
-	void CInput::GetRightStick(float& x, float& y)
-	{
-		x = y = 0.0f;
-
-		if (!m_Initialized)
-			return;
-
-		if (!m_GameController)
-			return;
-
-		x = ApplyDeadzone(SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f,
-						  m_GamepadDeadzone);
-		y = ApplyDeadzone(SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_RIGHTY) / 32767.0f,
-						  m_GamepadDeadzone);
-
-		x *= m_GamepadSensitivity;
-		y *= m_GamepadSensitivity;
-	}
-
-	float CInput::GetLeftTrigger()
-	{
-		if (!m_Initialized)
-			return 0.0f;
-
-		if (!m_GameController)
-			return 0.0f;
-
-		return ApplyDeadzone(SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_TRIGGERLEFT) / 32767.0f,
-							 m_GamepadDeadzone);
-	}
-
-	float CInput::GetRightTrigger()
-	{
-		if (!m_Initialized)
-			return 0.0f;
-
-		if (!m_GameController)
-			return 0.0f;
-
-		return ApplyDeadzone(SDL_GameControllerGetAxis(m_GameController, SDL_CONTROLLER_AXIS_TRIGGERRIGHT) / 32767.0f,
-							 m_GamepadDeadzone);
-	}
-
-	///////////////////////////////////////////////////////////////
-	// Мышь
-	void CInput::GetMouseDelta(int& deltaX, int& deltaY)
-	{
-		if (!m_Initialized)
-			return;
-
-		deltaX = static_cast<int>(m_MouseDeltaX * m_MouseSensitivity);
-		deltaY = static_cast<int>(m_MouseDeltaY * m_MouseSensitivity);
-	}
-
-	void CInput::GetMousePosition(int& x, int& y)
-	{
-		if (!m_Initialized)
-			return;
-
-		x = m_MouseX;
-		y = m_MouseY;
-	}
-
-	bool CInput::IsMouseButtonPressed(int button)
-	{
-		if (!m_Initialized)
-			return false;
-
-		Uint32 mask = SDL_BUTTON(button);
-		return (m_MouseButtonState & mask) && !(m_PreviousMouseButtonState & mask);
-	}
-
-	bool CInput::IsMouseButtonHeld(int button)
-	{
-		if (!m_Initialized)
-			return 0.0f;
-
-		return (m_MouseButtonState & SDL_BUTTON(button)) != 0;
-	}
-
-	///////////////////////////////////////////////////////////////
-	// Управление курсором через геймпад
-	void CInput::HandleCursorWithGameController()
-	{
-		if (!m_Initialized)
-			return;
-
-		if (!m_GameController)
-			return;
-
-		float leftStickX = 0.0f, leftStickY = 0.0f;
-		GetLeftStick(leftStickX, leftStickY);
-
-		GetCursorPos(&m_LastCursorPosition);
-
-		// Корректируем позицию курсора на основе ввода со стика
-		m_LastCursorPosition.x += static_cast<LONG>(leftStickX * 15.0f * m_GamepadSensitivity);
-		m_LastCursorPosition.y += static_cast<LONG>(leftStickY * 15.0f * m_GamepadSensitivity);
-
-		// Ограничиваем курсор в пределах экрана (опционально)
-		SetCursorPos(m_LastCursorPosition.x, m_LastCursorPosition.y);
-
-		// Эмуляция кликов мыши
-		if (IsGamepadButtonHeld(SDL_CONTROLLER_BUTTON_A))
-		{
-			mouse_event(MOUSEEVENTF_LEFTDOWN, m_LastCursorPosition.x, m_LastCursorPosition.y, 0, 0);
-		}
-
-		if (IsGamepadButtonReleased(SDL_CONTROLLER_BUTTON_A))
-		{
-			mouse_event(MOUSEEVENTF_LEFTUP, m_LastCursorPosition.x, m_LastCursorPosition.y, 0, 0);
-		}
-	}
-
-	///////////////////////////////////////////////////////////////
-	// Виброотдача
-	void CInput::VibrateGamepad(int durationMs, float strength)
-	{
-		if (!m_Initialized)
-			return;
-
-		if (!m_GameController)
-			return;
-
-		strength = std::clamp(strength, 0.0f, 1.0f);
-		Uint16 rumbleStrength = static_cast<Uint16>(strength * 0xFFFF);
-
-		SDL_GameControllerRumble(m_GameController, rumbleStrength, rumbleStrength, durationMs);
-	}
-	///////////////////////////////////////////////////////////////
-} // namespace Core
 ///////////////////////////////////////////////////////////////
+CInput::CInput()
+{
+	m_LastUpdateTime = std::chrono::high_resolution_clock::now();
+}
+
+CInput::~CInput()
+{
+	Destroy();
+}
+
+///////////////////////////////////////////////////////////////
+bool CInput::Initialize(int updateFrequency)
+{
+	if (m_Running)
+	{
+		Log("Async input system already initialized!");
+		return true;
+	}
+
+	try
+	{
+		// Инициализация SDL подсистемы ввода
+		if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER | SDL_INIT_JOYSTICK) < 0)
+		{
+			throw std::runtime_error(std::string("SDL input initialization failed: ") + SDL_GetError());
+		}
+
+		// Включаем относительный режим мыши
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+
+		// Настраиваем частоту обновления
+		m_UpdateFrequency = std::clamp(updateFrequency, 60, 4000);
+
+		// Инициализируем буферы
+		for (int i = 0; i < BUFFER_SIZE; ++i)
+		{
+			m_FrameBuffer[i].FrameNumber = i;
+			m_FrameBuffer[i].Timestamp = std::chrono::high_resolution_clock::now();
+		}
+
+		// Запускаем поток
+		m_Running = true;
+		m_InputThread = std::thread(&CInput::InputThreadFunc, this);
+
+		// Устанавливаем приоритет потока
+#ifdef _WIN32
+		SetThreadPriority(m_InputThread.native_handle(), THREAD_PRIORITY_TIME_CRITICAL);
+#endif
+
+		Log("Async input system initialized successfully (Update frequency: %d Hz)", (int)m_UpdateFrequency);
+		return true;
+	}
+	catch (const std::exception& e)
+	{
+		Log("Failed to initialize async input system: %s", e.what());
+		return false;
+	}
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::Destroy()
+{
+	if (m_Running)
+	{
+		m_Running = false;
+		m_FrameCondition.notify_all();
+
+		if (m_InputThread.joinable())
+		{
+			m_InputThread.join();
+		}
+
+		// Отключаем относительный режим мыши
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+
+		// Выключаем SDL подсистему ввода
+		SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER | SDL_INIT_JOYSTICK);
+
+		Log("Async input system destroyed");
+	}
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::InputThreadFunc()
+{
+	Log("Input thread started");
+
+	const auto targetFrameTime = std::chrono::microseconds(1000000 / m_UpdateFrequency);
+
+	while (m_Running)
+	{
+		auto frameStart = std::chrono::high_resolution_clock::now();
+
+		// Обновляем состояние ввода
+		AsyncUpdate();
+
+		// Ожидаем следующего кадра
+		auto frameEnd = std::chrono::high_resolution_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(frameEnd - frameStart);
+
+		if (elapsed < targetFrameTime)
+		{
+			std::this_thread::sleep_for(targetFrameTime - elapsed);
+		}
+		else
+		{
+			m_DroppedFrames++;
+		}
+
+		// Обновляем статистику
+		auto updateTime = std::chrono::duration_cast<std::chrono::microseconds>(
+							  std::chrono::high_resolution_clock::now() - frameStart)
+							  .count() /
+						  1000.0;
+
+		// Экспоненциальное скользящее среднее
+		m_AverageUpdateTime = 0.9 * m_AverageUpdateTime + 0.1 * updateTime;
+	}
+
+	Log("Input thread stopped");
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::AsyncUpdate()
+{
+	// Получаем индекс для записи
+	int writeIndex = (m_WriteIndex.load() + 1) % BUFFER_SIZE;
+	InputFrame& frame = m_FrameBuffer[writeIndex];
+
+	// Сохраняем предыдущее состояние
+	frame.PreviousKeyState = frame.KeyState;
+	frame.PreviousGamepadButtons = frame.GamepadButtons;
+	frame.PreviousMouseButtons = frame.MouseButtons;
+
+	// Обновляем состояния
+	UpdateKeyboardState(frame);
+	UpdateGamepadState(frame);
+	UpdateMouseState(frame);
+
+	// Метаданные
+	frame.FrameNumber = m_FrameCounter++;
+	frame.Timestamp = std::chrono::high_resolution_clock::now();
+
+	// Атомарно обновляем индекс записи
+	m_WriteIndex.store(writeIndex);
+
+	// Уведомляем об обновлении
+	m_FrameCondition.notify_one();
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::UpdateKeyboardState(InputFrame& frame)
+{
+	// Получаем текущее состояние клавиатуры
+	int numKeys = 0;
+	const Uint8* keyboardState = SDL_GetKeyboardState(&numKeys);
+
+	for (int i = 0; i < numKeys && i < SDL_NUM_SCANCODES; ++i)
+	{
+		frame.KeyState[i] = (keyboardState[i] != 0);
+	}
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::UpdateGamepadState(InputFrame& frame)
+{
+	// Проверяем подключение геймпада
+	int numJoysticks = SDL_NumJoysticks();
+	frame.GamepadConnected = false;
+
+	// Ищем первый подключенный геймпад
+	for (int i = 0; i < numJoysticks; ++i)
+	{
+		if (SDL_IsGameController(i))
+		{
+			SDL_GameController* controller = SDL_GameControllerOpen(i);
+			if (controller)
+			{
+				frame.GamepadConnected = true;
+
+				// Обновляем кнопки
+				for (int button = 0; button < SDL_CONTROLLER_BUTTON_MAX; ++button)
+				{
+					frame.GamepadButtons[button] =
+						(SDL_GameControllerGetButton(controller, static_cast<SDL_GameControllerButton>(button)) ==
+						 SDL_PRESSED);
+				}
+
+				// Получаем значения осей
+				float deadzone = m_GamepadDeadzone.load();
+
+				// Левый стик
+				float rawLX = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / 32767.0f;
+				float rawLY = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / 32767.0f;
+
+				// Применяем deadzone
+				auto applyDeadzone = [deadzone](float value) {
+					if (fabsf(value) < deadzone)
+						return 0.0f;
+					float sign = (value > 0) ? 1.0f : -1.0f;
+					return sign * ((fabsf(value) - deadzone) / (1.0f - deadzone));
+				};
+
+				frame.LeftStickX = applyDeadzone(rawLX);
+				frame.LeftStickY = applyDeadzone(rawLY);
+
+				// Правый стик
+				float rawRX = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTX) / 32767.0f;
+				float rawRY = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTY) / 32767.0f;
+
+				frame.RightStickX = applyDeadzone(rawRX);
+				frame.RightStickY = applyDeadzone(rawRY);
+
+				// Триггеры
+				frame.LeftTrigger =
+					applyDeadzone(SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) / 32767.0f);
+				frame.RightTrigger =
+					applyDeadzone(SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT) / 32767.0f);
+
+				// Применяем чувствительность
+				float sensitivity = m_GamepadSensitivity.load();
+				frame.LeftStickX *= sensitivity;
+				frame.LeftStickY *= sensitivity;
+				frame.RightStickX *= sensitivity;
+				frame.RightStickY *= sensitivity;
+
+				SDL_GameControllerClose(controller);
+				break;
+			}
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::UpdateMouseState(InputFrame& frame)
+{
+	// Получаем состояние мыши
+	int x, y;
+	Uint32 buttons = SDL_GetMouseState(&x, &y);
+
+	frame.MouseX = x;
+	frame.MouseY = y;
+	frame.MouseButtons = buttons;
+
+	// Для дельты мыши используем SDL_GetRelativeMouseState
+	int deltaX, deltaY;
+	SDL_GetRelativeMouseState(&deltaX, &deltaY);
+
+	frame.MouseDeltaX = deltaX;
+	frame.MouseDeltaY = deltaY;
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::BeginFrame()
+{
+	// Синхронизируем состояние с последним обновленным кадром
+	std::unique_lock<std::mutex> lock(m_FrameMutex);
+
+	// Ждем обновления если буфер пуст
+	if (m_WriteIndex.load() == m_ReadIndex.load())
+	{
+		m_FrameCondition.wait_for(lock, std::chrono::milliseconds(1));
+	}
+
+	// Читаем последний доступный кадр
+	int readIndex = m_WriteIndex.load();
+	m_CurrentFrame = m_FrameBuffer[readIndex];
+	m_ReadIndex.store(readIndex);
+}
+
+void CInput::EndFrame()
+{
+	// Сбрасываем дельту мыши для следующего кадра
+	SDL_GetRelativeMouseState(nullptr, nullptr);
+}
+
+///////////////////////////////////////////////////////////////
+// Методы чтения состояния
+bool CInput::IsKeyPressed(int key)
+{
+	if (key < 0 || key >= SDL_NUM_SCANCODES)
+		return false;
+
+	return m_CurrentFrame.KeyState[key] && !m_CurrentFrame.PreviousKeyState[key];
+}
+
+bool CInput::IsKeyHeld(int key)
+{
+	if (key < 0 || key >= SDL_NUM_SCANCODES)
+		return false;
+
+	return m_CurrentFrame.KeyState[key];
+}
+
+bool CInput::IsKeyReleased(int key)
+{
+	if (key < 0 || key >= SDL_NUM_SCANCODES)
+		return false;
+
+	return !m_CurrentFrame.KeyState[key] && m_CurrentFrame.PreviousKeyState[key];
+}
+
+///////////////////////////////////////////////////////////////
+bool CInput::IsGamepadConnected() const
+{
+	return m_CurrentFrame.GamepadConnected;
+}
+
+bool CInput::IsGamepadButtonPressed(int button)
+{
+	if (button < 0 || button >= SDL_CONTROLLER_BUTTON_MAX)
+		return false;
+
+	return m_CurrentFrame.GamepadButtons[button] && !m_CurrentFrame.PreviousGamepadButtons[button];
+}
+
+bool CInput::IsGamepadButtonHeld(int button)
+{
+	if (button < 0 || button >= SDL_CONTROLLER_BUTTON_MAX)
+		return false;
+
+	return m_CurrentFrame.GamepadButtons[button];
+}
+
+bool CInput::IsGamepadButtonReleased(int button)
+{
+	if (button < 0 || button >= SDL_CONTROLLER_BUTTON_MAX)
+		return false;
+
+	return !m_CurrentFrame.GamepadButtons[button] && m_CurrentFrame.PreviousGamepadButtons[button];
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::GetLeftStick(float& x, float& y)
+{
+	x = m_CurrentFrame.LeftStickX;
+	y = m_CurrentFrame.LeftStickY;
+}
+
+void CInput::GetRightStick(float& x, float& y)
+{
+	x = m_CurrentFrame.RightStickX;
+	y = m_CurrentFrame.RightStickY;
+}
+
+float CInput::GetLeftTrigger()
+{
+	return m_CurrentFrame.LeftTrigger;
+}
+
+float CInput::GetRightTrigger()
+{
+	return m_CurrentFrame.RightTrigger;
+}
+
+///////////////////////////////////////////////////////////////
+void CInput::GetMouseDelta(int& deltaX, int& deltaY)
+{
+	float sensitivity = m_MouseSensitivity.load();
+	deltaX = static_cast<int>(m_CurrentFrame.MouseDeltaX * sensitivity);
+	deltaY = static_cast<int>(m_CurrentFrame.MouseDeltaY * sensitivity);
+}
+
+void CInput::GetMousePosition(int& x, int& y)
+{
+	x = m_CurrentFrame.MouseX;
+	y = m_CurrentFrame.MouseY;
+}
+
+bool CInput::IsMouseButtonPressed(int button)
+{
+	Uint32 mask = SDL_BUTTON(button);
+	return (m_CurrentFrame.MouseButtons & mask) && !(m_CurrentFrame.PreviousMouseButtons & mask);
+}
+
+bool CInput::IsMouseButtonHeld(int button)
+{
+	Uint32 mask = SDL_BUTTON(button);
+	return (m_CurrentFrame.MouseButtons & mask) != 0;
+}
+
+///////////////////////////////////////////////////////////////
+float CInput::GetMouseSensitivity() const
+{
+	return m_MouseSensitivity.load();
+}
+
+void CInput::SetMouseSensitivity(float sensitivity)
+{
+	m_MouseSensitivity.store(std::max(0.01f, sensitivity));
+}
+
+float CInput::GetGamepadSensitivity() const
+{
+	return m_GamepadSensitivity.load();
+}
+
+void CInput::SetGamepadSensitivity(float sensitivity)
+{
+	m_GamepadSensitivity.store(std::max(0.1f, sensitivity));
+}
+
+float CInput::GetGamepadDeadzone() const
+{
+	return m_GamepadDeadzone.load();
+}
+
+void CInput::SetGamepadDeadzone(float deadzone)
+{
+	m_GamepadDeadzone.store(std::clamp(deadzone, 0.0f, 1.0f));
+}
+///////////////////////////////////////////////////////////////
+} // namespace Core
+  ///////////////////////////////////////////////////////////////

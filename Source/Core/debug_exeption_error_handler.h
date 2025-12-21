@@ -13,7 +13,7 @@
 ///////////////////////////////////////////////////////////////
 namespace Core::Debug
 {
-class CORE_API ErrorHandler
+class  ErrorHandler
 {
   public:
 	// Тип функции для обработки критических ошибок

@@ -148,6 +148,30 @@
     <ClInclude Include="Render.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>World\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>World\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyingCameraController.h">
+      <Filter>World\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>World\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticModel.h">
+      <Filter>World\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticObject.h">
+      <Filter>World\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>World\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>World\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug_exeption_error_handler.cpp">
@@ -200,6 +224,21 @@
     </ClCompile>
     <ClCompile Include="Render.cpp">
       <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>World\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyingCameraController.cpp">
+      <Filter>World\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticModel.cpp">
+      <Filter>World\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticObject.cpp">
+      <Filter>World\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>World\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +316,18 @@
     </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{34512814-6017-47fb-89ef-66b9a2b2bb19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{81a4c255-6125-492b-9dab-d2d000b757e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Camera">
+      <UniqueIdentifier>{f8b930cc-db1d-44f9-a457-582a19553d6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Object">
+      <UniqueIdentifier>{7d868232-7c19-46f9-8102-e0bfe64a3c4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Scene">
+      <UniqueIdentifier>{bab7a72d-a709-49a8-8f8a-6d5d6978a4b3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

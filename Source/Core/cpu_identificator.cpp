@@ -193,7 +193,7 @@ namespace Core
 		}
 	} // namespace CPU
 
-	CORE_API void InitializeCPU()
+	 void InitializeCPU()
 	{
 		CPU::Initialize();
 

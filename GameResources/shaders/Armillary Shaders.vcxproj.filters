@@ -1,26 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Object stage">
-      <UniqueIdentifier>{09d5cfd8-cd4d-4bde-8eb3-a35a37dbe82b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helpers">
-      <UniqueIdentifier>{2f939837-d755-467a-8bdb-d3a9bb3eec7b}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="object_stage.hlsl">
-      <Filter>Object stage</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="common.ash">
-      <Filter>Helpers</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="brdf.ash">
-      <Filter>Helpers</Filter>
-    </None>
+    <FxCompile Include="standard.shader" />
   </ItemGroup>
 </Project>

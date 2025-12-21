@@ -19,7 +19,7 @@
 ///////////////////////////////////////////////////////////////
 namespace Core::Debug
 {
-	struct CORE_API StackFrame
+	struct  StackFrame
 	{
 		std::string address;
 		std::string functionName;
@@ -47,7 +47,7 @@ namespace Core::Debug
 		}
 	};
 
-	class CORE_API StackWalker
+	class  StackWalker
 	{
 	  public:
 		static StackWalker& getInstance();
@@ -55,10 +55,12 @@ namespace Core::Debug
 		bool initialize();
 		void shutdown();
 
-		std::vector<StackFrame> captureStackTrace(int maxFrames = 62, int skipFrames = 0);
-		std::string getStackTraceString(int maxFrames = 62, int skipFrames = 0);
+		std::vector<StackFrame> captureStackTrace(int maxFrames = 62, int skipFrames = 0, PCONTEXT contextRecord = nullptr);
+		std::string getStackTraceString(int maxFrames = 62, int skipFrames = 0, PCONTEXT contextRecord = nullptr);
 
-		static void logStackTrace(const std::string& context = "");
+		static void logStackTrace(const std::string& context = "", PCONTEXT contextRecord = nullptr);
+
+		void loadModule(const std::string& img, const std::string& mod, DWORD64 baseAddr, DWORD size);
 
 	  private:
 		StackWalker() = default;

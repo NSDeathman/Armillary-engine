@@ -1,153 +1,164 @@
 ﻿///////////////////////////////////////////////////////////////
 // Created: 21.01.2025
+// Updated: [Текущая дата]
 // Author: DeepSeek, ChatGPT, NS_Deathman
-// Input realization
+// Input realization - Enhanced for FPS games
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "Core.h"
+#include "Input.h"
+#include "AsyncExecutor.h"
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
+#include <chrono>
 #include "architect_patterns.h"
-#include <SDL/SDL.h>
-#include <array>
-#include <algorithm>
-#include "windows.h"
 ///////////////////////////////////////////////////////////////
-#define DEFAULT_GAMEPAD_DEADZONE 0.2f
-#define DEFAULT_GAMEPAD_SENSITIVITY 0.5f
 #define DEFAULT_MOUSE_SENSITIVITY 1.0f
+#define DEFAULT_GAMEPAD_SENSITIVITY 1.0f
+#define DEFAULT_GAMEPAD_DEADZONE 0.4f
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
-	class CORE_API CInput : public Patterns::Singleton<CInput>
+class CInput : public Patterns::Singleton<CInput>
+{
+	friend class Patterns::Singleton<CInput>;
+
+  public:
+	// Инициализация и завершение
+	bool Initialize(int updateFrequency = 1000); // Частота обновления в герцах
+	void Destroy();
+
+	// Основные методы - такие же как у CInput для совместимости
+	bool IsKeyPressed(int key);
+	bool IsKeyHeld(int key);
+	bool IsKeyReleased(int key);
+
+	bool IsGamepadConnected() const;
+	bool IsGamepadButtonPressed(int button);
+	bool IsGamepadButtonHeld(int button);
+	bool IsGamepadButtonReleased(int button);
+
+	void GetLeftStick(float& x, float& y);
+	void GetRightStick(float& x, float& y);
+	float GetLeftTrigger();
+	float GetRightTrigger();
+
+	void GetMouseDelta(int& deltaX, int& deltaY);
+	void GetMousePosition(int& x, int& y);
+	bool IsMouseButtonPressed(int button);
+	bool IsMouseButtonHeld(int button);
+
+	// Настройки
+	float GetMouseSensitivity() const;
+	void SetMouseSensitivity(float sensitivity);
+
+	float GetGamepadSensitivity() const;
+	void SetGamepadSensitivity(float sensitivity);
+
+	float GetGamepadDeadzone() const;
+	void SetGamepadDeadzone(float deadzone);
+
+	// Методы для обновления (вызываются из потока)
+	void AsyncUpdate();
+
+	// Синхронизация
+	void BeginFrame();
+	void EndFrame();
+
+	// Статистика
+	int GetUpdateFrequency() const
 	{
-		friend class Patterns::Singleton<CInput>;
+		return m_UpdateFrequency;
+	}
+	double GetAverageUpdateTime() const
+	{
+		return m_AverageUpdateTime;
+	}
+	int GetDroppedFrames() const
+	{
+		return m_DroppedFrames;
+	}
 
-		public:
-		// Инициализация и завершение
-		bool Initialize();
-		void Destroy();
-		bool IsInitialized() const
-		{
-			return m_Initialized;
-		}
+  private:
+	CInput();
+	~CInput();
 
-		// Основные методы
-		void Update(); // Переименовано из OnFrame для ясности
-		void HandleCursorWithGameController();
-
+	// Структура для состояния ввода
+	struct InputFrame
+	{
 		// Клавиатура
-		bool IsKeyPressed(int key);	 // Одно нажатие
-		bool IsKeyHeld(int key);	 // Удержание
-		bool IsKeyReleased(int key); // Отпускание
+		std::array<bool, SDL_NUM_SCANCODES> KeyState{};
+		std::array<bool, SDL_NUM_SCANCODES> PreviousKeyState{};
 
 		// Геймпад
-		bool IsGamepadConnected() const
-		{
-			return m_GameController != nullptr;
-		}
-		bool IsGamepadButtonPressed(int button);  // Одно нажатие
-		bool IsGamepadButtonHeld(int button);	  // Удержание
-		bool IsGamepadButtonReleased(int button); // Отпускание
+		bool GamepadConnected = false;
+		std::array<bool, SDL_CONTROLLER_BUTTON_MAX> GamepadButtons{};
+		std::array<bool, SDL_CONTROLLER_BUTTON_MAX> PreviousGamepadButtons{};
 
-		// Стики геймпада
-		void GetLeftStick(float& x, float& y);
-		void GetRightStick(float& x, float& y);
-		float GetLeftTrigger();
-		float GetRightTrigger();
+		float LeftStickX = 0.0f;
+		float LeftStickY = 0.0f;
+		float RightStickX = 0.0f;
+		float RightStickY = 0.0f;
+		float LeftTrigger = 0.0f;
+		float RightTrigger = 0.0f;
 
 		// Мышь
-		void GetMouseDelta(int& deltaX, int& deltaY);
-		void GetMousePosition(int& x, int& y);
-		bool IsMouseButtonPressed(int button);
-		bool IsMouseButtonHeld(int button);
+		int MouseX = 0;
+		int MouseY = 0;
+		int MouseDeltaX = 0;
+		int MouseDeltaY = 0;
+		Uint32 MouseButtons = 0;
+		Uint32 PreviousMouseButtons = 0;
 
-		// Свойства
-		float GetMouseSensitivity() const
-		{
-			return m_MouseSensitivity;
-		}
-		void SetMouseSensitivity(float sensitivity)
-		{
-			m_MouseSensitivity = std::max(0.1f, sensitivity);
-		}
-
-		float GetGamepadSensitivity() const
-		{
-			return m_GamepadSensitivity;
-		}
-		void SetGamepadSensitivity(float sensitivity)
-		{
-			m_GamepadSensitivity = std::max(0.1f, sensitivity);
-		}
-
-		float GetGamepadDeadzone() const
-		{
-			return m_GamepadDeadzone;
-		}
-		void SetGamepadDeadzone(float deadzone)
-		{
-			m_GamepadDeadzone = std::clamp(deadzone, 0.0f, 1.0f);
-		}
-
-		bool GetHandleCursorWithGameController() const
-		{
-			return m_HandleCursorWithGameController;
-		}
-		void SetHandleCursorWithGameController(bool enable)
-		{
-			m_HandleCursorWithGameController = enable;
-		}
-
-		// Виброотдача геймпада
-		void VibrateGamepad(int durationMs, float strength);
-
-	  private:
-		CInput();
-		~CInput();
-
-		// Вспомогательные методы
-		float ApplyDeadzone(float value, float deadzone);
-		void UpdateKeyboard();
-		void UpdateGamepad();
-		void UpdateMouse();
-		void ProcessSDLEvents();
-
-		// Состояние ввода
-		std::array<bool, SDL_NUM_SCANCODES> m_CurrentKeyState{};
-		std::array<bool, SDL_NUM_SCANCODES> m_PreviousKeyState{};
-		std::array<bool, SDL_CONTROLLER_BUTTON_MAX> m_CurrentGamepadButtonState{};
-		std::array<bool, SDL_CONTROLLER_BUTTON_MAX> m_PreviousGamepadButtonState{};
-
-		// Геймпад
-		SDL_GameController* m_GameController = nullptr;
-		SDL_JoystickID m_GameControllerInstanceID = -1;
-
-		// Мышь
-		int m_MouseX = 0;
-		int m_MouseY = 0;
-		int m_MouseDeltaX = 0;
-		int m_MouseDeltaY = 0;
-		Uint32 m_MouseButtonState = 0;
-		Uint32 m_PreviousMouseButtonState = 0;
-
-		// Настройки
-		float m_GamepadDeadzone = DEFAULT_GAMEPAD_DEADZONE;
-		float m_GamepadSensitivity = DEFAULT_GAMEPAD_SENSITIVITY;
-		float m_MouseSensitivity = DEFAULT_MOUSE_SENSITIVITY;
-
-		// Флаги
-		bool m_Initialized = false;
-		bool m_HandleCursorWithGameController = false;
-
-		// Для управления курсором через геймпад
-		POINT m_LastCursorPosition{};
+		// Метаданные
+		uint64_t FrameNumber = 0;
+		std::chrono::high_resolution_clock::time_point Timestamp;
 	};
+
+	// Потокобезопасное обновление состояний
+	void UpdateKeyboardState(InputFrame& frame);
+	void UpdateGamepadState(InputFrame& frame);
+	void UpdateMouseState(InputFrame& frame);
+
+	// Буферизация состояний
+	static const int BUFFER_SIZE = 3;
+	InputFrame m_FrameBuffer[BUFFER_SIZE];
+	std::atomic<int> m_WriteIndex{0};
+	std::atomic<int> m_ReadIndex{0};
+
+	// Текущее состояние для чтения
+	InputFrame m_CurrentFrame;
+
+	// Потоковая обработка
+	std::atomic<bool> m_Running{false};
+	std::thread m_InputThread;
+	std::mutex m_FrameMutex;
+	std::condition_variable m_FrameCondition;
+
+	// Настройки (потокобезопасные)
+	std::atomic<float> m_MouseSensitivity{DEFAULT_MOUSE_SENSITIVITY};
+	std::atomic<float> m_GamepadSensitivity{DEFAULT_GAMEPAD_SENSITIVITY};
+	std::atomic<float> m_GamepadDeadzone{DEFAULT_GAMEPAD_DEADZONE};
+
+	// Статистика
+	std::atomic<int> m_UpdateFrequency{1000};
+	std::atomic<double> m_AverageUpdateTime{0.0};
+	std::atomic<int> m_DroppedFrames{0};
+	std::atomic<uint64_t> m_FrameCounter{0};
+
+	// Время
+	std::chrono::high_resolution_clock::time_point m_LastUpdateTime;
+
+	// Основной цикл потока
+	void InputThreadFunc();
+};
 } // namespace Core
 ///////////////////////////////////////////////////////////////
-// Макросы для удобства
+// Макросы для удобства (сохранены для обратной совместимости)
 #define INPUT Core::CInput::GetInstance()
 
-// Удобные макросы для ввода
 #define KEY_PRESSED(key) Core::CInput::GetInstance().IsKeyPressed(key)
 #define KEY_HELD(key) Core::CInput::GetInstance().IsKeyHeld(key)
 #define KEY_RELEASED(key) Core::CInput::GetInstance().IsKeyReleased(key)
@@ -158,38 +169,4 @@ namespace Core
 
 #define MOUSE_BUTTON_PRESSED(button) Core::CInput::GetInstance().IsMouseButtonPressed(button)
 #define MOUSE_BUTTON_HELD(button) Core::CInput::GetInstance().IsMouseButtonHeld(button)
-///////////////////////////////////////////////////////////////
-/*
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡶⠓⢷⡀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⠃⠀⠀⠘⣦⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⢠⣴⣶⣶⣤⣠⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣛⠇⠀⠀⠀⠀⣏⡀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⢻⠀⠀⠈⠉⠻⣟⣾⣤⡀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣺⣟⡳⢿⠐⠠⡀⠀⠀⢸⡅⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⢨⡟⠀⠀⠀⠀⠀⠈⠳⣭⢟⡷⣦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⠷⣭⣛⢧⡈⠅⡒⠄⠀⢸⡁⠀⠀⠁⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⢸⣇⠀⠀⠀⠀⠀⠀⠀⠸⣿⣾⣿⣿⣦⡄⡀⠀⡀⣤⣴⣴⣿⠿⠷⠿⠿⠿⠿⠿⣶⣿⣿⣤⠸⣤⢻⡄⢸⡇⠀⠀⠀⠀⠀⠀
-⠀⠀⡀⠀⠀⠀⠀⠈⣿⠀⠀⠀⠀⠀⠀⣀⠠⠘⣯⡟⣯⢟⣿⣧⡤⠟⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⢧⣀⠏⡁⢘⡧⠀⠀⠀⠀⠀⠀
-⠀⠀⠐⠃⠀⠀⠀⠐⢿⠀⠀⠀⠀⢀⠰⢀⠣⢁⡿⡽⣎⣿⡾⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣻⣧⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⣼⠀⠀⠀⠀⠆⢡⠊⢄⠃⣸⡗⣯⡛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣴⣦⣝⢯⣄⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠹⡆⠀⠀⢈⠰⠁⡌⠢⢌⣷⢯⡓⠀⠀⣀⣤⣶⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣧⣽⣿⣿⡟⠀⣷⣤⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠰⢧⠀⠀⠠⡁⠎⡠⢑⡾⣝⣾⠀⠀⣾⣷⣤⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⠿⠿⠟⠋⠠⠄⠷⢿⣶⡀⠀⠀
-⠀⠀⠀⠐⠀⠀⠀⠀⠀⠹⣇⠀⠀⠁⢂⣡⣾⢻⡜⣿⠀⠀⠙⠻⠿⢿⣿⣿⣿⣿⠇⠀⠀⠀⠀⡄⣠⢠⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⡷⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠩⣻⡗⣶⢫⡟⣮⢷⡹⣽⠲⠒⠀⠀⠀⠀⠢⡀⠀⠀⠀⠀⠀⠀⠀⠀⢣⠏⠀⠀⠀⠀⢀⣨⠰⠛⠁⠀⠀⠈⣛⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢹⣾⡝⣾⡱⣏⡷⣹⢇⠀⠀⠀⠀⠀⢔⡴⢀⢀⣀⣀⡀⣀⡤⠰⠁⠙⠡⠶⠜⠃⠁⠀⠀⠀⠀⠀⠂⠀⣯⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⢟⣾⡽⣎⢷⣭⣛⠷⣦⠀⠀⠀⠀⠀⠈⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⣸⠅⠀⠀
-⠀⠀⠀⠀⠀⠐⠅⠀⠀⠀⠀⠀⠀⠀⢽⡿⣼⡹⣞⢶⣫⢟⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠔⠁⠀⠀⣰⠏⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢘⣿⢳⢧⣻⢼⣫⢞⠝⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠔⠁⠀⠀⠀⡸⠇⠀⠀⠀⠀
-⡤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣯⣛⢮⡳⣏⡾⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⢶⣫⢏⡷⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡏⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣟⣮⠳⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡄⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣂⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣨⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣯⡀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣧⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣘⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⠄⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣽⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡗⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣇⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⢘⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣏⡀
-⠀⠀⠀⠀⠀⠀⠀⢀⣽⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡁
-⠀⠀⠀⠀⠀⠀⠀⠈⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣷
-⠀⠀⠀⠀⠀⠀⠀⣾⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡧
-⠀⠀⠀⠀⠀⠀⠀⣾⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣷
-*/
 ///////////////////////////////////////////////////////////////

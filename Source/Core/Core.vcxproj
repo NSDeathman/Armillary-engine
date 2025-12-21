@@ -41,6 +41,8 @@
     <ClInclude Include="architect_pattern_singleton.h" />
     <ClInclude Include="AsyncExecutor.h" />
     <ClInclude Include="build_identificator.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraController.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="CoreAPI.h" />
     <ClInclude Include="cpu_identificator.h" />
@@ -56,6 +58,8 @@
     <ClInclude Include="debug_exeption_module_decorator.h" />
     <ClInclude Include="debug_stack_walker.h" />
     <ClInclude Include="filesystem.h" />
+    <ClInclude Include="FlyingCameraController.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="IGame.h" />
     <ClInclude Include="imgui_api.h" />
     <ClInclude Include="IniParser.h" />
@@ -64,19 +68,25 @@
     <ClInclude Include="Log.h" />
     <ClInclude Include="OptickAPI.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="splash_screen.h" />
+    <ClInclude Include="StaticModel.h" />
+    <ClInclude Include="StaticObject.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TimeSystem.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AsyncExecutor.cpp" />
     <ClCompile Include="build_identificator.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="cpu_identificator.cpp" />
     <ClCompile Include="debug_exeption_error_handler.cpp" />
     <ClCompile Include="debug_stack_walker.cpp" />
     <ClCompile Include="filesystem.cpp" />
+    <ClCompile Include="FlyingCameraController.cpp" />
     <ClCompile Include="imgui_api.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -88,7 +98,10 @@
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="splash_screen.cpp" />
+    <ClCompile Include="StaticModel.cpp" />
+    <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -119,26 +132,26 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -198,13 +211,14 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -219,6 +233,9 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Manifest>
+    <Lib>
+      <OutputFile>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -238,6 +255,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -254,12 +272,15 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Manifest>
+    <Lib>
+      <OutputFile>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level1</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;DEBUG_BUILD;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORS;WIN64;_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;DEBUG_BUILD;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORS;WIN64;_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS;WIN64</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -268,11 +289,12 @@
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <IncludeInUnityFile>true</IncludeInUnityFile>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -287,6 +309,9 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Manifest>
+    <Lib>
+      <OutputFile>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -294,7 +319,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORS;WIN64;_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)IMGUI_DEFINE_MATH_OPERATORS;WIN64;_CRT_SECURE_NO_WARNINGS;CORE_EXPORTS;WIN64</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -308,6 +333,7 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -324,6 +350,9 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
       <SuppressStartupBanner>false</SuppressStartupBanner>
     </Manifest>
+    <Lib>
+      <OutputFile>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

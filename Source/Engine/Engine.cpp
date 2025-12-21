@@ -47,51 +47,21 @@ void CEngine::Start()
 
 bool CEngine::LoadGameModule()
 {
-	Log("Loading game module");
+	m_Game.reset(CreateGame());
 
-	const std::string& dllPath = "Game.dll";
-	CreateGameFn m_createGameFn = nullptr;
-
-	// 1. Загружаем DLL в память
-	m_GameModule = LoadLibraryA(dllPath.c_str());
-	if (!m_GameModule)
-	{
-		std::cerr << "Failed to load Game.dll from: " << dllPath << std::endl;
-		return false;
-	}
-
-	// 2. Получаем указатель на фабричную функцию
-	m_createGameFn = (CreateGameFn)GetProcAddress(m_GameModule, "CreateGame");
-	if (!m_createGameFn)
-	{
-		THROW_ENGINE("Failed to find CreateGame function in Game.dll");
-		FreeLibrary(m_GameModule);
-		m_GameModule = nullptr;
-		return false;
-	}
-
-	// 3. Создаем экземпляр игры
-	m_Game.reset(m_createGameFn());
 	if (!m_Game)
 	{
 		THROW_ENGINE("Failed to create game instance");
-		FreeLibrary(m_GameModule);
-		m_GameModule = nullptr;
 		return false;
 	}
 
-	// 4. Инициализируем игру
 	if (!m_Game->Initialize())
 	{
 		THROW_ENGINE("Game initialization failed");
-		FreeLibrary(m_GameModule);
-		m_Game.reset();
-		m_GameModule = nullptr;
 		return false;
 	}
 
-	Log("Game successfully loaded");
-
+	Log("Game successfully initialized");
 	return true;
 }
 
@@ -133,13 +103,15 @@ void CEngine::Update()
 
 	TIME_API.Update();
 
-	INPUT.Update();
+	INPUT.BeginFrame();
 
 	IMGUI.OnFrameBegin();
 
 	m_Game->Update();
 
 	Renderer.DrawFrame();
+
+	INPUT.EndFrame();
 }
 
 void CEngine::Destroy()

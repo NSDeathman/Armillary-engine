@@ -29,8 +29,11 @@ namespace Core
 
 		try
 		{
-			// Создаем директорию для логов
-			//std::filesystem::create_directories(logDir);
+			std::filesystem::path p(LOGS);
+			if (!std::filesystem::exists(p))
+			{
+				std::filesystem::create_directories(p);
+			}
 
 			// Создаем путь к файлу лога
 			std::string filename = "armillary_engine.log";
@@ -135,56 +138,68 @@ namespace Core
 		if (!m_Initialized && !isDebug)
 		{
 			// Fallback для случаев когда логгер еще не инициализирован
-			char buffer[1024];
-			vsprintf_s(buffer, format, args);
-			OutputDebugStringA(buffer);
-			OutputDebugStringA("\n");
+			// Используем временный маленький буфер или _vscprintf для точного размера
+			int requiredSize = _vscprintf(format, args);
+			if (requiredSize > 0)
+			{
+				std::vector<char> buffer(requiredSize + 1);
+				vsnprintf(buffer.data(), buffer.size(), format, args);
+				OutputDebugStringA(buffer.data());
+				OutputDebugStringA("\n");
+			}
 			return;
 		}
 
-		char messageBuffer[1024];
-		int sz = vsprintf_s(messageBuffer, sizeof(messageBuffer), format, args);
+		// 1. Вычисляем точный размер необходимого буфера
+		int requiredSize = _vscprintf(format, args);
+		if (requiredSize <= 0)
+			return;
 
-		if (sz > 0)
+		// 2. Выделяем память ровно столько, сколько нужно
+		std::vector<char> messageBuffer(requiredSize + 1);
+
+		// 3. Форматируем сообщение
+		vsnprintf(messageBuffer.data(), messageBuffer.size(), format, args);
+
+		// 4. Дальнейшая логика вывода
+		// Получаем текущее время
+		auto now = std::chrono::system_clock::now();
+		auto time_t = std::chrono::system_clock::to_time_t(now);
+		std::tm timeInfo;
+		localtime_s(&timeInfo, &time_t);
+
+		char timeBuffer[64];
+		strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", &timeInfo);
+
+		// Формируем финальную строку. Складываем строки (std::string) безопаснее, чем sprintf
+		std::stringstream fullMessageStream;
+		fullMessageStream << timeBuffer << " " << GetLevelString(level) << " " << messageBuffer.data();
+
+		std::string fullString = fullMessageStream.str();
+
+		// Вывод в консоль с цветом
+		if (m_ConsoleCreated)
 		{
-			messageBuffer[sizeof(messageBuffer) - 1] = 0;
-
-			// Формируем полное сообщение с временем и уровнем
-			auto now = std::chrono::system_clock::now();
-			auto time_t = std::chrono::system_clock::to_time_t(now);
-			std::tm timeInfo;
-			localtime_s(&timeInfo, &time_t);
-
-			char timeBuffer[64];
-			strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", &timeInfo);
-
-			char fullBuffer[1200];
-			sprintf_s(fullBuffer, sizeof(fullBuffer), "%s %s %s", 
-					 timeBuffer, GetLevelString(level).c_str(), messageBuffer);
-
-			// Вывод в консоль с цветом
-			if (m_ConsoleCreated)
-			{
-				SetConsoleColor(GetLevelColor(level));
-				std::cout << fullBuffer << std::endl;
-				ResetConsoleColor();
-			}
-			else
-			{
-				// Если консоль не создана, выводим без цвета
-				std::cout << fullBuffer << std::endl;
-			}
-
-			// Вывод в файл (если не debug сообщение или логгер инициализирован)
-			if (m_Initialized && (!isDebug || m_LogFileStream.is_open()))
-			{
-				m_LogFileStream << fullBuffer << std::endl;
-			}
-
-			// Вывод в Debug Output (без цвета)
-			OutputDebugStringA(fullBuffer);
-			OutputDebugStringA("\n");
+			SetConsoleColor(GetLevelColor(level));
+			std::cout << fullString << std::endl;
+			ResetConsoleColor();
 		}
+		else
+		{
+			std::cout << fullString << std::endl;
+		}
+
+		// Вывод в файл
+		if (m_Initialized && m_LogFileStream.is_open())
+		{
+			m_LogFileStream << fullString << std::endl;
+			if (level == LogLevel::error)
+				m_LogFileStream.flush();
+		}
+
+		// Вывод в отладчик VS
+		OutputDebugStringA(fullString.c_str());
+		OutputDebugStringA("\n");
 	}
 
 	void __cdecl CLog::Print(LPCSTR format, ...)

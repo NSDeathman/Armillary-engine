@@ -5,7 +5,7 @@
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include "../Core/application_interface.h"
-#include "../Core/IGame.h"
+#include "../Game/Game.h"
 ///////////////////////////////////////////////////////////////
 using namespace Core;
 using namespace Core::Debug;

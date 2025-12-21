@@ -1,9 +1,0 @@
-﻿C:\Indev\Armillary-engine\GameResources\shaders\object_stage.hlsl(33,5-75): warning X3206: implicit truncation of vector type
-C:\Indev\Armillary-engine\GameResources\shaders\object_stage.hlsl(53,12-46): warning X3206: implicit truncation of vector type
-C:\Indev\Armillary-engine\GameResources\shaders\object_stage.hlsl(55,11-37): warning X3206: implicit truncation of vector type
-C:\Indev\Armillary-engine\GameResources\shaders\object_stage.hlsl(57,11-51): warning X3206: implicit truncation of vector type
-C:\Indev\Armillary-engine\GameResources\shaders\object_stage.hlsl(58,11-49): warning X3206: implicit truncation of vector type
-C:\Indev\Armillary-engine\GameResources\shaders\object_stage.hlsl(60,12-49): warning X3206: implicit truncation of vector type
-FXC : error X3501: 'main': entrypoint not found
-  
-  compilation failed; no code produced

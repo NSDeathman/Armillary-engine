@@ -6,6 +6,12 @@
 #include "stdafx.h"
 #include "Engine.h"
 ///////////////////////////////////////////////////////////////
+void GlobalSignalHandler(int signal)
+{
+	if (signal == SIGABRT)
+		MessageBoxA(NULL, "Caught SIGABRT: Usually caused by runtime assertion.", "Error", MB_OK | MB_ICONERROR);
+}
+
 LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
@@ -27,12 +33,30 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, INT)
 {
-	UNREFERENCED_PARAMETER(hInstance);
+#if defined(_DEBUG)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 
-	std::unique_ptr<CApplicationBase> Engine = std::make_unique<CEngine>();
+	{
+		try
+		{
+			std::unique_ptr<CApplicationBase> Engine = std::make_unique<CEngine>();
+			Engine->Process();
+		}
+		catch (const Core::Debug::Exception& e)
+		{
+			Core::Debug::ErrorHandler::handleCriticalError(e);
+		}
+		catch (const std::exception& e)
+		{
+			Core::Debug::ErrorHandler::handleCriticalError(e);
+		}
+		catch (...)
+		{
+			Core::Debug::ErrorHandler::handleCriticalError("Unknown unhandled exception");
+		}
+	}
 
-	Engine->Process();
-
-    return 0;
+	return 0;
 }
 ///////////////////////////////////////////////////////////////

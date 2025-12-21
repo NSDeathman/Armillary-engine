@@ -31,17 +31,17 @@
 namespace Core
 {
 	// Classes
-	class CORE_API CSplashScreen;
-	class CORE_API CWindow;
-	class CORE_API CTimeSystem;
-	class CORE_API CLog;
-	class CORE_API CAsyncExecutor;
-	class CORE_API CInput;
-	class CORE_API CFilesystem;
-	class CORE_API CRender;
+	class  CSplashScreen;
+	class  CWindow;
+	class  CTimeSystem;
+	class  CLog;
+	class  CAsyncExecutor;
+	class  CInput;
+	class  CFilesystem;
+	class  CRender;
 
 	// Functions
-	CORE_API void PrintBuildData();
-	CORE_API void InitializeCPU();
+	 void PrintBuildData();
+	 void InitializeCPU();
 } // namespace Core
 ///////////////////////////////////////////////////////////////

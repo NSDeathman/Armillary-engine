@@ -23,7 +23,7 @@ namespace fs = std::filesystem;
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
-	class CORE_API CFilesystem
+	class  CFilesystem
 	{
 	  public:
 		// Получение экземпляра синглтона

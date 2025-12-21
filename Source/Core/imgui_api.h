@@ -17,14 +17,14 @@
 namespace Core
 {
 
-extern "C" CORE_API ImGuiContext* Core_GetImGuiContext();
-extern "C" CORE_API ImPlotContext* Core_GetImPlotContext();
+extern "C"  ImGuiContext* Core_GetImGuiContext();
+extern "C"  ImPlotContext* Core_GetImPlotContext();
 typedef void* (*ImGuiMemAllocFunc)(size_t, void*);
 typedef void (*ImGuiMemFreeFunc)(void*, void*);
-extern "C" CORE_API void Core_GetImGuiAllocators(ImGuiMemAllocFunc* allocFunc, ImGuiMemFreeFunc* freeFunc,
+extern "C"  void Core_GetImGuiAllocators(ImGuiMemAllocFunc* allocFunc, ImGuiMemFreeFunc* freeFunc,
 												 void** userData);
 
-class CORE_API CImguiAPI : public Core::Patterns::Singleton<CImguiAPI>
+class  CImguiAPI : public Core::Patterns::Singleton<CImguiAPI>
 {
 	friend class Core::Patterns::Singleton<CImguiAPI>;
 
@@ -91,6 +91,7 @@ static inline bool InitializeImGuiFromCore()
 
 	return true;
 }
+
 } // namespace Core
 ///////////////////////////////////////////////////////////////
 #define IMGUI Core::CImguiAPI::GetInstance()

@@ -3,6 +3,8 @@
 #include "Render.h"
 #include "Log.h"
 #include "imgui_api.h"
+#include "Scene.h"
+#include "Camera.h"
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
@@ -127,6 +129,18 @@ void CRender::DrawFrame()
 {
 	BeginFrame();
 
+	if (m_ActiveCamera && m_ActiveScene)
+	{
+		PipelineState pso;
+		pso.Cull = CullMode::None;
+		pso.DepthWrite = true;
+		pso.DepthFunc = CompareFunc::Less;
+
+		RenderBackend.SetPipelineState(pso);
+
+		m_ActiveScene->Render();
+	}
+
 	IMGUI.RenderFrame(); 
 
 	EndFrame();
@@ -148,6 +162,16 @@ bool CRender::CreateRenderWindow()
 	m_Window.Show();
 
 	return true;
+}
+
+void CRender::SetCurrentScene(std::shared_ptr<Core::World::CScene> scene)
+{
+	m_ActiveScene = scene;
+}
+
+void CRender::SetCurrentCamera(std::shared_ptr<Core::World::CCamera> camera)
+{
+	m_ActiveCamera = camera;
 }
 
 } // namespace Core

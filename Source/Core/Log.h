@@ -37,7 +37,7 @@ namespace Core
 		unknown
 	};
 
-	class CORE_API CLog : public Patterns::Singleton<CLog>
+	class  CLog : public Patterns::Singleton<CLog>
 	{
 		friend class Patterns::Singleton<CLog>;
 

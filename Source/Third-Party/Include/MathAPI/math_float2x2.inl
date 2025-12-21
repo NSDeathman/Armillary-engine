@@ -507,8 +507,8 @@ namespace Math
     // Useful Constants
     // ============================================================================
 
-    const float2x2 float2x2_Identity = float2x2::identity();
-    const float2x2 float2x2_Zero = float2x2::zero();
+    inline const float2x2 float2x2_Identity = float2x2::identity();
+	inline const float2x2 float2x2_Zero = float2x2::zero();
 
 } // namespace Math
 

@@ -176,7 +176,7 @@ namespace Core
 	} // namespace ArmillaryInternal
 ////////////////////////////////////////////////////////////////////////////////
 	// Вывод информации о сборке
-	CORE_API void PrintBuildData()
+	 void PrintBuildData()
 	{
 		ArmillaryInternal::BuildInfo info = ArmillaryInternal::getBuildInfo();
 

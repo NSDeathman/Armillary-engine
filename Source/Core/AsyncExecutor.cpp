@@ -161,10 +161,10 @@ namespace Core
 		return result;
 	}
 
-	template CORE_API std::future<void> CAsyncExecutor::Submit(std::function<void()>&&);
-	template CORE_API std::future<int> CAsyncExecutor::Submit(std::function<int()>&&);
-	template CORE_API std::future<bool> CAsyncExecutor::Submit(std::function<bool()>&&);
-	template CORE_API std::future<std::string> CAsyncExecutor::Submit(std::function<std::string()>&&);
+	template  std::future<void> CAsyncExecutor::Submit(std::function<void()>&&);
+	template  std::future<int> CAsyncExecutor::Submit(std::function<int()>&&);
+	template  std::future<bool> CAsyncExecutor::Submit(std::function<bool()>&&);
+	template  std::future<std::string> CAsyncExecutor::Submit(std::function<std::string()>&&);
 
 	///////////////////////////////////////////////////////////////
 	void CAsyncExecutor::WaitAll()

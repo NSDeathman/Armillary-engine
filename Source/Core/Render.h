@@ -6,9 +6,15 @@
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
+namespace World
+{
+class CCamera;
+class CScene;
+}
+
 extern Rendeructor RenderBackend;
 
-struct CORE_API RenderConfig
+struct  RenderConfig
 {
 	int Width = 1920;
 	int Height = 1080;
@@ -18,7 +24,7 @@ struct CORE_API RenderConfig
 	const char* WindowTitle = "Armillary Engine";
 };
 
-class CORE_API CRender : public Patterns::Singleton<CRender>
+class CRender : public Patterns::Singleton<CRender>
 {
 	friend class Patterns::Singleton<CRender>;
 
@@ -42,9 +48,23 @@ class CORE_API CRender : public Patterns::Singleton<CRender>
 	{
 		return &m_Window;
 	}
+
 	RenderConfig GetConfig() const
 	{
 		return m_Config;
+	}
+
+	void SetCurrentScene(std::shared_ptr<Core::World::CScene> scene);
+	void SetCurrentCamera(std::shared_ptr<Core::World::CCamera> camera);
+
+	std::shared_ptr<Core::World::CCamera> GetCurrentCamera()
+	{
+		return m_ActiveCamera;
+	}
+
+	Math::float2 GetScreenResolution()
+	{
+		return Math::float2(m_Config.Width, m_Config.Height);
 	}
 
   private:
@@ -54,6 +74,9 @@ class CORE_API CRender : public Patterns::Singleton<CRender>
 	CWindow m_Window;
 	RenderConfig m_Config;
 	bool m_Initialized = false;
+
+	std::shared_ptr<Core::World::CScene> m_ActiveScene = nullptr;
+	std::shared_ptr<Core::World::CCamera> m_ActiveCamera = nullptr;
 };
 
 } // namespace Core
