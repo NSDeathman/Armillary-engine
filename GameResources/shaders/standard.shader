@@ -1,6 +1,7 @@
 cbuffer WorldBuffer : register(b0)
 {
     float4x4 World;
+    float4x4 WorldView;
     float4x4 ViewProjection;
     float4x4 WorldViewProjection;
 };
@@ -30,11 +31,11 @@ PS_INPUT VS(VS_INPUT input)
     float4 worldPos = mul(float4(input.Position, 1.0f), World);
 
     // Преобразование в пространство проекции
-    output.Position = mul(worldPos, ViewProjection);
+    output.Position = mul(float4(input.Position, 1.0f), WorldViewProjection);
 
     // Преобразование нормали
     float3x3 worldNormalMatrix = (float3x3)World;
-    output.Normal = normalize(mul(input.Normal, worldNormalMatrix));
+    output.Normal = normalize(mul(worldNormalMatrix, input.Normal));
 
     output.UV = input.UV;
     output.WorldPos = worldPos.xyz;

@@ -147,6 +147,9 @@ void CImguiAPI::OnFrameBegin()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 }
 
 void CImguiAPI::RenderFrame()

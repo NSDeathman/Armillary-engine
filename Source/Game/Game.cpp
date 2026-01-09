@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Game.h"
 #include "../Core/StaticModel.h"
 #include "../Core/StaticObject.h"
@@ -7,6 +7,8 @@
 using namespace Core;
 using namespace Core::World;
 using namespace Math;
+
+std::shared_ptr<Core::World::CStaticObject> m_TestCube;
 
 IGame* CreateGame()
 {
@@ -45,6 +47,7 @@ bool CGame::Initialize()
 
 	auto cubeObj = std::make_shared<CStaticObject>("Cube", m_CubeModel);
 	cubeObj->GetTransform().SetPosition(0.0f, 0.0f, 0.0f);
+	m_TestCube = cubeObj;
 
 	ShaderPass standardShader;
 	std::string shaderPath = FS.GetGameResourcesPath({"shaders", "standard.shader"}).string();
@@ -80,12 +83,42 @@ void CGame::Update()
 {
 	float dt = TIME_API.GetDeltaTime();
 
-	if (m_CameraController)
-		m_CameraController->Update(*m_MainCamera, dt);
+	// 1. Логика камеры и курсора
+	bool isRMBDown = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0;
+
+	if (isRMBDown)
+	{
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+		if (m_CameraController)
+			m_CameraController->Update(*m_MainCamera, dt);
+	}
+	else
+	{
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
 
 	m_Scene->Update(dt);
 
-	ImGui::Begin("Info");
+	// 2. Интерфейс
+	ImGui::Begin("Object Editor");
+
+	if (m_TestCube)
+	{
+		auto& transform = m_TestCube->GetTransform();
+
+		// A. Получаем матрицы движка (все в LH системе)
+		Math::float4x4 view = m_MainCamera->GetViewMatrix();
+		Math::float4x4 projection = m_MainCamera->GetProjectionMatrix();
+
+		// Получаем мировую матрицу напрямую из Transform
+		const Math::float4x4& world = transform.GetMatrix();
+
+		// B. Подготовка массивов для ImGuizmo с преобразованием LH->RH
+		float viewM[16], projM[16], worldM[16];
+
+		RenderConfig cfg = Renderer.GetConfig();
+		float aspect = (float)cfg.Width / (float)cfg.Height;
+	}
 
 	ImGui::End();
 }

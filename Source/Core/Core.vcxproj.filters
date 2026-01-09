@@ -157,20 +157,11 @@
     <ClInclude Include="FlyingCameraController.h">
       <Filter>World\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>World\Object</Filter>
+    <ClInclude Include="ECSCore.h">
+      <Filter>World\Entity component system\Core</Filter>
     </ClInclude>
-    <ClInclude Include="StaticModel.h">
-      <Filter>World\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticObject.h">
-      <Filter>World\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>World\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>World\Scene</Filter>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>World\Entity component system\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -231,14 +222,8 @@
     <ClCompile Include="FlyingCameraController.cpp">
       <Filter>World\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="StaticModel.cpp">
-      <Filter>World\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="StaticObject.cpp">
-      <Filter>World\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>World\Scene</Filter>
+    <ClCompile Include="TransformComponent.cpp">
+      <Filter>World\Entity component system\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -328,6 +313,15 @@
     </Filter>
     <Filter Include="World\Scene">
       <UniqueIdentifier>{bab7a72d-a709-49a8-8f8a-6d5d6978a4b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Entity component system">
+      <UniqueIdentifier>{4e3f5f5d-fe77-4f6c-a509-3facffc28526}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Entity component system\Core">
+      <UniqueIdentifier>{deb72efb-322d-400a-9c35-f76856e87890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Entity component system\Components">
+      <UniqueIdentifier>{c754edaf-bc0e-422b-8c41-d5e534f10abd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

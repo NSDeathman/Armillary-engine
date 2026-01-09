@@ -462,15 +462,16 @@ namespace Math
     }
 
     inline float4x4 float4x4::inverted_affine() const noexcept {
-        // Для аффинной матрицы M = [R T; 0 1], обратная = [R^-1 -R^-1*T; 0 1]
-        const float3 col0_xyz = row0_.xyz();
-        const float3 col1_xyz = row1_.xyz();
-        const float3 col2_xyz = row2_.xyz();
+        const float3 r0 = row0_.xyz();
+        const float3 r1 = row1_.xyz();
+        const float3 r2 = row2_.xyz();
         const float3 translation = get_translation();
 
-        // Вычисляем определитель 3x3 верхней левой подматрицы
-        const float3 cross_12 = col1_xyz.cross(col2_xyz);
-        const float det = col0_xyz.dot(cross_12);
+        const float3 cross_12 = r1.cross(r2);
+        const float3 cross_20 = r2.cross(r0);
+        const float3 cross_01 = r0.cross(r1);
+
+        const float det = r0.dot(cross_12);
 
         if (std::abs(det) < Constants::Constants<float>::Epsilon) {
             return identity();
@@ -478,24 +479,21 @@ namespace Math
 
         const float inv_det = 1.0f / det;
 
-        // Вычисляем обратную 3x3 матрицу через алгебраические дополнения
-        const float3 inv0 = cross_12 * inv_det;
-        const float3 inv1 = col2_xyz.cross(col0_xyz) * inv_det;
-        const float3 inv2 = col0_xyz.cross(col1_xyz) * inv_det;
+        const float3 inv_col0 = cross_12 * inv_det;
+        const float3 inv_col1 = cross_20 * inv_det;
+        const float3 inv_col2 = cross_01 * inv_det;
 
-        // Обратная трансляция: -inv_upper * translation
-        const float3 inv_translation = float3(
-            -inv0.dot(translation),
-            -inv1.dot(translation),
-            -inv2.dot(translation)
-        );
+        // R^-1 * Translation
+        // InvT = -(Inv * T)
+        float x = -(inv_col0.x * translation.x + inv_col1.x * translation.y + inv_col2.x * translation.z);
+        float y = -(inv_col0.y * translation.x + inv_col1.y * translation.y + inv_col2.y * translation.z);
+        float z = -(inv_col0.z * translation.x + inv_col1.z * translation.y + inv_col2.z * translation.z);
 
-        // Собираем обратную 4x4 матрицу (row-major)
         return float4x4(
-            inv0.x, inv1.x, inv2.x, 0,
-            inv0.y, inv1.y, inv2.y, 0,
-            inv0.z, inv1.z, inv2.z, 0,
-            inv_translation.x, inv_translation.y, inv_translation.z, 1
+            inv_col0.x, inv_col1.x, inv_col2.x, 0.0f,
+            inv_col0.y, inv_col1.y, inv_col2.y, 0.0f,
+            inv_col0.z, inv_col1.z, inv_col2.z, 0.0f,
+            x, y, z, 1.0f
         );
     }
 
@@ -1003,18 +1001,26 @@ namespace Math
      */
     inline float4x4 operator*(const float4x4& lhs, const float4x4& rhs) noexcept {
         float4x4 res;
-        for (int i = 0; i < 4; ++i) {
-            __m128 row = (&lhs.row0_)[i].get_simd();
-            __m128 x = _mm_shuffle_ps(row, row, 0x00);
-            __m128 y = _mm_shuffle_ps(row, row, 0x55);
-            __m128 z = _mm_shuffle_ps(row, row, 0xAA);
-            __m128 w = _mm_shuffle_ps(row, row, 0xFF);
+        
+        const float4* lhsRows = &lhs.row0_;
+        float4* resRows = &res.row0_;
 
+        for (int i = 0; i < 4; ++i) {
+            __m128 l_row = lhsRows[i].get_simd();
+
+            // Broadcast A components: xxxx, yyyy, zzzz, wwww
+            __m128 x = _mm_shuffle_ps(l_row, l_row, _MM_SHUFFLE(0, 0, 0, 0));
+            __m128 y = _mm_shuffle_ps(l_row, l_row, _MM_SHUFFLE(1, 1, 1, 1));
+            __m128 z = _mm_shuffle_ps(l_row, l_row, _MM_SHUFFLE(2, 2, 2, 2));
+            __m128 w = _mm_shuffle_ps(l_row, l_row, _MM_SHUFFLE(3, 3, 3, 3));
+
+            // Linear combination of RHS rows
             __m128 r = _mm_mul_ps(x, rhs.row0_.get_simd());
             r = _mm_add_ps(r, _mm_mul_ps(y, rhs.row1_.get_simd()));
             r = _mm_add_ps(r, _mm_mul_ps(z, rhs.row2_.get_simd()));
             r = _mm_add_ps(r, _mm_mul_ps(w, rhs.row3_.get_simd()));
-            (&res.row0_)[i].set_simd(r);
+
+            resRows[i].set_simd(r);
         }
         return res;
     }

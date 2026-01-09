@@ -51,61 +51,64 @@
     <ClInclude Include="RendeructorAPI.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_config.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_constants.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_fast_functions.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float2.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float2x2.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float3.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float3x3.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float4.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float4x4.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_functions.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_half.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_half2.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_half3.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_half4.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_quaternion.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\MathAPI.h">
-      <Filter>Third-Party\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Log.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="RendeructorDefines.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Third-Party\Include\TinyObjLoader\TinyObjLoader.h">
+    <ClInclude Include="..\MathAPI\math_config.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_constants.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_fast_functions.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_float2.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_float2x2.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_float3.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_float3x3.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_float4.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_float4x4.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_functions.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_half.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_half2.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_half3.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_half4.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\math_quaternion.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MathAPI\MathAPI.h">
+      <Filter>Third-Party\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Stb_image\stb_image.h">
+      <Filter>Third-Party\Stb image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TinyObjLoader\TinyObjLoader.h">
       <Filter>Third-Party\TinyObjLoader</Filter>
     </ClInclude>
   </ItemGroup>
@@ -136,37 +139,32 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float2.inl">
+    <None Include="..\MathAPI\math_float2.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float2x2.inl">
+    <None Include="..\MathAPI\math_float2x2.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float3.inl">
+    <None Include="..\MathAPI\math_float3.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float3x3.inl">
+    <None Include="..\MathAPI\math_float3x3.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float4.inl">
+    <None Include="..\MathAPI\math_float4.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float4x4.inl">
+    <None Include="..\MathAPI\math_float4x4.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_half2.inl">
+    <None Include="..\MathAPI\math_half2.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_half3.inl">
+    <None Include="..\MathAPI\math_half3.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_half4.inl">
+    <None Include="..\MathAPI\math_half4.inl">
       <Filter>Third-Party\Math</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\..\Third-Party\Include\Stb_image\stb_image.h">
-      <Filter>Third-Party\Stb image</Filter>
-    </Text>
   </ItemGroup>
 </Project>

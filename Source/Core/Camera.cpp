@@ -103,6 +103,31 @@ Math::float3 CCamera::GetUp() const
 	return m_Up;
 }
 
+Math::float3 CCamera::GetEye()
+{
+	return m_Position;
+}
+
+float CCamera::GetFOV()
+{
+	return m_Fov;
+}
+
+float CCamera::GetAspectRatio()
+{
+	return m_AspectRatio;
+}
+
+float CCamera::GetNearPlane()
+{
+	return m_Near;
+}
+
+float CCamera::GetFarPlane()
+{
+	return m_Far;
+}
+
 void CCamera::TranslateLocal(const Math::float3& delta)
 {
 	m_Position += m_Right * delta.x;

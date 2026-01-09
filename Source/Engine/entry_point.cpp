@@ -37,24 +37,22 @@ INT WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, INT)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	try
 	{
-		try
-		{
-			std::unique_ptr<CApplicationBase> Engine = std::make_unique<CEngine>();
-			Engine->Process();
-		}
-		catch (const Core::Debug::Exception& e)
-		{
-			Core::Debug::ErrorHandler::handleCriticalError(e);
-		}
-		catch (const std::exception& e)
-		{
-			Core::Debug::ErrorHandler::handleCriticalError(e);
-		}
-		catch (...)
-		{
-			Core::Debug::ErrorHandler::handleCriticalError("Unknown unhandled exception");
-		}
+		std::unique_ptr<CApplicationBase> Engine = std::make_unique<CEngine>();
+		Engine->Process();
+	}
+	catch (const Core::Debug::Exception& e)
+	{
+		Core::Debug::ErrorHandler::handleCriticalError(e);
+	}
+	catch (const std::exception& e)
+	{
+		Core::Debug::ErrorHandler::handleCriticalError(e);
+	}
+	catch (...)
+	{
+		Core::Debug::ErrorHandler::handleCriticalError("Unknown unhandled exception");
 	}
 
 	return 0;

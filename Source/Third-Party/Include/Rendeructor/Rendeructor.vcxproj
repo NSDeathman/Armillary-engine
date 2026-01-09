@@ -179,23 +179,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\MathAPI.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_config.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_constants.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_fast_functions.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float2.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float2x2.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float3.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float3x3.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float4.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_float4x4.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_functions.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_half.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_half2.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_half3.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_half4.h" />
-    <ClInclude Include="..\..\Third-Party\Include\MathAPI\math_quaternion.h" />
-    <ClInclude Include="..\..\Third-Party\Include\TinyObjLoader\TinyObjLoader.h" />
+    <ClInclude Include="..\MathAPI\MathAPI.h" />
+    <ClInclude Include="..\MathAPI\math_config.h" />
+    <ClInclude Include="..\MathAPI\math_constants.h" />
+    <ClInclude Include="..\MathAPI\math_fast_functions.h" />
+    <ClInclude Include="..\MathAPI\math_float2.h" />
+    <ClInclude Include="..\MathAPI\math_float2x2.h" />
+    <ClInclude Include="..\MathAPI\math_float3.h" />
+    <ClInclude Include="..\MathAPI\math_float3x3.h" />
+    <ClInclude Include="..\MathAPI\math_float4.h" />
+    <ClInclude Include="..\MathAPI\math_float4x4.h" />
+    <ClInclude Include="..\MathAPI\math_functions.h" />
+    <ClInclude Include="..\MathAPI\math_half.h" />
+    <ClInclude Include="..\MathAPI\math_half2.h" />
+    <ClInclude Include="..\MathAPI\math_half3.h" />
+    <ClInclude Include="..\MathAPI\math_half4.h" />
+    <ClInclude Include="..\MathAPI\math_quaternion.h" />
+    <ClInclude Include="..\Stb_image\stb_image.h" />
+    <ClInclude Include="..\TinyObjLoader\TinyObjLoader.h" />
     <ClInclude Include="BackendDX11.h" />
     <ClInclude Include="BackendInterface.h" />
     <ClInclude Include="framework.h" />
@@ -221,18 +222,15 @@
     <ClCompile Include="RendeructorTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float2.inl" />
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float2x2.inl" />
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float3.inl" />
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float3x3.inl" />
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float4.inl" />
-    <None Include="..\..\Third-Party\Include\MathAPI\math_float4x4.inl" />
-    <None Include="..\..\Third-Party\Include\MathAPI\math_half2.inl" />
-    <None Include="..\..\Third-Party\Include\MathAPI\math_half3.inl" />
-    <None Include="..\..\Third-Party\Include\MathAPI\math_half4.inl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\..\Third-Party\Include\Stb_image\stb_image.h" />
+    <None Include="..\MathAPI\math_float2.inl" />
+    <None Include="..\MathAPI\math_float2x2.inl" />
+    <None Include="..\MathAPI\math_float3.inl" />
+    <None Include="..\MathAPI\math_float3x3.inl" />
+    <None Include="..\MathAPI\math_float4.inl" />
+    <None Include="..\MathAPI\math_float4x4.inl" />
+    <None Include="..\MathAPI\math_half2.inl" />
+    <None Include="..\MathAPI\math_half3.inl" />
+    <None Include="..\MathAPI\math_half4.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

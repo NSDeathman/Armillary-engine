@@ -13,6 +13,11 @@
 #include <imgui/implot.h>
 #include <imgui/backends/imgui_impl_dx11.h>
 #include <imgui/backends/imgui_impl_sdl2.h>
+#include <imgui/ImGuizmo.h>
+#include <imgui/ImCurveEdit.h>
+#include <imgui/ImGradient.h>
+#include <imgui/ImSequencer.h>
+#include <imgui/GraphEditor.h>
 ///////////////////////////////////////////////////////////////
 namespace Core
 {

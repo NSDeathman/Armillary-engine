@@ -38,6 +38,13 @@ class  CCamera
 	Math::float3 GetRight() const;
 	Math::float3 GetUp() const;
 
+	// --- Геттеры параметров камеры ---
+	Math::float3 GetEye();
+	float GetFOV();
+	float GetAspectRatio();
+	float GetNearPlane();
+	float GetFarPlane();
+
 	// Перемещение
 	void TranslateLocal(const Math::float3& delta);
 	void TranslateGlobal(const Math::float3& delta);
@@ -49,6 +56,7 @@ class  CCamera
 	Math::float3 m_Position;
 	Math::quaternion m_Rotation;
 
+	Math::float3 m_Eye;
 	Math::float3 m_Forward;
 	Math::float3 m_Right;
 	Math::float3 m_Up;

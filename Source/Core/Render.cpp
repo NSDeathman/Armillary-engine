@@ -135,13 +135,11 @@ void CRender::DrawFrame()
 		pso.Cull = CullMode::None;
 		pso.DepthWrite = true;
 		pso.DepthFunc = CompareFunc::Less;
-
 		RenderBackend.SetPipelineState(pso);
-
 		m_ActiveScene->Render();
 	}
 
-	IMGUI.RenderFrame(); 
+	IMGUI.RenderFrame();
 
 	EndFrame();
 }
