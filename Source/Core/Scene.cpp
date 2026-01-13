@@ -38,34 +38,34 @@ void CScene::Update(float dt)
 
 void CScene::Render()
 {
-	// 1. Находим камеру
+	// 1. Проверки камеры...
 	if (!m_MainCameraEntity || !m_MainCameraEntity->IsActive())
 		return;
-
 	auto* cameraComp = m_MainCameraEntity->Get<CameraComponent>();
 	if (!cameraComp)
 		return;
 
 	auto& camera = cameraComp->GetCamera();
 
-	// 2. Настраиваем глобальные константы кадра (View, Projection)
-	// Структура констант кадра (должна соответствовать шейдеру, cbuffer FrameBuffer : register(b0))
+	// 2. ОТПРАВКА FRAME BUFFER (b0)
 	struct FrameConstants
 	{
 		Math::float4x4 View;
 		Math::float4x4 Projection;
 		Math::float3 CameraPos;
-		float Padding;
+		float Padding; // Важно для выравнивания
 	} frameData;
 
+	// НЕ транспонируем, так как в HLSL стоит row_major
 	frameData.View = camera.GetViewMatrix();
 	frameData.Projection = camera.GetProjectionMatrix();
 	frameData.CameraPos = camera.GetPosition();
+	frameData.Padding = 0.0f;
 
+	// Имя должно совпадать с cbuffer FrameBuffer в шейдере
 	RenderBackend.SetCustomConstant("FrameBuffer", frameData);
 
-	// 3. Итерируемся по всем сущностям, которые можно нарисовать
-	// (Требуется: Mesh + Transform + Material)
+	// 3. РИСУЕМ ОБЪЕКТЫ
 	for (auto& entity : m_Entities)
 	{
 		if (!entity->IsActive())
@@ -73,7 +73,7 @@ void CScene::Render()
 
 		auto* meshComp = entity->Get<MeshComponent>();
 		auto* transComp = entity->Get<TransformComponent>();
-		auto* matComp = entity->Get<MaterialComponent>();
+		auto* matComp = entity->Get<MaterialComponent>(); // <-- Материал должен использовать simple.shader
 
 		if (meshComp && transComp && matComp)
 		{
@@ -81,20 +81,21 @@ void CScene::Render()
 			if (!mesh)
 				continue;
 
-			// 3.1 Устанавливаем пайплайн (шейдеры)
+			// Устанавливаем шейдер
 			RenderBackend.SetShaderPass(matComp->Pass);
 
-			// 3.2 Устанавливаем константы объекта (World Matrix)
-			// cbuffer ObjectBuffer : register(b1)
+			// 4. ОТПРАВКА OBJECT BUFFER (b1)
 			struct ObjectConstants
 			{
 				Math::float4x4 World;
 			} objData;
 
+			// НЕ транспонируем
 			objData.World = transComp->GetWorldMatrix();
+
+			// Имя должно совпадать с cbuffer ObjectBuffer в шейдере
 			RenderBackend.SetCustomConstant("ObjectBuffer", objData);
 
-			// 3.3 Рисуем
 			RenderBackend.DrawMesh(*mesh);
 		}
 	}

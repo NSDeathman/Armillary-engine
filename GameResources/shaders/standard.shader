@@ -1,62 +1,66 @@
-cbuffer WorldBuffer : register(b0)
+// =================================================================================
+// Constant Buffers
+// =================================================================================
+
+// Данные кадра (обновляются 1 раз за кадр) - регистр b0
+cbuffer FrameBuffer : register(b0)
 {
-    row_major float4x4 World;
-    row_major float4x4 WorldView;
-    row_major float4x4 ViewProjection;
-    row_major float4x4 WorldViewProjection;
+    row_major float4x4 View;       // 64 bytes
+    row_major float4x4 Projection; // 64 bytes
+    float3 CameraPos;              // 12 bytes
+    float Padding;                 // 4 bytes (для выравнивания 16 байт)
 };
+
+// Данные объекта (обновляются для каждого меша) - регистр b1
+cbuffer ObjectBuffer : register(b1)
+{
+    row_major float4x4 World;      // 64 bytes
+};
+
+// =================================================================================
+// Input / Output Structures
+// =================================================================================
 
 struct VS_INPUT
 {
     float3 Position : POSITION;
-    float3 Normal : NORMAL;
-    float2 UV : TEXCOORD0;
-    float3 Tangent : TANGENT;
-    float3 Bitangent : BITANGENT;
+    // Остальные поля можно оставить, даже если не используем, 
+    // чтобы InputLayout совпадал с C++
+    float3 Normal   : NORMAL;
+    float2 UV       : TEXCOORD0;
 };
 
 struct PS_INPUT
 {
     float4 Position : SV_POSITION;
-    float3 Normal : NORMAL;
-    float2 UV : TEXCOORD0;
-    float3 WorldPos : TEXCOORD1;
 };
 
+// =================================================================================
+// Vertex Shader
+// =================================================================================
 PS_INPUT VS(VS_INPUT input)
 {
     PS_INPUT output;
 
-    // Преобразование в мировые координаты
+    // 1. Local Space -> World Space
+    // Умножаем вектор на матрицу (так как row_major)
     float4 worldPos = mul(float4(input.Position, 1.0f), World);
 
-    // Преобразование в пространство проекции
-    output.Position = mul(float4(input.Position, 1.0f), WorldViewProjection);
+    // 2. World Space -> View Space
+    float4 viewPos = mul(worldPos, View);
 
-    // Преобразование нормали
-    float3x3 worldNormalMatrix = (float3x3)World;
-    output.Normal = normalize(mul(worldNormalMatrix, input.Normal));
-
-    output.UV = input.UV;
-    output.WorldPos = worldPos.xyz;
+    // 3. View Space -> Clip Space
+    output.Position = mul(viewPos, Projection);
 
     return output;
 }
 
-// Пиксельный шейдер остается тем же
-Texture2D txDiffuse : register(t0);
-SamplerState samLinear : register(s0);
-
+// =================================================================================
+// Pixel Shader
+// =================================================================================
 float4 PS(PS_INPUT input) : SV_TARGET
 {
-    float4 albedo = txDiffuse.Sample(samLinear, input.UV);
-
-    // Простое освещение
-    float3 lightDir = normalize(float3(0.5f, 1.0f, -0.5f));
-    float diff = max(dot(input.Normal, lightDir), 0.2f);
-
-    float3 ambient = float3(0.2f, 0.2f, 0.2f);
-    float3 finalColor = albedo.rgb * (ambient + diff);
-
-    return float4(finalColor, 1.0f);
+    // Возвращаем просто КРАСНЫЙ цвет для теста
+    // (R, G, B, A)
+    return float4(1.0f, 0.0f, 0.0f, 1.0f);
 }
