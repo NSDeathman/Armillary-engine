@@ -43,6 +43,7 @@
     <ClInclude Include="build_identificator.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraController.h" />
+    <ClInclude Include="Components.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="CoreAPI.h" />
     <ClInclude Include="cpu_identificator.h" />
@@ -69,6 +70,7 @@
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="OptickAPI.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="splash_screen.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TimeSystem.h" />
@@ -97,6 +99,7 @@
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="OptickAPI.cpp" />
     <ClCompile Include="Render.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="splash_screen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

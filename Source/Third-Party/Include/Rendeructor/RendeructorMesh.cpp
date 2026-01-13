@@ -397,8 +397,8 @@ void Mesh::GeneratePlane(Mesh& outMesh, float width, float depth)
 
 	AddQuad(i, 0, 1, 2, 3);
 
-	float hw = width * 0.5f;
-	float hd = depth * 0.5f;
+	hw = width * 0.5f;
+	hd = depth * 0.5f;
 	outMesh.m_MinBound = Math::float3(-hw, 0.0f, -hd);
 	outMesh.m_MaxBound = Math::float3(hw, 0.0f, hd);
 

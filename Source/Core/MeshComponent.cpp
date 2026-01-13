@@ -11,20 +11,22 @@ bool MeshComponent::LoadFromFile(const std::string& filepath)
 	// 1. Создаем новый ресурс
 	auto newMesh = std::make_shared<Mesh>();
 
-	// 2. Пытаемся загрузить
-	if (newMesh->LoadFromOBJ(filepath))
+	// Нам нужны временные переменные для соответствия сигнатуре функции
+	std::string baseDir = ""; // Можно выделить директорию из filepath, если нужно
+	std::vector<RenderMaterial> materials; // Сюда загрузятся материалы
+
+	// 2. Пытаемся загрузить (передаем 3 аргумента)
+	if (newMesh->LoadFromOBJ(filepath, baseDir, materials))
 	{
 		m_Mesh = newMesh;
 
 		// 3. АВТОМАТИЧЕСКОЕ ОБНОВЛЕНИЕ AABB
-		// Берем данные, которые Mesh рассчитал при парсинге файла
 		m_LocalAABB.Min = newMesh->GetBoundsMin();
 		m_LocalAABB.Max = newMesh->GetBoundsMax();
 
-		// Логирование для отладки (можно убрать)
-		std::cout << "[MeshComponent] Loaded: " << filepath
-		           << " AABB: " << m_LocalAABB.Min.to_string()
-		           << " -> " << m_LocalAABB.Max.to_string() << std::endl;
+		// Логирование
+		std::cout << "[MeshComponent] Loaded: " << filepath << " AABB: " << m_LocalAABB.Min.to_string() << " -> "
+				  << m_LocalAABB.Max.to_string() << std::endl;
 
 		return true;
 	}

@@ -116,16 +116,33 @@ void CEngine::Update()
 
 void CEngine::Destroy()
 {
-	m_Game->Shutdown();
+	// 1. Сначала говорим рендеру забыть про сцену.
+	// Это уменьшит счетчик ссылок shared_ptr сцены.
+	Renderer.SetCurrentScene(nullptr);
+	Renderer.SetCurrentCamera(nullptr);
 
+	// 2. Уничтожаем игру.
+	// Если игра держала последний shared_ptr на сцену, то СЦЕНА УДАЛИТСЯ ПРЯМО ЗДЕСЬ.
+	// Entity вызовут свои деструкторы, удалят компоненты.
+	// Менеджер компонентов в этот момент ЕЩЕ ЖИВ, поэтому всё пройдет гладко.
+	if (m_Game)
+	{
+		m_Game->Shutdown();
+		m_Game.reset();
+	}
+
+	// 3. Теперь, когда все Entity мертвы, можно безопасно чистить остатки в менеджере.
+	Core::ECS::Entity::ReleaseAllComponents();
+
+	// 4. Уничтожаем остальные подсистемы
 	IMGUI.Destroy();
 
+	// Можно явно вызвать Shutdown рендера, чтобы освободить окно и бекенд
+	Renderer.Shutdown();
+
 	LogDestroy();
-
 	ASYNC_API_DESTROY();
-
 	FS_DESTROY();
-
 	SDL_Quit();
 }
 ///////////////////////////////////////////////////////////////

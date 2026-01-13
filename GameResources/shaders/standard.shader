@@ -1,9 +1,9 @@
 cbuffer WorldBuffer : register(b0)
 {
-    float4x4 World;
-    float4x4 WorldView;
-    float4x4 ViewProjection;
-    float4x4 WorldViewProjection;
+    row_major float4x4 World;
+    row_major float4x4 WorldView;
+    row_major float4x4 ViewProjection;
+    row_major float4x4 WorldViewProjection;
 };
 
 struct VS_INPUT

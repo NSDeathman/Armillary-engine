@@ -8,6 +8,7 @@
 #include <bitset>
 #include <cassert>
 #include <utility>
+#include <tuple>
 
 namespace Core::ECS
 {
@@ -17,7 +18,7 @@ class ComponentManager;
 // =========================================================
 // 0. КОНСТАНТЫ И ТИПЫ
 // =========================================================
-constexpr size_t MAX_COMPONENTS = 64; // Можно увеличить при необходимости
+constexpr size_t MAX_COMPONENTS = 64;
 
 using ComponentTypeID = size_t;
 using ComponentMask = std::bitset<MAX_COMPONENTS>;
@@ -49,35 +50,19 @@ class IComponent
 	virtual void OnDisable()
 	{
 	}
+
 	virtual std::unique_ptr<IComponent> Clone() const = 0;
 
-	// Геттеры
-	Entity* GetOwner() const
-	{
-		return m_Owner;
-	}
-	bool IsActive() const
-	{
-		return m_Active && (m_Owner ? m_Owner->IsActive() : true);
-	}
-	void SetActive(bool active)
-	{
-		if (m_Active != active)
-		{
-			m_Active = active;
-			if (m_Active)
-				OnEnable();
-			else
-				OnDisable();
-		}
-	}
+	// Геттеры (Реализация внизу файла, чтобы избежать circular dependency)
+	inline Entity* GetOwner() const;
+	inline bool IsActive() const;
+	inline void SetActive(bool active);
 
   protected:
 	Entity* m_Owner = nullptr;
 	bool m_Active = true;
 
   private:
-	// Только для внутреннего использования
 	void SetOwner(Entity* owner)
 	{
 		m_Owner = owner;
@@ -85,7 +70,7 @@ class IComponent
 };
 
 // =========================================================
-// 2. СИСТЕМА ИДЕНТИФИКАЦИИ ТИПОВ (улучшенная)
+// 2. СИСТЕМА ИДЕНТИФИКАЦИИ ТИПОВ
 // =========================================================
 class ComponentTypeInfo
 {
@@ -104,50 +89,62 @@ class ComponentTypeInfo
 
 	template <typename T> static const char* GetName() noexcept
 	{
-		static const char* name = typeid(T).name();
-		return name;
+		return typeid(T).name();
 	}
 };
 
 // =========================================================
-// 3. КОМПОНЕНТНЫЙ МЕНЕДЖЕР (для оптимизации)
+// 3. КОМПОНЕНТНЫЙ МЕНЕДЖЕР
 // =========================================================
 class ComponentManager
 {
+  public:
+	// Структура результата создания, чтобы Entity знала реальный индекс
+	template <typename T> struct CreateResult
+	{
+		T* Ptr;
+		size_t PoolIndex;
+	};
+
   private:
 	struct ComponentPool
 	{
 		std::vector<std::unique_ptr<IComponent>> components;
 		std::vector<size_t> freeIndices;
 
-		template <typename T, typename... Args> T* Create(Args&&... args)
+		// Возвращает пару: {Указатель, Индекс}
+		template <typename T, typename... Args> CreateResult<T> Create(Args&&... args)
 		{
+			size_t index;
 			if (!freeIndices.empty())
 			{
-				size_t index = freeIndices.back();
+				index = freeIndices.back();
 				freeIndices.pop_back();
-				auto& component = components[index];
-				component = std::make_unique<T>(std::forward<Args>(args)...);
-				return static_cast<T*>(component.get());
+				components[index] = std::make_unique<T>(std::forward<Args>(args)...);
 			}
 			else
 			{
+				index = components.size();
 				components.push_back(std::make_unique<T>(std::forward<Args>(args)...));
-				return static_cast<T*>(components.back().get());
 			}
+
+			return {static_cast<T*>(components[index].get()), index};
 		}
 
 		void Destroy(size_t index)
 		{
-			components[index].reset();
-			freeIndices.push_back(index);
+			if (index < components.size())
+			{
+				components[index].reset(); // Освобождаем память
+				freeIndices.push_back(index);
+			}
 		}
 	};
 
 	std::vector<std::unique_ptr<ComponentPool>> m_Pools;
 
   public:
-	template <typename T, typename... Args> T* CreateComponent(Args&&... args)
+	template <typename T, typename... Args> CreateResult<T> CreateComponent(Args&&... args)
 	{
 		ComponentTypeID typeID = ComponentTypeInfo::GetID<T>();
 
@@ -165,10 +162,16 @@ class ComponentManager
 		if (typeID < m_Pools.size() && m_Pools[typeID])
 			m_Pools[typeID]->Destroy(index);
 	}
+
+	void Clear()
+	{
+		m_Pools.clear();
+		m_Pools.shrink_to_fit();
+	}
 };
 
 // =========================================================
-// 4. ДАННЫЕ СУЩНОСТИ (расширенная)
+// 4. ДАННЫЕ СУЩНОСТИ
 // =========================================================
 struct EntityData
 {
@@ -176,34 +179,37 @@ struct EntityData
 	std::string Tag = "Default";
 	bool IsActive = true;
 	bool IsStatic = false;
-	bool IsPersistent = true; // Сохраняется между сценами
-	uint32_t Layer = 0;		  // Слой для рендеринга/физики
+	bool IsPersistent = true;
+	uint32_t Layer = 0;
 
 	EntityData() = default;
-
 	EntityData(std::string name, std::string tag = "Default") : Name(std::move(name)), Tag(std::move(tag))
 	{
 	}
 };
 
 // =========================================================
-// 5. СУЩНОСТЬ (оптимизированная и удобная)
+// 5. СУЩНОСТЬ
 // =========================================================
 class Entity
 {
   private:
-	// Данные сущности
+	// Данные
 	std::string m_Name;
 	std::string m_Tag;
 	bool m_IsActive = true;
 	bool m_IsStatic = false;
 	bool m_IsPersistent = true;
 	uint32_t m_Layer = 0;
-	uint64_t m_ID = 0; // Уникальный ID сущности
+	uint64_t m_ID = 0;
 
 	// Компоненты
-	std::vector<std::unique_ptr<IComponent>> m_Components;
-	std::vector<size_t> m_ComponentIndices; // Индексы в ComponentManager
+	// FIX: Используем сырые указатели, так как владелец - ComponentManager
+	std::vector<IComponent*> m_Components;
+
+	// Индексы в пулах ComponentManager'а
+	std::vector<size_t> m_ComponentIndices;
+
 	std::unordered_map<ComponentTypeID, IComponent*> m_ComponentMap;
 	ComponentMask m_ComponentMask;
 
@@ -211,7 +217,6 @@ class Entity
 	static inline uint64_t s_NextEntityID = 1;
 
   public:
-	// Конструкторы
 	Entity() : m_ID(s_NextEntityID++)
 	{
 	}
@@ -232,22 +237,24 @@ class Entity
 		Destroy();
 	}
 
-	// Запрещаем копирование, разрешаем перемещение
+	// Запрещаем копирование
 	Entity(const Entity&) = delete;
 	Entity& operator=(const Entity&) = delete;
 
+	// Конструктор перемещения
 	Entity(Entity&& other) noexcept
 		: m_Name(std::move(other.m_Name)), m_Tag(std::move(other.m_Tag)), m_IsActive(other.m_IsActive),
 		  m_IsStatic(other.m_IsStatic), m_IsPersistent(other.m_IsPersistent), m_Layer(other.m_Layer), m_ID(other.m_ID),
 		  m_Components(std::move(other.m_Components)), m_ComponentIndices(std::move(other.m_ComponentIndices)),
 		  m_ComponentMap(std::move(other.m_ComponentMap)), m_ComponentMask(other.m_ComponentMask)
 	{
-		// Обновляем владельца у всех компонентов
-		for (auto& component : m_Components)
+		// Обновляем владельца у всех компонентов (они теперь ссылаются на новый адрес Entity)
+		for (auto* component : m_Components)
 			if (component)
-				component->m_Owner = this;
+				component->SetOwner(this);
 	}
 
+	// Оператор перемещения
 	Entity& operator=(Entity&& other) noexcept
 	{
 		if (this != &other)
@@ -266,20 +273,19 @@ class Entity
 			m_ComponentMap = std::move(other.m_ComponentMap);
 			m_ComponentMask = other.m_ComponentMask;
 
-			for (auto& component : m_Components)
+			for (auto* component : m_Components)
 				if (component)
-					component->m_Owner = this;
+					component->SetOwner(this);
 		}
 		return *this;
 	}
 
-	// Основные методы
 	void Update(float deltaTime)
 	{
 		if (!m_IsActive)
 			return;
 
-		for (auto& component : m_Components)
+		for (auto* component : m_Components)
 			if (component && component->IsActive())
 				component->OnUpdate(deltaTime);
 	}
@@ -291,8 +297,11 @@ class Entity
 			if (m_Components[i])
 			{
 				m_Components[i]->OnDestroy();
+
 				ComponentTypeID typeID =
 					ComponentTypeInfo::GetID<std::remove_reference_t<decltype(*m_Components[i])>>();
+
+				// Удаляем из менеджера по сохраненному индексу
 				s_ComponentManager.DestroyComponent(typeID, m_ComponentIndices[i]);
 			}
 		}
@@ -303,46 +312,38 @@ class Entity
 		m_ComponentMask.reset();
 	}
 
-	// =====================================================
-	// УДОБНЫЙ ИНТЕРФЕЙС ДЛЯ РАБОТЫ С КОМПОНЕНТАМИ
-	// =====================================================
+	// --- Component API ---
 
-	// 1. Добавление компонента (Fluent Interface)
 	template <typename T, typename... Args> Entity& Add(Args&&... args)
 	{
 		AddComponent<T>(std::forward<Args>(args)...);
 		return *this;
 	}
 
-	// 2. Получение компонента
 	template <typename T> T* Get() const
 	{
 		auto it = m_ComponentMap.find(ComponentTypeInfo::GetID<T>());
 		return it != m_ComponentMap.end() ? static_cast<T*>(it->second) : nullptr;
 	}
 
-	// 3. Проверка наличия компонента
 	template <typename T> bool Has() const
 	{
 		return m_ComponentMask[ComponentTypeInfo::GetID<T>()];
 	}
 
-	// 4. Удаление компонента
 	template <typename T> void Remove()
 	{
 		const ComponentTypeID typeID = ComponentTypeInfo::GetID<T>();
 		auto it = m_ComponentMap.find(typeID);
 		if (it != m_ComponentMap.end())
 		{
-			// Находим компонент в векторе
 			for (size_t i = 0; i < m_Components.size(); ++i)
 			{
-				if (m_Components[i].get() == it->second)
+				if (m_Components[i] == it->second) // Сравниваем указатели
 				{
 					m_Components[i]->OnDestroy();
 					s_ComponentManager.DestroyComponent(typeID, m_ComponentIndices[i]);
 
-					// Удаляем из векторов
 					m_Components.erase(m_Components.begin() + i);
 					m_ComponentIndices.erase(m_ComponentIndices.begin() + i);
 					break;
@@ -354,7 +355,6 @@ class Entity
 		}
 	}
 
-	// 5. Получение или добавление компонента
 	template <typename T, typename... Args> T* GetOrAdd(Args&&... args)
 	{
 		if (T* component = Get<T>())
@@ -362,7 +362,6 @@ class Entity
 		return AddComponent<T>(std::forward<Args>(args)...);
 	}
 
-	// 6. Проверка наличия нескольких компонентов
 	template <typename... Components> bool HasAll() const
 	{
 		return (Has<Components>() && ...);
@@ -373,19 +372,18 @@ class Entity
 		return (Has<Components>() || ...);
 	}
 
-	// 7. Получение всех компонентов определенного типа
 	template <typename T> std::vector<T*> GetAll() const
 	{
 		std::vector<T*> result;
-		for (auto& component : m_Components)
+		for (auto* component : m_Components)
 		{
-			if (auto casted = dynamic_cast<T*>(component.get()))
+			if (auto casted = dynamic_cast<T*>(component))
 				result.push_back(casted);
 		}
 		return result;
 	}
 
-	// Геттеры/сеттеры
+	// Геттеры/Сеттеры
 	uint64_t GetID() const
 	{
 		return m_ID;
@@ -440,38 +438,38 @@ class Entity
 		m_Layer = layer;
 	}
 
-	// Для систем
 	template <typename Visitor> void ForEachComponent(Visitor&& visitor)
 	{
-		for (auto& component : m_Components)
+		for (auto* component : m_Components)
 			if (component && component->IsActive())
 				visitor(*component);
 	}
 
+	// Статическая очистка
+	static void ReleaseAllComponents()
+	{
+		s_ComponentManager.Clear();
+	}
+
   private:
-	// Внутренний метод добавления компонента
 	template <typename T, typename... Args> T* AddComponent(Args&&... args)
 	{
 		const ComponentTypeID typeID = ComponentTypeInfo::GetID<T>();
 
-		// Нельзя добавить компонент одного типа дважды
 		if (m_ComponentMap.find(typeID) != m_ComponentMap.end())
 		{
-			// Можно либо вернуть существующий, либо assert
 			assert(false && "Component of this type already exists!");
 			return Get<T>();
 		}
 
-		// Создаем через ComponentManager
-		T* component = s_ComponentManager.CreateComponent<T>(std::forward<Args>(args)...);
+		// FIX: Получаем структуру с указателем и реальным индексом
+		auto result = s_ComponentManager.CreateComponent<T>(std::forward<Args>(args)...);
+		T* component = result.Ptr;
+
 		component->SetOwner(this);
 
-		// Сохраняем индекс в пуле
-		size_t poolIndex = m_Components.size(); // Временный, реальный индекс в ComponentManager
-
-		// Добавляем в векторы
-		m_Components.emplace_back(component);
-		m_ComponentIndices.push_back(poolIndex); // Заглушка, нужен реальный механизм
+		m_Components.push_back(component);
+		m_ComponentIndices.push_back(result.PoolIndex); // FIX: Сохраняем реальный индекс
 		m_ComponentMap[typeID] = component;
 		m_ComponentMask.set(typeID);
 
@@ -484,10 +482,9 @@ class Entity
 };
 
 // =========================================================
-// 6. ВСПОМОГАТЕЛЬНЫЕ ШАБЛОНЫ ДЛЯ БЛОЧНОГО КОНСТРУИРОВАНИЯ
+// 6. ВСПОМОГАТЕЛЬНЫЕ ШАБЛОНЫ
 // =========================================================
 
-// Базовый шаблон для наследования компонентов
 template <typename T> class Component : public IComponent
 {
   public:
@@ -502,7 +499,6 @@ template <typename T> class Component : public IComponent
 	}
 };
 
-// Фабрика для удобного создания Entity
 class EntityBuilder
 {
   private:
@@ -512,24 +508,20 @@ class EntityBuilder
 	EntityBuilder(std::string name = "Entity") : m_Entity(std::make_unique<Entity>(std::move(name)))
 	{
 	}
-
 	EntityBuilder(EntityData data) : m_Entity(std::make_unique<Entity>(std::move(data)))
 	{
 	}
 
-	// Fluent interface для настройки Entity
 	EntityBuilder& SetName(const std::string& name)
 	{
 		m_Entity->SetName(name);
 		return *this;
 	}
-
 	EntityBuilder& SetTag(const std::string& tag)
 	{
 		m_Entity->SetTag(tag);
 		return *this;
 	}
-
 	EntityBuilder& SetLayer(uint32_t layer)
 	{
 		m_Entity->SetLayer(layer);
@@ -542,7 +534,6 @@ class EntityBuilder
 		return *this;
 	}
 
-	// Вариант с лямбдой для кастомизации компонента
 	template <typename T, typename Func> EntityBuilder& AddComponent(Func&& configurator)
 	{
 		T* component = m_Entity->Add<T>();
@@ -550,20 +541,17 @@ class EntityBuilder
 		return *this;
 	}
 
-	// Создание Entity
 	std::unique_ptr<Entity> Build()
 	{
 		return std::move(m_Entity);
 	}
 
-	// Прямое получение указателя
 	Entity* Get()
 	{
 		return m_Entity.get();
 	}
 };
 
-// Утилита для быстрого создания Entity
 inline std::unique_ptr<Entity> CreateEntity(const std::string& name)
 {
 	return EntityBuilder(name).Build();
@@ -576,4 +564,31 @@ inline std::unique_ptr<Entity> CreateEntityWithComponents(const std::string& nam
 	(builder.template AddComponent<Components>(std::get<Args>(componentArgs)...), ...);
 	return builder.Build();
 }
+
+// =========================================================
+// 7. INLINE РЕАЛИЗАЦИЯ МЕТОДОВ IComponent
+// =========================================================
+
+inline Entity* IComponent::GetOwner() const
+{
+	return m_Owner;
+}
+
+inline bool IComponent::IsActive() const
+{
+	return m_Active && (m_Owner ? m_Owner->IsActive() : true);
+}
+
+inline void IComponent::SetActive(bool active)
+{
+	if (m_Active != active)
+	{
+		m_Active = active;
+		if (m_Active)
+			OnEnable();
+		else
+			OnDisable();
+	}
+}
+
 } // namespace Core::ECS

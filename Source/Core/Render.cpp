@@ -84,8 +84,10 @@ void CRender::Shutdown()
 
 	Log("Shutting down render system...");
 
-	RenderBackend.Destroy();
+	m_ActiveScene = nullptr;
+	m_ActiveCamera = nullptr;
 
+	RenderBackend.Destroy();
 	m_Window.Destroy();
 
 	m_Initialized = false;
@@ -129,13 +131,16 @@ void CRender::DrawFrame()
 {
 	BeginFrame();
 
-	if (m_ActiveCamera && m_ActiveScene)
+	if (m_ActiveScene)
 	{
+		// Стандартные настройки для 3D
 		PipelineState pso;
-		pso.Cull = CullMode::None;
+		pso.Cull = CullMode::Back; // Обычно Back, а не None
 		pso.DepthWrite = true;
 		pso.DepthFunc = CompareFunc::Less;
 		RenderBackend.SetPipelineState(pso);
+
+		// Делегируем отрисовку сцене
 		m_ActiveScene->Render();
 	}
 
