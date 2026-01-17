@@ -257,6 +257,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{c01fa6c5-f870-40e0-9aeb-cf709d5125f5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third-Party\Include\Rendeructor\Rendeructor.vcxproj">
+      <Project>{39eba7bd-1b31-4479-b4d3-12072f4fe839}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

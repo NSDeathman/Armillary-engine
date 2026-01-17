@@ -9,27 +9,26 @@
 #include "Core.h"
 #include "architect_patterns.h"
 ///////////////////////////////////////////////////////////////
-namespace Core
+CORE_BEGIN
+class CSplashScreen : public Patterns::Singleton<CSplashScreen>
 {
-	class CSplashScreen : public Patterns::Singleton<CSplashScreen>
-	{
-		friend class Patterns::Singleton<CSplashScreen>;
+	friend class Patterns::Singleton<CSplashScreen>;
 
-	  public:
-		CSplashScreen();
-		~CSplashScreen();
+	public:
+	CSplashScreen();
+	~CSplashScreen();
 
-		void Show();
-		void Hide();
+	void Show();
+	void Hide();
 
-	  private:
-		HWND m_splash_screen_window;
-		HBITMAP m_hBitmap;
+	private:
+	HWND m_splash_screen_window;
+	HBITMAP m_hBitmap;
 
-		static INT_PTR CALLBACK SplashScreenDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		void LoadBitmapFromResource();
-		void CenterWindow();
-	};
-} // namespace Core
+	static INT_PTR CALLBACK SplashScreenDlgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	void LoadBitmapFromResource();
+	void CenterWindow();
+};
+CORE_END
 ///////////////////////////////////////////////////////////////
 

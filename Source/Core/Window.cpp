@@ -9,9 +9,8 @@
 #include "log.h"
 #include <algorithm>
 ///////////////////////////////////////////////////////////////
-
-namespace Core
-{
+using namespace Core;
+///////////////////////////////////////////////////////////////
 CWindow::CWindow() : m_window(nullptr), m_cursor(nullptr), m_initialized(false), m_windowID(0)
 {
 	SDL_zero(m_windowInfo);
@@ -493,6 +492,4 @@ void CWindow::LoadWindowIcon(const std::string& path)
 		Print("! Failed to load icon: %s");//, IMG_GetError());
 	}
 }
-
-} // namespace Core
-  ///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////

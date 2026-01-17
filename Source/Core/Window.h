@@ -10,12 +10,11 @@
 #include <string>
 #include <functional>
 #include "Core.h"
+#include <MathAPI/MathAPI.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_syswm.h>
 ///////////////////////////////////////////////////////////////
-
-namespace Core
-{
+CORE_BEGIN
 enum class WindowMode
 {
 	Windowed,
@@ -126,5 +125,5 @@ class CWindow
 	void CreateDefaultCursor();
 	void LoadWindowIcon(const std::string& path);
 };
-} // namespace Core
+CORE_END
 ///////////////////////////////////////////////////////////////

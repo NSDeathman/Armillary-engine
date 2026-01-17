@@ -35,7 +35,6 @@ void CImguiAPI::Initialize()
 	auto* window = Core::CRender::GetInstance().GetWindow()->GetSDLWindow();
 
 	// ВАЖНО: Получаем сырые указатели из нашего Rendeructor
-	// Мы предполагаем, что ты добавил методы GetDevice/GetContext в Rendeructor, как обсуждали выше
 	ID3D11Device* device = (ID3D11Device*)Core::RenderBackend.GetDevice();
 	ID3D11DeviceContext* context = (ID3D11DeviceContext*)Core::RenderBackend.GetContext();
 
@@ -72,7 +71,8 @@ void CImguiAPI::Initialize()
 		// --- Maven Pro (Все начертания) ---
 
 		// 1. Regular
-		std::string mavenRegularPath = CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "MavenPro-Regular.ttf"}).string();
+		std::string mavenRegularPath =
+			CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "MavenPro-Regular.ttf"}).string();
 		if (CoreAPI.Filesystem.FileExists(mavenRegularPath))
 		{
 			font_maven_pro_regular = io.Fonts->AddFontFromFileTTF(mavenRegularPath.c_str(), 14.0f);
@@ -83,7 +83,8 @@ void CImguiAPI::Initialize()
 		}
 
 		// 2. Medium
-		std::string mavenMediumPath = CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "MavenPro-Medium.ttf"}).string();
+		std::string mavenMediumPath =
+			CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "MavenPro-Medium.ttf"}).string();
 		if (CoreAPI.Filesystem.FileExists(mavenMediumPath))
 		{
 			font_maven_pro_medium = io.Fonts->AddFontFromFileTTF(mavenMediumPath.c_str(), 14.0f);
@@ -189,20 +190,5 @@ void CImguiAPI::HideCursor()
 void CImguiAPI::ShowCursor()
 {
 	ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow);
-}
-
- ImGuiContext* Core_GetImGuiContext()
-{
-	return ImGui::GetCurrentContext();
-}
-
- ImPlotContext* Core_GetImPlotContext()
-{
-	return ImPlot::GetCurrentContext();
-}
-
-void Core_GetImGuiAllocators(ImGuiMemAllocFunc* allocFunc, ImGuiMemFreeFunc* freeFunc, void** userData)
-{
-	ImGui::GetAllocatorFunctions(allocFunc, freeFunc, userData);
 }
 ///////////////////////////////////////////////////////////////

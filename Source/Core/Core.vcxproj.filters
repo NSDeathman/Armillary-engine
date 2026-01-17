@@ -52,9 +52,6 @@
     <ClInclude Include="Core.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="CoreAPI.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="IniParser.h">
       <Filter>Configs\Ini</Filter>
     </ClInclude>
@@ -172,6 +169,9 @@
     <ClInclude Include="Components.h">
       <Filter>World\Entity component system\Components</Filter>
     </ClInclude>
+    <ClInclude Include="CoreMacros.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug_exeption_error_handler.cpp">
@@ -185,9 +185,6 @@
     </ClCompile>
     <ClCompile Include="build_identificator.cpp">
       <Filter>Utils\BuildID</Filter>
-    </ClCompile>
-    <ClCompile Include="cpu_identificator.cpp">
-      <Filter>Utils\CPUID</Filter>
     </ClCompile>
     <ClCompile Include="Core.cpp">
       <Filter>Core</Filter>
@@ -239,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>World\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu_identificator.cpp">
+      <Filter>Utils\CPUID</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -373,5 +373,6 @@
     <None Include="..\Third-Party\Include\MathAPI\math_half4.inl">
       <Filter>Third-Party\MathAPI</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

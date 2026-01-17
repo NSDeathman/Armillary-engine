@@ -5,7 +5,7 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
-#include "Core.h"
+#include "CoreMacros.h"
 #include "architect_patterns.h" // Для Singleton
 ///////////////////////////////////////////////////////////////
 // ImGui Headers
@@ -19,15 +19,7 @@
 #include <imgui/ImSequencer.h>
 #include <imgui/GraphEditor.h>
 ///////////////////////////////////////////////////////////////
-namespace Core
-{
-
-extern "C"  ImGuiContext* Core_GetImGuiContext();
-extern "C"  ImPlotContext* Core_GetImPlotContext();
-typedef void* (*ImGuiMemAllocFunc)(size_t, void*);
-typedef void (*ImGuiMemFreeFunc)(void*, void*);
-extern "C"  void Core_GetImGuiAllocators(ImGuiMemAllocFunc* allocFunc, ImGuiMemFreeFunc* freeFunc,
-												 void** userData);
+CORE_BEGIN
 
 class CImguiAPI : public Core::Patterns::Singleton<CImguiAPI>
 {
@@ -67,37 +59,7 @@ class CImguiAPI : public Core::Patterns::Singleton<CImguiAPI>
 	bool m_Initialized = false;
 };
 
-static inline bool InitializeImGuiFromCore()
-{
-	// 1. Синхронизация памяти (Аллокаторы)
-	ImGuiMemAllocFunc allocFunc;
-	ImGuiMemFreeFunc freeFunc;
-	void* userData;
-	Core_GetImGuiAllocators(&allocFunc, &freeFunc, &userData);
-
-	if (allocFunc && freeFunc)
-	{
-		ImGui::SetAllocatorFunctions(allocFunc, freeFunc, userData);
-	}
-
-	// 2. Синхронизация контекста ImGui
-	ImGuiContext* ctx = Core_GetImGuiContext();
-	if (!ctx)
-		return false; // Критическая ошибка, Core не инициализирован
-
-	ImGui::SetCurrentContext(ctx);
-
-	// 3. Синхронизация контекста ImPlot
-	ImPlotContext* pCtx = Core_GetImPlotContext();
-	if (pCtx)
-	{
-		ImPlot::SetCurrentContext(pCtx);
-	}
-
-	return true;
-}
-
-} // namespace Core
+CORE_END
 ///////////////////////////////////////////////////////////////
 #define IMGUI Core::CImguiAPI::GetInstance()
 ///////////////////////////////////////////////////////////////

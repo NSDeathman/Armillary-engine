@@ -4,24 +4,25 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
-namespace Core
+#include "CoreMacros.h"
+///////////////////////////////////////////////////////////////
+CORE_BEGIN
+namespace Patterns
 {
-	namespace Patterns
+	class Noncopyable
 	{
-		class Noncopyable
-		{
-		  protected:
-			Noncopyable() = default;
-			~Noncopyable() = default;
+		protected:
+		Noncopyable() = default;
+		~Noncopyable() = default;
 
-			// Запрещаем копирование
-			Noncopyable(const Noncopyable&) = delete;
-			Noncopyable& operator=(const Noncopyable&) = delete;
+		// Запрещаем копирование
+		Noncopyable(const Noncopyable&) = delete;
+		Noncopyable& operator=(const Noncopyable&) = delete;
 
-			// Разрешаем перемещение
-			Noncopyable(Noncopyable&&) = default;
-			Noncopyable& operator=(Noncopyable&&) = default;
-		};
-	} // namespace Patterns
-} // namespace utils
+		// Разрешаем перемещение
+		Noncopyable(Noncopyable&&) = default;
+		Noncopyable& operator=(Noncopyable&&) = default;
+	};
+} // namespace Patterns
+CORE_END
 ///////////////////////////////////////////////////////////////

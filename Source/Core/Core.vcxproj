@@ -45,7 +45,7 @@
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Core.h" />
-    <ClInclude Include="CoreAPI.h" />
+    <ClInclude Include="CoreMacros.h" />
     <ClInclude Include="cpu_identificator.h" />
     <ClInclude Include="DebugAPI.h" />
     <ClInclude Include="debug_exeption_base.h" />
@@ -121,6 +121,18 @@
     <None Include="..\Third-Party\Include\MathAPI\math_half2.inl" />
     <None Include="..\Third-Party\Include\MathAPI\math_half3.inl" />
     <None Include="..\Third-Party\Include\MathAPI\math_half4.inl" />
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Third-Party\Include\Imgui\Imgui.vcxproj">
+      <Project>{416e416c-4ce6-4163-888b-884d8ad77f7b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third-Party\Include\Optick\OptickCore.vcxproj">
+      <Project>{830934d9-6f6c-c37d-18f2-fb3304348f00}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Third-Party\Include\Rendeructor\Rendeructor.vcxproj">
+      <Project>{39eba7bd-1b31-4479-b4d3-12072f4fe839}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

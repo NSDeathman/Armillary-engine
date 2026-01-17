@@ -6,6 +6,7 @@
 #pragma once
 ///////////////////////////////////////////////////////////////
 #include <filesystem>
+#include "CoreMacros.h"
 ///////////////////////////////////////////////////////////////
 #define APPLICATION_DATA "..//appdata//"
 #define DEBUG_DATA "..//debugdata//"
@@ -20,52 +21,51 @@
 ///////////////////////////////////////////////////////////////
 namespace fs = std::filesystem;
 ///////////////////////////////////////////////////////////////
-namespace Core
+CORE_BEGIN
+class CFilesystem
 {
-	class CFilesystem
+	public:
+	CFilesystem() = default;
+	~CFilesystem() = default;
+
+	void Initialize();
+	void Destroy();
+
+	fs::path GetPath(const std::string& first, const std::initializer_list<std::string>& parts = {});
+	fs::path GetAppDataPath(const std::initializer_list<std::string>& parts = {});
+	fs::path GetGameResourcesPath(const std::initializer_list<std::string>& parts = {});
+
+	bool CreateDirectory(const fs::path& path);
+	bool FileExists(const fs::path& path);
+	bool DirectoryExists(const fs::path& path);
+
+	std::vector<fs::path> GetFiles(const fs::path& directory, const std::string& extension = "");
+	std::vector<fs::path> GetDirectories(const fs::path& directory);
+
+	std::string ReadTextFile(const fs::path& path);
+	bool WriteTextFile(const fs::path& path, const std::string& content);
+
+	fs::path GetExecutableDir() const
 	{
-	  public:
-		CFilesystem() = default;
-		~CFilesystem() = default;
+		return m_ExecutableDir;
+	}
+	fs::path GetWorkingDir() const
+	{
+		return m_WorkingDir;
+	}
+	void SetWorkingDir(const fs::path& path);
 
-		void Initialize();
-		void Destroy();
+	bool IsInitialized() const
+	{
+		return m_Initialized;
+	}
 
-		fs::path GetPath(const std::string& first, const std::initializer_list<std::string>& parts = {});
-		fs::path GetAppDataPath(const std::initializer_list<std::string>& parts = {});
-		fs::path GetGameResourcesPath(const std::initializer_list<std::string>& parts = {});
+	private:
+	bool m_Initialized = false;
+	fs::path m_ExecutableDir;
+	fs::path m_WorkingDir;
 
-		bool CreateDirectory(const fs::path& path);
-		bool FileExists(const fs::path& path);
-		bool DirectoryExists(const fs::path& path);
-
-		std::vector<fs::path> GetFiles(const fs::path& directory, const std::string& extension = "");
-		std::vector<fs::path> GetDirectories(const fs::path& directory);
-
-		std::string ReadTextFile(const fs::path& path);
-		bool WriteTextFile(const fs::path& path, const std::string& content);
-
-		fs::path GetExecutableDir() const
-		{
-			return m_ExecutableDir;
-		}
-		fs::path GetWorkingDir() const
-		{
-			return m_WorkingDir;
-		}
-		void SetWorkingDir(const fs::path& path);
-
-		bool IsInitialized() const
-		{
-			return m_Initialized;
-		}
-
-	  private:
-		bool m_Initialized = false;
-		fs::path m_ExecutableDir;
-		fs::path m_WorkingDir;
-
-		bool CreateDirectoryRecursive(const fs::path& path, std::error_code& err);
-	};
-} // namespace Core
+	bool CreateDirectoryRecursive(const fs::path& path, std::error_code& err);
+};
+CORE_END
 ///////////////////////////////////////////////////////////////

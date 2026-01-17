@@ -23,8 +23,6 @@ IGame* CreateGame()
 
 bool CGame::Initialize()
 {
-	Core::InitializeImGuiFromCore();
-
 	// 1. Создаем сцену
 	m_Scene = std::make_shared<CScene>();
 	if (!m_Scene->Initialize())

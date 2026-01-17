@@ -6,21 +6,19 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
-#include "Core.h"
-#include "Input.h"
 #include "AsyncExecutor.h"
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
 #include <chrono>
+#include <array>
 #include "architect_patterns.h"
 ///////////////////////////////////////////////////////////////
 #define DEFAULT_MOUSE_SENSITIVITY 1.0f
 #define DEFAULT_GAMEPAD_SENSITIVITY 1.0f
 #define DEFAULT_GAMEPAD_DEADZONE 0.4f
 ///////////////////////////////////////////////////////////////
-namespace Core
-{
+CORE_BEGIN
 class CInput
 {
   public:
@@ -152,5 +150,5 @@ class CInput
 	// Основной цикл потока
 	void InputThreadFunc();
 };
-} // namespace Core
+CORE_END
 ///////////////////////////////////////////////////////////////

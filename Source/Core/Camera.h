@@ -1,6 +1,6 @@
 #pragma once
 #include <MathAPI/MathAPI.h>
-#include "CoreAPI.h"
+#include "Core.h"
 
 namespace Core::World
 {

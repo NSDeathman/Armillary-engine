@@ -17,9 +17,9 @@
 #include "Render.h"
 #include "imgui_api.h"
 #include "DebugAPI.h"
+#include "CoreMacros.h"
 ///////////////////////////////////////////////////////////////
-namespace Core
-{
+CORE_BEGIN
 class CCoreAPI : public Patterns::Singleton<CCoreAPI>
 {
 	friend class Core::Patterns::Singleton<CCoreAPI>;
@@ -39,7 +39,7 @@ class CCoreAPI : public Patterns::Singleton<CCoreAPI>
 	CCoreAPI() = default;
 	~CCoreAPI();
 };
-} //namespace Core
+CORE_END
 ///////////////////////////////////////////////////////////////
 #define CoreAPI Core::CCoreAPI::GetInstance()
 ///////////////////////////////////////////////////////////////

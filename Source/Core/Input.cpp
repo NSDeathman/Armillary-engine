@@ -4,6 +4,7 @@
 // Async input system for FPS games
 ///////////////////////////////////////////////////////////////
 #include "stdafx.h"
+#include "Core.h"
 #include "Input.h"
 #include "log.h"
 #include <SDL/SDL.h>

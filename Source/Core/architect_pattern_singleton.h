@@ -4,25 +4,25 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
+#include "CoreMacros.h"
 #include "architect_pattern_noncopyable.h"
 ///////////////////////////////////////////////////////////////
-namespace Core
+CORE_BEGIN
+namespace Patterns
 {
-	namespace Patterns
+	template <typename T> class Singleton : public Noncopyable
 	{
-		template <typename T> class Singleton : public Noncopyable
+		public:
+		static T& GetInstance()
 		{
-		  public:
-			static T& GetInstance()
-			{
-				static T instance;
-				return instance;
-			}
+			static T instance;
+			return instance;
+		}
 
-		  protected:
-			Singleton() = default;
-			virtual ~Singleton() = default;
-		};
-	} // namespace Patterns
-} // namespace Core
+		protected:
+		Singleton() = default;
+		virtual ~Singleton() = default;
+	};
+} // namespace Patterns
+CORE_END
 ///////////////////////////////////////////////////////////////

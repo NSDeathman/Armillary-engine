@@ -7,50 +7,47 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "Core.h"
 ////////////////////////////////////////////////////////////////////////////////
-namespace Core
+CORE_BEGIN
+namespace ArmillaryInternal
 {
-	namespace ArmillaryInternal
+	// Constants for build identification
+	static const char* monthNames[12] = 
 	{
-		// Constants for build identification
-		static const char* monthNames[12] = 
-		{
-			"Jan", 
-			"Feb", 
-			"Mar", 
-			"Apr", 
-			"May", 
-			"Jun",
-			"Jul", 
-			"Aug", 
-			"Sep", 
-			"Oct", 
-			"Nov", 
-			"Dec"
-		};
+		"Jan", 
+		"Feb", 
+		"Mar", 
+		"Apr", 
+		"May", 
+		"Jun",
+		"Jul", 
+		"Aug", 
+		"Sep", 
+		"Oct", 
+		"Nov", 
+		"Dec"
+	};
 
-		static const int daysInMonth[12] = 
-		{
-			31, 
-			28, 
-			31, 
-			30, 
-			31, 
-			30, 
-			31, 
-			31, 
-			30, 
-			31, 
-			30, 
-			31
-		};
+	static const int daysInMonth[12] = 
+	{
+		31, 
+		28, 
+		31, 
+		30, 
+		31, 
+		30, 
+		31, 
+		31, 
+		30, 
+		31, 
+		30, 
+		31
+	};
 
-		// Starting point for the build ID computation
-		static const int startDay = 15;
-		static const int startMonth = 1;
-		static const int startYear = 2025;
-	} // namespace ArmillaryInternal
-////////////////////////////////////////////////////////////////////////////////
-extern  void PrintBuildData();
-////////////////////////////////////////////////////////////////////////////////
-} // namespace Core
+	// Starting point for the build ID computation
+	static const int startDay = 15;
+	static const int startMonth = 1;
+	static const int startYear = 2025;
+} // namespace ArmillaryInternal
+extern void PrintBuildData();
+CORE_END
 ////////////////////////////////////////////////////////////////////////////////
