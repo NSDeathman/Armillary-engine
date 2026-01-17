@@ -12,36 +12,4 @@
 ///////////////////////////////////////////////////////////////
 #include "Core.h"
 ///////////////////////////////////////////////////////////////
-#include "splash_screen.h"
-#include "window.h"
-#include "TimeSystem.h"
-#include "log.h"
-#include "filesystem.h"
-#include "build_identificator.h"
-#include "cpu_identificator.h"
-#include "AsyncExecutor.h"
-#include "Input.h"
-#include "architect_patterns.h"
-#include "Render.h"
-#include "imgui_api.h"
-///////////////////////////////////////////////////////////////
-// List of things whats we will exports
-// from Core.dll to other engine components
-///////////////////////////////////////////////////////////////
-namespace Core
-{
-	// Classes
-	class  CSplashScreen;
-	class  CWindow;
-	class  CTimeSystem;
-	class  CLog;
-	class  CAsyncExecutor;
-	class  CInput;
-	class  CFilesystem;
-	class  CRender;
-
-	// Functions
-	 void PrintBuildData();
-	 void InitializeCPU();
-} // namespace Core
 ///////////////////////////////////////////////////////////////

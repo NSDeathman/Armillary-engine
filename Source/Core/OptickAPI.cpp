@@ -6,15 +6,14 @@
 #include "stdafx.h"
 ///////////////////////////////////////////////////////////////////////////////////
 #include "OptickAPI.h"
-#include "Log.h"
-#include "TimeSystem.h"
+#include "Core.h"
 ///////////////////////////////////////////////////////////////////////////////////
 using namespace Core;
 ///////////////////////////////////////////////////////////////////////////////////
 void COptickAPI::Initialize()
 {
-	Log("\n");
-	Log("Initializing OptickCapture");
+	Print("\n");
+	Print("Initializing OptickCapture");
 	m_frames_to_capture = -1;
 	m_start_capture_frame = -1;
 	m_end_capture_frame = -1;
@@ -41,7 +40,7 @@ void COptickAPI::StartCapturing()
 											Optick::Mode::SYS_CALLS | 
 											Optick::Mode::OTHER_PROCESSES));
 
-	Log("- Optick capturing started");
+	Print("- Optick capturing started");
 }
 
 #pragma warning(disable : 4100)
@@ -53,7 +52,7 @@ void COptickAPI::TryToSaveCapture(std::string save_path)
 	}
 	catch (...)
 	{
-		Log("! An error occurred while saving optick capture");
+		Print("! An error occurred while saving optick capture");
 	}
 };
 #pragma warning(default : 4100)
@@ -61,7 +60,7 @@ void COptickAPI::TryToSaveCapture(std::string save_path)
 void COptickAPI::SaveCapture(std::string save_path)
 {
 	TryToSaveCapture(save_path);
-	Log("- Optick capture saved with name: %s", save_path);
+	Print("- Optick capture saved with name: %s", save_path);
 };
 
 /*********************************************************************************
@@ -71,7 +70,7 @@ void COptickAPI::OnFrame()
 {
 	if (m_need_capture)
 	{
-		if (TIME_API.GetFrameCount() == m_end_capture_frame) [[unlikely]]
+		if (CoreAPI.TimeSystem.GetFrameCount() == m_end_capture_frame) [[unlikely]]
 		{
 			StopCapturing();
 			SaveCapturedFrames();
@@ -83,7 +82,7 @@ void COptickAPI::StartCapturing(int frames_to_capture)
 {
 	m_need_capture = true;
 	m_frames_to_capture = frames_to_capture;
-	m_start_capture_frame = TIME_API.GetFrameCount();
+	m_start_capture_frame = CoreAPI.TimeSystem.GetFrameCount();
 	m_end_capture_frame = m_start_capture_frame + m_frames_to_capture;
 
 	StartCapturing();
@@ -94,12 +93,12 @@ void COptickAPI::StopCapturing()
 	OPTICK_STOP_CAPTURE();
 	m_need_capture = false;
 
-	Log("- Optick capturing stoped");
+	Print("- Optick capturing stoped");
 };
 
 void COptickAPI::SaveCapturedFrames()
 {
-	Log("- Saving captured frames");
+	Print("- Saving captured frames");
 
 	char capture_path[100];
 	LPCSTR frames = m_frames_to_capture == 1 ? "frame" : "frames";
@@ -116,19 +115,19 @@ void COptickAPI::SwitchProfiler()
 {
 	if (m_need_capture)
 	{
-		Log("! Capturing already started, please wait until end of capturing and try again");
+		Print("! Capturing already started, please wait until end of capturing and try again");
 		return;
 	}
 
 	if (!m_switched_to_capturing)
 	{
-		Log("- OptickAPI switched to capturing mode, execute command again to switch to saving mode");
+		Print("- OptickAPI switched to capturing mode, execute command again to switch to saving mode");
 		SwitchToCapturing();
 		m_switched_to_capturing = true;
 	}
 	else
 	{
-		Log("- OptickAPI switched to saving mode");
+		Print("- OptickAPI switched to saving mode");
 		SwitchToSaving();
 		m_switched_to_capturing = false;
 	}
@@ -136,7 +135,7 @@ void COptickAPI::SwitchProfiler()
 
 void COptickAPI::SwitchToCapturing()
 {
-	m_start_capture_frame = TIME_API.GetFrameCount();
+	m_start_capture_frame = CoreAPI.TimeSystem.GetFrameCount();
 
 	StartCapturing();
 };
@@ -145,9 +144,9 @@ void COptickAPI::SwitchToSaving()
 {
 	StopCapturing();
 
-	m_frames_to_capture = TIME_API.GetFrameCount() - m_start_capture_frame;
+	m_frames_to_capture = CoreAPI.TimeSystem.GetFrameCount() - m_start_capture_frame;
 
-	Log("- Saving %d frames", m_frames_to_capture);
+	Print("- Saving %d frames", m_frames_to_capture);
 
 	char capture_path[100];
 	LPCSTR frames = m_frames_to_capture == 1 ? "frame" : "frames";

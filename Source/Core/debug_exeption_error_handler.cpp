@@ -9,13 +9,14 @@
 #include "debug_stack_walker.h"
 #include "debug_exeption_error_handler.h"
 ///////////////////////////////////////////////////////////////
-namespace Core::Debug
-{
+using namespace Core;
+using namespace Core::Debug;
+///////////////////////////////////////////////////////////////
 bool ErrorHandler::m_initialized = false;
 bool ErrorHandler::m_terminateOnCritical = true;
 std::unique_ptr<ErrorHandler::CrashCallback> ErrorHandler::m_crashHandler = nullptr;
 std::unique_ptr<std::function<void(const std::string&)>> ErrorHandler::m_assertionHandler = nullptr;
-
+///////////////////////////////////////////////////////////////
 void SEHTranslator(unsigned int u, _EXCEPTION_POINTERS* pExp)
 {
 	// 1. Формируем сообщение об ошибке
@@ -49,11 +50,11 @@ void SEHTranslator(unsigned int u, _EXCEPTION_POINTERS* pExp)
 	}
 
 	// 3. ПИШЕМ В ЛОГ И СОХРАНЯЕМ СРАЗУ
-	ErrLog("================ CRASH REPORT ================");
-	ErrLog("%s", error.c_str());
-	ErrLog("----------------------------------------------");
-	ErrLog("%s", stackTrace.c_str());
-	ErrLog("==============================================");
+	Print("================ CRASH REPORT ================");
+	Print("%s", error.c_str());
+	Print("----------------------------------------------");
+	Print("%s", stackTrace.c_str());
+	Print("==============================================");
 
 	// 4. Создаем минидамп памяти (это полезнее лога, его можно открыть в VS)
 #if defined(_WIN32) && defined(_DEBUG)
@@ -80,7 +81,7 @@ void SEHTranslator(unsigned int u, _EXCEPTION_POINTERS* pExp)
 	}
 #endif
 
-	Core::CLog::GetInstance().Flush();
+	CoreAPI.Logger.Flush();
 
 	Sleep(100); 
 
@@ -122,7 +123,7 @@ void ErrorHandler::initialize(CrashCallback customCrashHandler)
 	Core::Debug::StackWalker::getInstance().initialize();
 
 	m_initialized = true;
-	Log("Error handling system initialized (SEH Enabled)");
+	Print("Error handling system initialized (SEH Enabled)");
 }
 
 // Завершение работы
@@ -133,7 +134,7 @@ void ErrorHandler::shutdown()
 		return;
 	}
 
-	Log("Error handling system shutdown");
+	Print("Error handling system shutdown");
 
 	m_crashHandler.reset();
 	m_assertionHandler.reset();
@@ -145,18 +146,18 @@ void ErrorHandler::logException(const Exception& e, Core::LogLevel level)
 {
 	if (!m_initialized)
 	{
-		ErrLog("Exception: %s", e.what());
-		ErrLog("Stack trace:\n");
-		ErrLog("%s", e.getStackTrace());
+		Print("Exception: %s", e.what());
+		Print("Stack trace:\n");
+		Print("%s", e.getStackTrace());
 		return;
 	}
 
-	ErrLog("Exception: %s", e.what());
-	ErrLog("Location: %s", e.getLocationString().c_str());
+	Print("Exception: %s", e.what());
+	Print("Location: %s", e.getLocationString().c_str());
 
 	if (!e.getStackTrace().empty())
 	{
-		Log2("Stack trace: %s\n", level, e.getStackTrace().c_str());
+		PrintWithLevel("Stack trace: %s\n", level, e.getStackTrace().c_str());
 	}
 }
 
@@ -171,7 +172,7 @@ void ErrorHandler::logStdException(const std::exception& e, Core::LogLevel level
 	std::ostringstream oss;
 	oss << "\nStandard exception: " << e.what();
 
-	Log2(oss.str().c_str(), level);
+	PrintWithLevel(oss.str().c_str(), level);
 }
 
 void ErrorHandler::logUnknownException(Core::LogLevel level)
@@ -182,7 +183,7 @@ void ErrorHandler::logUnknownException(Core::LogLevel level)
 		return;
 	}
 
-	Log2("\nUnknown exception occurred", level);
+	PrintWithLevel("\nUnknown exception occurred", level);
 }
 
 void ErrorHandler::handleCriticalError(const Exception& e)
@@ -195,7 +196,7 @@ void ErrorHandler::handleCriticalError(const Exception& e)
 	}
 	else
 	{
-		ErrLog("Captured Stack Trace:\n%s", e.getStackTrace().c_str());
+		PrintError("Captured Stack Trace:\n%s", e.getStackTrace().c_str());
 	}
 
 	Debug::StackWalker::logStackTrace("CRITICAL ERROR CONTEXT");
@@ -285,7 +286,7 @@ void ErrorHandler::defaultCrashHandler(const Exception& e)
 		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, nullptr, nullptr, nullptr);
 
 		CloseHandle(hFile);
-		Log("Crash dump saved to: %s", fullpath.c_str());
+		Print("Crash dump saved to: %s", fullpath.c_str());
 	}
 #endif
 }
@@ -307,5 +308,4 @@ std::string ErrorHandler::formatAssertionMessage(const std::string& message, con
 		<< ", Function: " << location.function_name() << "]";
 	return oss.str();
 }
-} // namespace Core::Debug
-  ///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////

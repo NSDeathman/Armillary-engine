@@ -30,7 +30,7 @@ enum class CursorMode
 	Confined
 };
 
-class  CWindow
+class CWindow
 {
   public:
 	struct Config

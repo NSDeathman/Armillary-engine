@@ -19,7 +19,7 @@ bool IniParser::Load(const std::string& filename, const std::string path)
 	std::ifstream file(path + filename);
 	if (!file.is_open())
 	{
-		Log("Can't load config file with name %s", filename.c_str());
+		Print("Can't load config file with name %s", filename.c_str());
 		return false;
 	}
 
@@ -63,7 +63,7 @@ bool IniParser::Save(const std::string& filename, const std::string path)
 	std::ofstream file(path + filename);
 	if (!file.is_open())
 	{
-		Log("Can't save config file with name %s", filename.c_str());
+		Print("Can't save config file with name %s", filename.c_str());
 		return false;
 	}
 
@@ -97,7 +97,7 @@ std::string IniParser::GetString(const std::string& section, const std::string& 
 		}
 	}
 
-	Log("Can't find std::string key %s in section with name %s", key.c_str(), section.c_str());
+	Print("Can't find std::string key %s in section with name %s", key.c_str(), section.c_str());
 	return defaultValue;
 }
 
@@ -106,7 +106,7 @@ int IniParser::GetInt(const std::string& section, const std::string& key, int de
 	std::string value = GetString(section, key);
 	if (value.empty())
 	{
-		Log("Can't find int key %s in section with name %s", key.c_str(), section.c_str());
+		Print("Can't find int key %s in section with name %s", key.c_str(), section.c_str());
 		return defaultValue;
 	}
 
@@ -116,7 +116,7 @@ int IniParser::GetInt(const std::string& section, const std::string& key, int de
 	}
 	catch (...)
 	{
-		Log("Can't convert int key %s in section with name %s", key.c_str(), section.c_str());
+		Print("Can't convert int key %s in section with name %s", key.c_str(), section.c_str());
 		return defaultValue;
 	}
 }
@@ -126,7 +126,7 @@ float IniParser::GetFloat(const std::string& section, const std::string& key, fl
 	std::string value = GetString(section, key);
 	if (value.empty())
 	{
-		Log("Can't find float key %s in section with name %s", key.c_str(), section.c_str());
+		Print("Can't find float key %s in section with name %s", key.c_str(), section.c_str());
 		return defaultValue;
 	}
 
@@ -136,7 +136,7 @@ float IniParser::GetFloat(const std::string& section, const std::string& key, fl
 	}
 	catch (...)
 	{
-		Log("Can't convert float key %s in section with name %s", key.c_str(), section.c_str());
+		Print("Can't convert float key %s in section with name %s", key.c_str(), section.c_str());
 		return defaultValue;
 	}
 }
@@ -146,7 +146,7 @@ bool IniParser::GetBool(const std::string& section, const std::string& key, bool
 	std::string value = GetString(section, key);
 	if (value.empty())
 	{
-		Log("Can't find bool key %s in section with name %s", key.c_str(), section.c_str());
+		Print("Can't find bool key %s in section with name %s", key.c_str(), section.c_str());
 		return defaultValue;
 	}
 
@@ -162,7 +162,7 @@ bool IniParser::GetBool(const std::string& section, const std::string& key, bool
 		return false;
 	}
 
-	Log("Can't get bool key %s in section with name %s", key.c_str(), section.c_str());
+	Print("Can't get bool key %s in section with name %s", key.c_str(), section.c_str());
 	return defaultValue;
 }
 

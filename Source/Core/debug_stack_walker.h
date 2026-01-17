@@ -19,7 +19,7 @@
 ///////////////////////////////////////////////////////////////
 namespace Core::Debug
 {
-	struct  StackFrame
+	struct StackFrame
 	{
 		std::string address;
 		std::string functionName;
@@ -47,7 +47,7 @@ namespace Core::Debug
 		}
 	};
 
-	class  StackWalker
+	class StackWalker
 	{
 	  public:
 		static StackWalker& getInstance();

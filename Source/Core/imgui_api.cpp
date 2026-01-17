@@ -9,15 +9,14 @@
 #include "filesystem.h" // Доступ к FS
 #include <d3d11.h>		// Нужен для приведения типов (ID3D11Device)
 ///////////////////////////////////////////////////////////////
-namespace Core
-{
-
+using namespace Core;
+///////////////////////////////////////////////////////////////
 void CImguiAPI::Initialize()
 {
 	if (m_Initialized)
 		return;
 
-	Log("Initializing ImGuiAPI...");
+	Print("Initializing ImGuiAPI...");
 
 	// 1. Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -55,9 +54,9 @@ void CImguiAPI::Initialize()
 	try
 	{
 		// --- Letterica (Как было раньше) ---
-		std::string lettericaPath = FS.GetGameResourcesPath({"fonts", "letterica-3.ttf"}).string();
+		std::string lettericaPath = CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "letterica-3.ttf"}).string();
 
-		if (FS.FileExists(lettericaPath))
+		if (CoreAPI.Filesystem.FileExists(lettericaPath))
 		{
 			font_letterica = io.Fonts->AddFontFromFileTTF(lettericaPath.c_str(), 14.0f);
 			font_letterica_small = io.Fonts->AddFontFromFileTTF(lettericaPath.c_str(), 10.0f);
@@ -66,69 +65,69 @@ void CImguiAPI::Initialize()
 		}
 		else
 		{
-			Log("Warning: Font not found at %s", lettericaPath.c_str());
+			Print("Warning: Font not found at %s", lettericaPath.c_str());
 			io.Fonts->AddFontDefault(); // Фолбек, если основной шрифт не найден
 		}
 
 		// --- Maven Pro (Все начертания) ---
 
 		// 1. Regular
-		std::string mavenRegularPath = FS.GetGameResourcesPath({"fonts", "MavenPro-Regular.ttf"}).string();
-		if (FS.FileExists(mavenRegularPath))
+		std::string mavenRegularPath = CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "MavenPro-Regular.ttf"}).string();
+		if (CoreAPI.Filesystem.FileExists(mavenRegularPath))
 		{
 			font_maven_pro_regular = io.Fonts->AddFontFromFileTTF(mavenRegularPath.c_str(), 14.0f);
 		}
 		else
 		{
-			Log("Warning: MavenPro-Regular not found at %s", mavenRegularPath.c_str());
+			Print("Warning: MavenPro-Regular not found at %s", mavenRegularPath.c_str());
 		}
 
 		// 2. Medium
-		std::string mavenMediumPath = FS.GetGameResourcesPath({"fonts", "MavenPro-Medium.ttf"}).string();
-		if (FS.FileExists(mavenMediumPath))
+		std::string mavenMediumPath = CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "MavenPro-Medium.ttf"}).string();
+		if (CoreAPI.Filesystem.FileExists(mavenMediumPath))
 		{
 			font_maven_pro_medium = io.Fonts->AddFontFromFileTTF(mavenMediumPath.c_str(), 14.0f);
 		}
 		else
 		{
-			Log("Warning: MavenPro-Medium not found at %s", mavenMediumPath.c_str());
+			Print("Warning: MavenPro-Medium not found at %s", mavenMediumPath.c_str());
 		}
 
 		// 3. Bold
-		std::string mavenBoldPath = FS.GetGameResourcesPath({"fonts", "MavenPro-Bold.ttf"}).string();
-		if (FS.FileExists(mavenBoldPath))
+		std::string mavenBoldPath = CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "MavenPro-Bold.ttf"}).string();
+		if (CoreAPI.Filesystem.FileExists(mavenBoldPath))
 		{
 			font_maven_pro_bold = io.Fonts->AddFontFromFileTTF(mavenBoldPath.c_str(), 14.0f);
 		}
 		else
 		{
-			Log("Warning: MavenPro-Bold not found at %s", mavenBoldPath.c_str());
+			Print("Warning: MavenPro-Bold not found at %s", mavenBoldPath.c_str());
 		}
 
 		// 4. Black
-		std::string mavenBlackPath = FS.GetGameResourcesPath({"fonts", "MavenPro-Black.ttf"}).string();
-		if (FS.FileExists(mavenBlackPath))
+		std::string mavenBlackPath = CoreAPI.Filesystem.GetGameResourcesPath({"fonts", "MavenPro-Black.ttf"}).string();
+		if (CoreAPI.Filesystem.FileExists(mavenBlackPath))
 		{
 			font_maven_pro_black = io.Fonts->AddFontFromFileTTF(mavenBlackPath.c_str(), 14.0f);
 		}
 		else
 		{
-			Log("Warning: MavenPro-Black not found at %s", mavenBlackPath.c_str());
+			Print("Warning: MavenPro-Black not found at %s", mavenBlackPath.c_str());
 		}
 	}
 	catch (const std::exception& e)
 	{
-		Log("Exception while loading fonts: %s", e.what());
+		Print("Exception while loading fonts: %s", e.what());
 		io.Fonts->AddFontDefault();
 	}
 	catch (...)
 	{
-		Log("Unknown error loading fonts");
+		Print("Unknown error loading fonts");
 		io.Fonts->AddFontDefault();
 	}
 
 	m_Initialized = true;
-	Log("ImGuiAPI Initialized Successfully");
+	Print("ImGuiAPI Initialized Successfully");
 }
 
 void CImguiAPI::ProcessEvent(const SDL_Event* event)
@@ -166,7 +165,7 @@ void CImguiAPI::Destroy()
 	if (!m_Initialized)
 		return;
 
-	Log("Destroying ImGuiAPI...");
+	Print("Destroying ImGuiAPI...");
 
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
@@ -206,5 +205,4 @@ void Core_GetImGuiAllocators(ImGuiMemAllocFunc* allocFunc, ImGuiMemFreeFunc* fre
 {
 	ImGui::GetAllocatorFunctions(allocFunc, freeFunc, userData);
 }
-
-} // namespace Core
+///////////////////////////////////////////////////////////////

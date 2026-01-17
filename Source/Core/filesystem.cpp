@@ -9,26 +9,11 @@
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
-	CFilesystem& CFilesystem::GetInstance()
-	{
-		static CFilesystem instance;
-		return instance;
-	}
-
-	CFilesystem::CFilesystem() : m_Initialized(false)
-	{
-	}
-
-	CFilesystem::~CFilesystem()
-	{
-		Destroy();
-	}
-
 	void CFilesystem::Initialize()
 	{
 		if (m_Initialized)
 		{
-			Log("Filesystem already initialized!");
+			Print("Filesystem already initialized!");
 			return;
 		}
 
@@ -43,15 +28,15 @@ namespace Core
 
 			m_WorkingDir = fs::current_path();
 
-			Log("Filesystem initialized successfully");
-			Log("Executable dir: %s", m_ExecutableDir.string().c_str());
-			Log("Working dir: %s \n", m_WorkingDir.string().c_str());
+			Print("Filesystem initialized successfully");
+			Print("Executable dir: %s", m_ExecutableDir.string().c_str());
+			Print("Working dir: %s \n", m_WorkingDir.string().c_str());
 
 			m_Initialized = true;
 		}
 		catch (const std::exception& e)
 		{
-			Log("Failed to initialize filesystem: %s", e.what());
+			Print("Failed to initialize filesystem: %s", e.what());
 		}
 	}
 
@@ -59,7 +44,7 @@ namespace Core
 	{
 		if (m_Initialized)
 		{
-			Log("Destroying filesystem...");
+			Print("Destroying filesystem...");
 			m_Initialized = false;
 		}
 	}
@@ -114,7 +99,7 @@ namespace Core
 		std::error_code err;
 		if (!CreateDirectoryRecursive(path, err))
 		{
-			Log("CreateDirectory FAILED: %s, error: %s", path.string().c_str(), err.message().c_str());
+			Print("CreateDirectory FAILED: %s, error: %s", path.string().c_str(), err.message().c_str());
 			return false;
 		}
 		return true;
@@ -152,7 +137,7 @@ namespace Core
 		}
 		catch (const std::exception& e)
 		{
-			Log("GetFiles failed: %s", e.what());
+			Print("GetFiles failed: %s", e.what());
 		}
 
 		return files;
@@ -177,7 +162,7 @@ namespace Core
 		}
 		catch (const std::exception& e)
 		{
-			Log("GetDirectories failed: %s", e.what());
+			Print("GetDirectories failed: %s", e.what());
 		}
 
 		return directories;
@@ -187,7 +172,7 @@ namespace Core
 	{
 		if (!FileExists(path))
 		{
-			Log("File not found: %s", path.string().c_str());
+			Print("File not found: %s", path.string().c_str());
 			return "";
 		}
 
@@ -204,7 +189,7 @@ namespace Core
 		}
 		catch (const std::exception& e)
 		{
-			Log("ReadTextFile failed: %s - %s", path.string().c_str(), e.what());
+			Print("ReadTextFile failed: %s - %s", path.string().c_str(), e.what());
 			return "";
 		}
 	}
@@ -227,7 +212,7 @@ namespace Core
 		}
 		catch (const std::exception& e)
 		{
-			Log("WriteTextFile failed: %s - %s", path.string().c_str(), e.what());
+			Print("WriteTextFile failed: %s - %s", path.string().c_str(), e.what());
 			return false;
 		}
 	}
@@ -238,11 +223,11 @@ namespace Core
 		{
 			fs::current_path(path);
 			m_WorkingDir = path;
-			Log("Working directory changed to: %s", path.string().c_str());
+			Print("Working directory changed to: %s", path.string().c_str());
 		}
 		else
 		{
-			Log("Directory does not exist: %s", path.string().c_str());
+			Print("Directory does not exist: %s", path.string().c_str());
 		}
 	}
 ///////////////////////////////////////////////////////////////

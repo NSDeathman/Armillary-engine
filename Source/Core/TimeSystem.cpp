@@ -232,20 +232,12 @@ class CTimeSystem::Impl
 	}
 };
 
-CTimeSystem::CTimeSystem() : m_Impl(nullptr)
-{
-}
-CTimeSystem::~CTimeSystem()
-{
-	Destroy();
-}
-
 void CTimeSystem::Initialize()
 {
 	if (!m_Impl)
 	{
 		m_Impl = new Impl();
-		Log("Time system initialized");
+		Print("Time system initialized");
 	}
 }
 
@@ -255,7 +247,7 @@ void CTimeSystem::Destroy()
 	{
 		delete m_Impl;
 		m_Impl = nullptr;
-		Log("Time system destroyed");
+		Print("Time system destroyed");
 	}
 }
 

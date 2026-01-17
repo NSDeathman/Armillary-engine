@@ -13,7 +13,7 @@
 ///////////////////////////////////////////////////////////////
 namespace Core::Debug
 {
-class  Exception : public std::runtime_error
+class Exception : public std::runtime_error
 {
   public:
 	explicit Exception(const std::string& message, std::source_location location = std::source_location::current())

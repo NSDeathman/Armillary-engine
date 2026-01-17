@@ -180,13 +180,13 @@ namespace Core
 	{
 		ArmillaryInternal::BuildInfo info = ArmillaryInternal::getBuildInfo();
 
-		Log("Armillary Engine");
-		Log("Build ID: %u.%u", info.majorId, info.minorId);
-		Log("Build type: %s", info.buildType);
-		Log("Architecture: %s", info.architecture);
-		Log("Build date: %s", info.buildDate);
-		Log("Build time: %s", info.buildTime);
-		Log("Compilation timestamp: %s %s\n", __DATE__, __TIME__);
+		Print("Armillary Engine");
+		Print("Build ID: %u.%u", info.majorId, info.minorId);
+		Print("Build type: %s", info.buildType);
+		Print("Architecture: %s", info.architecture);
+		Print("Build date: %s", info.buildDate);
+		Print("Build time: %s", info.buildTime);
+		Print("Compilation timestamp: %s %s\n", __DATE__, __TIME__);
 	}
 } // namespace Core
 ////////////////////////////////////////////////////////////////////////////////

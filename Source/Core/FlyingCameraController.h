@@ -3,7 +3,7 @@
 
 namespace Core::World
 {
-class  CFlyingCameraController : public ICameraController
+class CFlyingCameraController : public ICameraController
 {
   public:
 	CFlyingCameraController();

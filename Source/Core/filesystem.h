@@ -5,7 +5,6 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
-#include "Core.h"
 #include <filesystem>
 ///////////////////////////////////////////////////////////////
 #define APPLICATION_DATA "..//appdata//"
@@ -23,14 +22,11 @@ namespace fs = std::filesystem;
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
-	class  CFilesystem
+	class CFilesystem
 	{
 	  public:
-		// Получение экземпляра синглтона
-		static CFilesystem& GetInstance();
-
-		CFilesystem(const CFilesystem&) = delete;
-		CFilesystem& operator=(const CFilesystem&) = delete;
+		CFilesystem() = default;
+		~CFilesystem() = default;
 
 		void Initialize();
 		void Destroy();
@@ -65,9 +61,6 @@ namespace Core
 		}
 
 	  private:
-		CFilesystem();
-		~CFilesystem();
-
 		bool m_Initialized = false;
 		fs::path m_ExecutableDir;
 		fs::path m_WorkingDir;
@@ -75,9 +68,4 @@ namespace Core
 		bool CreateDirectoryRecursive(const fs::path& path, std::error_code& err);
 	};
 } // namespace Core
-///////////////////////////////////////////////////////////////
-// Макросы для удобного использования
-#define FS Core::CFilesystem::GetInstance()
-#define FS_INIT() FS.Initialize()
-#define FS_DESTROY() FS.Destroy()
 ///////////////////////////////////////////////////////////////

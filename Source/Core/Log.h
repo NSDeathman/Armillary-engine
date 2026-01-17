@@ -5,7 +5,6 @@
 ///////////////////////////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////////////////////////
-#include "Core.h"
 #include "architect_patterns.h"
 #include <fstream>
 #include "filesystem.h"
@@ -22,18 +21,19 @@ namespace Core
 		unknown
 	};
 
-	class  CLog : public Patterns::Singleton<CLog>
+	class CLog
 	{
-		friend class Patterns::Singleton<CLog>;
-
 	  public:
+		CLog();
+		~CLog();
+
 		void Initialize(const std::string& logDir = LOGS);
 		void Flush();
 		void Destroy();
 
 		void CreateConsole();
-		void __cdecl Print(LPCSTR format, ...);
-		void __cdecl PrintWithLevel(LPCSTR format, LogLevel level = LogLevel::error, ...);
+		void __cdecl PrintInternal(LPCSTR format, ...);
+		void __cdecl PrintInternalWithLevel(LPCSTR format, LogLevel level = LogLevel::error, ...);
 		void __cdecl Debug_Print(LPCSTR format, ...);
 		void __cdecl Warning_Print(LPCSTR format, ...);
 		void __cdecl Error_Print(LPCSTR format, ...);
@@ -48,9 +48,6 @@ namespace Core
 		}
 
 	  private:
-		CLog();
-		~CLog();
-
 		std::ofstream m_LogFileStream;
 		std::string m_LogFilePath;
 		bool m_Initialized = false;
@@ -84,13 +81,4 @@ namespace Core
 		ConsoleColor GetLevelColor(LogLevel level);
 	};
 } // namespace Core
-///////////////////////////////////////////////////////////////
-#define Log Core::CLog::GetInstance().Print
-#define Log2 Core::CLog::GetInstance().PrintWithLevel
-#define DbgLog Core::CLog::GetInstance().Debug_Print
-#define WarnLog Core::CLog::GetInstance().Warning_Print
-#define ErrLog Core::CLog::GetInstance().Error_Print
-#define LogInit(directory) Core::CLog::GetInstance().Initialize(directory)
-#define LogFlush() CLog::GetInstance().Flush()
-#define LogDestroy() CLog::GetInstance().Destroy()
 ///////////////////////////////////////////////////////////////

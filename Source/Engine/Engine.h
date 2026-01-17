@@ -7,10 +7,7 @@
 #include "../Core/application_interface.h"
 #include "../Game/Game.h"
 ///////////////////////////////////////////////////////////////
-using namespace Core;
-using namespace Core::Debug;
-///////////////////////////////////////////////////////////////
-class CEngine : public CApplicationBase
+class CEngine : public Core::CApplicationBase
 {
 private:
 	HMODULE m_GameModule = nullptr;

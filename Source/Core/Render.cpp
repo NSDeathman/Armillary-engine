@@ -36,7 +36,7 @@ bool CRender::Initialize(const RenderConfig& config)
 {
 	if (m_Initialized)
 	{
-		Log("Render already initialized!");
+		Print("Render already initialized!");
 		return true;
 	}
 
@@ -44,7 +44,7 @@ bool CRender::Initialize(const RenderConfig& config)
 
 	if (config.WindowHandle == nullptr)
 	{
-		Log("Creating render window...");
+		Print("Creating render window...");
 		if (!CreateRenderWindow())
 		{
 			THROW_GRAPHICS("Failed to create rendering window!");
@@ -53,26 +53,26 @@ bool CRender::Initialize(const RenderConfig& config)
 		m_Config.WindowHandle = m_Window.GetWindowHandle();
 	}
 
-	Log("Initializing render backend...");
+	Print("Initializing render backend...");
 	if (!RenderBackend.Create(RenderConfigToBackendConfig(m_Config)))
 	{
 		THROW_GRAPHICS("Failed to create render backend!");
 		return false;
 	}
 
-	Log("Initializing render system...");
-	Log("  API: %s", m_Config.API == RenderAPI::DirectX11	? "DirectX 11"
+	Print("Initializing render system...");
+	Print("  API: %s", m_Config.API == RenderAPI::DirectX11	? "DirectX 11"
 					 : m_Config.API == RenderAPI::DirectX12 ? "DirectX 12"
 					 : m_Config.API == RenderAPI::OpenGL	? "OpenGL"
 					 : m_Config.API == RenderAPI::Vulkan	? "Vulkan"
 															: "Unknown");
-	Log("  Resolution: %dx%d", m_Config.Width, m_Config.Height);
-	Log("  Screen mode: %s", m_Config.ScreenMode == ScreenMode::Fullscreen	 ? "Fullscreen"
+	Print("  Resolution: %dx%d", m_Config.Width, m_Config.Height);
+	Print("  Screen mode: %s", m_Config.ScreenMode == ScreenMode::Fullscreen	 ? "Fullscreen"
 							 : m_Config.ScreenMode == ScreenMode::Borderless ? "Borderless"
 																			 : "Windowed");
 
 	m_Initialized = true;
-	Log("Render system initialized successfully!");
+	Print("Render system initialized successfully!");
 
 	return true;
 }
@@ -82,7 +82,7 @@ void CRender::Shutdown()
 	if (!m_Initialized)
 		return;
 
-	Log("Shutting down render system...");
+	Print("Shutting down render system...");
 
 	m_ActiveScene = nullptr;
 	m_ActiveCamera = nullptr;
@@ -91,7 +91,7 @@ void CRender::Shutdown()
 	m_Window.Destroy();
 
 	m_Initialized = false;
-	Log("Render system shutdown complete.");
+	Print("Render system shutdown complete.");
 }
 
 void CRender::Resize(int width, int height)
@@ -102,7 +102,7 @@ void CRender::Resize(int width, int height)
 	m_Config.Width = width;
 	m_Config.Height = height;
 
-	Log("Resizing render target to %dx%d", width, height);
+	Print("Resizing render target to %dx%d", width, height);
 
 	RenderBackend.Restart(RenderConfigToBackendConfig(m_Config));
 

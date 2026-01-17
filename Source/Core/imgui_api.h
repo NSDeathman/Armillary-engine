@@ -29,7 +29,7 @@ typedef void (*ImGuiMemFreeFunc)(void*, void*);
 extern "C"  void Core_GetImGuiAllocators(ImGuiMemAllocFunc* allocFunc, ImGuiMemFreeFunc* freeFunc,
 												 void** userData);
 
-class  CImguiAPI : public Core::Patterns::Singleton<CImguiAPI>
+class CImguiAPI : public Core::Patterns::Singleton<CImguiAPI>
 {
 	friend class Core::Patterns::Singleton<CImguiAPI>;
 

@@ -5,7 +5,7 @@
 namespace Core::World
 {
 // Èםעונפויס
-class  ICameraController
+class ICameraController
 {
   public:
 	virtual ~ICameraController() = default;

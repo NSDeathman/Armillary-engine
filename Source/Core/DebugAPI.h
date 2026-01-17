@@ -23,6 +23,6 @@ namespace Core::Debug
 	class AudioException;
 	class NetworkException;
 
-	class  ErrorHandler;
+	class ErrorHandler;
 } // namespace Core::Debug
 ///////////////////////////////////////////////////////////////

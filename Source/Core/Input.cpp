@@ -9,8 +9,7 @@
 #include <SDL/SDL.h>
 #include <cmath>
 ///////////////////////////////////////////////////////////////
-namespace Core
-{
+using namespace Core;
 ///////////////////////////////////////////////////////////////
 CInput::CInput()
 {
@@ -27,7 +26,7 @@ bool CInput::Initialize(int updateFrequency)
 {
 	if (m_Running)
 	{
-		Log("Async input system already initialized!");
+		Print("Async input system already initialized!");
 		return true;
 	}
 
@@ -61,12 +60,12 @@ bool CInput::Initialize(int updateFrequency)
 		SetThreadPriority(m_InputThread.native_handle(), THREAD_PRIORITY_TIME_CRITICAL);
 #endif
 
-		Log("Async input system initialized successfully (Update frequency: %d Hz)", (int)m_UpdateFrequency);
+		Print("Async input system initialized successfully (Update frequency: %d Hz)", (int)m_UpdateFrequency);
 		return true;
 	}
 	catch (const std::exception& e)
 	{
-		Log("Failed to initialize async input system: %s", e.what());
+		Print("Failed to initialize async input system: %s", e.what());
 		return false;
 	}
 }
@@ -90,14 +89,14 @@ void CInput::Destroy()
 		// Выключаем SDL подсистему ввода
 		SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER | SDL_INIT_JOYSTICK);
 
-		Log("Async input system destroyed");
+		Print("Async input system destroyed");
 	}
 }
 
 ///////////////////////////////////////////////////////////////
 void CInput::InputThreadFunc()
 {
-	Log("Input thread started");
+	Print("Input thread started");
 
 	const auto targetFrameTime = std::chrono::microseconds(1000000 / m_UpdateFrequency);
 
@@ -131,7 +130,7 @@ void CInput::InputThreadFunc()
 		m_AverageUpdateTime = 0.9 * m_AverageUpdateTime + 0.1 * updateTime;
 	}
 
-	Log("Input thread stopped");
+	Print("Input thread stopped");
 }
 
 ///////////////////////////////////////////////////////////////
@@ -424,5 +423,3 @@ void CInput::SetGamepadDeadzone(float deadzone)
 	m_GamepadDeadzone.store(std::clamp(deadzone, 0.0f, 1.0f));
 }
 ///////////////////////////////////////////////////////////////
-} // namespace Core
-  ///////////////////////////////////////////////////////////////

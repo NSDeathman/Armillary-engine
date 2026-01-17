@@ -44,7 +44,7 @@ namespace Core::Debug
 		}
 
 		m_initialized = true;
-		Log("StackWalker initialized (Search path: %s)", searchPath.c_str());
+		Print("StackWalker initialized (Search path: %s)", searchPath.c_str());
 #endif
 
 		return m_initialized;
@@ -62,7 +62,7 @@ namespace Core::Debug
 	#endif
 
 		m_initialized = false;
-		Log("StackWalker shutdown");
+		Print("StackWalker shutdown");
 	}
 
 	std::vector<StackFrame> StackWalker::captureStackTrace(int maxFrames, int skipFrames, PCONTEXT contextRecord)
@@ -264,13 +264,13 @@ namespace Core::Debug
 		auto stackTrace = getInstance().getStackTraceString(32, skip, contextRecord);
 
 		if (!context.empty())
-			ErrLog("Stack trace for: %s", context.c_str());
+			PrintError("Stack trace for: %s", context.c_str());
 
 		std::istringstream iss(stackTrace);
 		std::string line;
 		while (std::getline(iss, line))
 		{
-			ErrLog("%s", line.c_str());
+			PrintError("%s", line.c_str());
 		}
 	}
 
@@ -285,11 +285,11 @@ namespace Core::Debug
 		if (result == 0)
 		{
 			// Можно добавить GetLastError() для отладки самого отладчика
-			ErrLog("Failed to load symbols for %s. Error: %d", mod.c_str(), GetLastError());
+			PrintError("Failed to load symbols for %s. Error: %d", mod.c_str(), GetLastError());
 		}
 		else
 		{
-			Log("Loaded symbols for %s", mod.c_str());
+			Print("Loaded symbols for %s", mod.c_str());
 		}
 #endif
 	}

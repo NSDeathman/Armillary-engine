@@ -197,12 +197,12 @@ namespace Core
 	{
 		CPU::Initialize();
 
-		Log("CPU Information:");
-		Log("Vendor: %s", CPU::Info.vendor);
-		Log("Model: %s", CPU::Info.modelName);
-		Log("Cores: %d", CPU::Info.coreCount);
-		Log("Threads: %d", CPU::Info.threadCount);
-		Log("Frequency: %f %s", ((float)CPU::clockFrequency / 1000000000), "GHz");
+		Print("CPU Information:");
+		Print("Vendor: %s", CPU::Info.vendor);
+		Print("Model: %s", CPU::Info.modelName);
+		Print("Cores: %d", CPU::Info.coreCount);
+		Print("Threads: %d", CPU::Info.threadCount);
+		Print("Frequency: %f %s", ((float)CPU::clockFrequency / 1000000000), "GHz");
 
 		std::string features;
 		if (CPU::Info.HasFeature(CPU::Feature::MMX))
@@ -229,7 +229,7 @@ namespace Core
 		if (!features.empty())
 		{
 			features = features.substr(0, features.length() - 2);
-			Log("Features: %s \n", features.c_str());
+			Print("Features: %s \n", features.c_str());
 		}
 	}
 } // namespace Core

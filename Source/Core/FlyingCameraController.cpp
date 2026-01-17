@@ -33,11 +33,11 @@ void CFlyingCameraController::HandleRotation(CCamera& camera, float dt)
 {
 	// Используем сглаженный ввод мыши
 	int mouseDx = 0, mouseDy = 0;
-	INPUT.GetMouseDelta(mouseDx, mouseDy);
+	CoreAPI.Input.GetMouseDelta(mouseDx, mouseDy);
 
 	// Используем сглаженный ввод геймпада
 	float stickX = 0.0f, stickY = 0.0f;
-	INPUT.GetRightStick(stickX, stickY);
+	CoreAPI.Input.GetRightStick(stickX, stickY);
 
 	// Комбинируем ввод от мыши и геймпада
 	float rotY = (float)mouseDx * MouseSensitivity + stickX * GamepadSensitivity;
@@ -86,27 +86,27 @@ void CFlyingCameraController::HandleMovement(CCamera& camera, float dt)
 	Math::float3 targetVelocity = Math::float3::zero();
 
 	// --- Клавиатура ---
-	if (INPUT.IsKeyHeld(SDL_SCANCODE_W))
+	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_W))
 		targetVelocity.z += 1.0f;
-	if (INPUT.IsKeyHeld(SDL_SCANCODE_S))
+	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_S))
 		targetVelocity.z -= 1.0f;
-	if (INPUT.IsKeyHeld(SDL_SCANCODE_A))
+	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_A))
 		targetVelocity.x -= 1.0f;
-	if (INPUT.IsKeyHeld(SDL_SCANCODE_D))
+	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_D))
 		targetVelocity.x += 1.0f;
-	if (INPUT.IsKeyHeld(SDL_SCANCODE_E))
+	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_E))
 		targetVelocity.y += 1.0f;
-	if (INPUT.IsKeyHeld(SDL_SCANCODE_Q))
+	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_Q))
 		targetVelocity.y -= 1.0f;
 
 	// --- Геймпад ---
 	float padX = 0.0f, padY = 0.0f;
-	INPUT.GetLeftStick(padX, padY);
+	CoreAPI.Input.GetLeftStick(padX, padY);
 	targetVelocity.x += padX;
 	targetVelocity.z -= padY; // Инвертируем ось Y для соответствия клавиатуре
 
-	float trLeft = INPUT.GetLeftTrigger();
-	float trRight = INPUT.GetRightTrigger();
+	float trLeft = CoreAPI.Input.GetLeftTrigger();
+	float trRight = CoreAPI.Input.GetRightTrigger();
 	targetVelocity.y += (trRight - trLeft);
 
 	// Нормализация вектора скорости при диагональном движении
@@ -117,7 +117,7 @@ void CFlyingCameraController::HandleMovement(CCamera& camera, float dt)
 
 	// Ускорение (спринт)
 	float targetSpeed = MoveSpeed;
-	bool isSprinting = INPUT.IsKeyHeld(SDL_SCANCODE_LSHIFT) || INPUT.IsGamepadButtonHeld(SDL_CONTROLLER_BUTTON_LEFTSTICK);
+	bool isSprinting = CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_LSHIFT) || CoreAPI.Input.IsGamepadButtonHeld(SDL_CONTROLLER_BUTTON_LEFTSTICK);
 
 	if (isSprinting)
 	{
@@ -184,11 +184,11 @@ void CFlyingCameraController::HandleMovement(CCamera& camera, float dt)
 #ifdef _DEBUG
 	if (m_ShowDebugInfo)
 	{
-		Log("Movement Debug:");
-		Log("  Target Velocity: (%.2f, %.2f, %.2f)", targetVelocity.x, targetVelocity.y, targetVelocity.z);
-		Log("  Current Velocity: (%.2f, %.2f, %.2f)", currentVelocity.x, currentVelocity.y, currentVelocity.z);
-		Log("  Speed: %.2f / %.2f (current/target)", currentSpeed, targetSpeed);
-		Log("  Delta Move: (%.4f, %.4f, %.4f)", deltaMove.x, deltaMove.y, deltaMove.z);
+		Print("Movement Debug:");
+		Print("  Target Velocity: (%.2f, %.2f, %.2f)", targetVelocity.x, targetVelocity.y, targetVelocity.z);
+		Print("  Current Velocity: (%.2f, %.2f, %.2f)", currentVelocity.x, currentVelocity.y, currentVelocity.z);
+		Print("  Speed: %.2f / %.2f (current/target)", currentSpeed, targetSpeed);
+		Print("  Delta Move: (%.4f, %.4f, %.4f)", deltaMove.x, deltaMove.y, deltaMove.z);
 	}
 #endif
 }
@@ -229,7 +229,7 @@ void CFlyingCameraController::ApplyHeadBob(CCamera& camera, float dt)
 	static float trauma = 0.0f; // "Травма" - уровень тряски
 
 	// Увеличиваем травму при спринте
-	bool isSprinting = INPUT.IsKeyHeld(SDL_SCANCODE_LSHIFT) || INPUT.IsGamepadButtonHeld(SDL_CONTROLLER_BUTTON_LEFTSTICK);
+	bool isSprinting = CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_LSHIFT) || CoreAPI.Input.IsGamepadButtonHeld(SDL_CONTROLLER_BUTTON_LEFTSTICK);
 
 	if (isSprinting)
 	{
@@ -243,7 +243,7 @@ void CFlyingCameraController::ApplyHeadBob(CCamera& camera, float dt)
 	if (trauma > 0.01f)
 	{
 		// Эффект тряски на основе шума Перлина
-		float time = TIME_API.GetTotalTime();
+		float time = CoreAPI.TimeSystem.GetTotalTime();
 		float shake = trauma * trauma; // Квадрат для более интенсивной тряски
 
 		float offsetX = (sinf(time * 15.7f) + sinf(time * 13.3f) * 0.5f) * shake * 0.05f;

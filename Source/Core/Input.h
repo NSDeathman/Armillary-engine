@@ -21,11 +21,12 @@
 ///////////////////////////////////////////////////////////////
 namespace Core
 {
-class CInput : public Patterns::Singleton<CInput>
+class CInput
 {
-	friend class Patterns::Singleton<CInput>;
-
   public:
+	CInput();
+	~CInput();
+
 	// Инициализация и завершение
 	bool Initialize(int updateFrequency = 1000); // Частота обновления в герцах
 	void Destroy();
@@ -82,9 +83,6 @@ class CInput : public Patterns::Singleton<CInput>
 	}
 
   private:
-	CInput();
-	~CInput();
-
 	// Структура для состояния ввода
 	struct InputFrame
 	{
@@ -155,18 +153,4 @@ class CInput : public Patterns::Singleton<CInput>
 	void InputThreadFunc();
 };
 } // namespace Core
-///////////////////////////////////////////////////////////////
-// Макросы для удобства (сохранены для обратной совместимости)
-#define INPUT Core::CInput::GetInstance()
-
-#define KEY_PRESSED(key) Core::CInput::GetInstance().IsKeyPressed(key)
-#define KEY_HELD(key) Core::CInput::GetInstance().IsKeyHeld(key)
-#define KEY_RELEASED(key) Core::CInput::GetInstance().IsKeyReleased(key)
-
-#define GAMEPAD_BUTTON_PRESSED(button) Core::CInput::GetInstance().IsGamepadButtonPressed(button)
-#define GAMEPAD_BUTTON_HELD(button) Core::CInput::GetInstance().IsGamepadButtonHeld(button)
-#define GAMEPAD_BUTTON_RELEASED(button) Core::CInput::GetInstance().IsGamepadButtonReleased(button)
-
-#define MOUSE_BUTTON_PRESSED(button) Core::CInput::GetInstance().IsMouseButtonPressed(button)
-#define MOUSE_BUTTON_HELD(button) Core::CInput::GetInstance().IsMouseButtonHeld(button)
 ///////////////////////////////////////////////////////////////

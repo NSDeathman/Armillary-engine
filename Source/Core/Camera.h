@@ -10,7 +10,7 @@ enum class ProjectionType
 	Orthographic
 };
 
-class  CCamera
+class CCamera
 {
   public:
 	CCamera();

@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "Engine.h"
 ///////////////////////////////////////////////////////////////
+using namespace Core;
+///////////////////////////////////////////////////////////////
 void CEngine::Start()
 {
 	Core::CSplashScreen::GetInstance().Show();
@@ -13,26 +15,10 @@ void CEngine::Start()
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 
-	LogInit(std::string(LOGS));
+	CoreAPI.Initialize();
 
-	Log("\n");
-	Log("Starting engine\n");
-
-	FS_INIT();
-
-	SAFE_EXECUTE_LOG(PrintBuildData(), "Printing build data");
-
-	InitializeCPU();
-
-	ErrorHandler::initialize();
-
-	ASYNC_API_INIT();
-
-	TIME_API.Initialize();
-	TIME_API.SetTargetFPS(60);
-	TIME_API.EnableFPSCap(true);
-
-	INPUT.Initialize();
+	CoreAPI.TimeSystem.SetTargetFPS(60);
+	CoreAPI.TimeSystem.EnableFPSCap(true);
 
 	LoadRender();
 
@@ -40,7 +26,7 @@ void CEngine::Start()
 
 	LoadGameModule();
 
-	Log("Engine started\n");
+	Print("Engine started\n");
 
 	Core::CSplashScreen::GetInstance().Hide();
 }
@@ -61,7 +47,7 @@ bool CEngine::LoadGameModule()
 		return false;
 	}
 
-	Log("Game successfully initialized");
+	Print("Game successfully initialized");
 	return true;
 }
 
@@ -101,9 +87,9 @@ void CEngine::Update()
 {
 	HandleSDLEvents();
 
-	TIME_API.Update();
+	CoreAPI.TimeSystem.Update();
 
-	INPUT.BeginFrame();
+	CoreAPI.Input.BeginFrame();
 
 	IMGUI.OnFrameBegin();
 
@@ -111,7 +97,7 @@ void CEngine::Update()
 
 	Renderer.DrawFrame();
 
-	INPUT.EndFrame();
+	CoreAPI.Input.EndFrame();
 }
 
 void CEngine::Destroy()
@@ -140,9 +126,8 @@ void CEngine::Destroy()
 	// Можно явно вызвать Shutdown рендера, чтобы освободить окно и бекенд
 	Renderer.Shutdown();
 
-	LogDestroy();
-	ASYNC_API_DESTROY();
-	FS_DESTROY();
+	CoreAPI.Destroy();
+
 	SDL_Quit();
 }
 ///////////////////////////////////////////////////////////////

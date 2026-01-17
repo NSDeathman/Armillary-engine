@@ -32,10 +32,10 @@ bool CGame::Initialize()
 
 	// 2. Компилируем шейдер
 	ShaderPass standardShader;
-	std::string shaderPath = FS.GetGameResourcesPath({"shaders", "standard.shader"}).string();
-	if (!FS.FileExists(shaderPath))
+	std::string shaderPath = CoreAPI.Filesystem.GetGameResourcesPath({"shaders", "standard.shader"}).string();
+	if (!CoreAPI.Filesystem.FileExists(shaderPath))
 	{
-		ErrLog("Shader missing: %s", shaderPath.c_str());
+		PrintError("Shader missing: %s", shaderPath.c_str());
 		return false;
 	}
 	standardShader.VertexShaderPath = shaderPath;
@@ -96,7 +96,7 @@ void CGame::Shutdown()
 
 void CGame::Update()
 {
-	float dt = TIME_API.GetDeltaTime();
+	float dt = CoreAPI.TimeSystem.GetDeltaTime();
 
 	// 1. Логика камеры
 	bool isRMBDown = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0;

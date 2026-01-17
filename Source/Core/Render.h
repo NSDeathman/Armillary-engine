@@ -14,7 +14,7 @@ class CScene;
 
 extern Rendeructor RenderBackend;
 
-struct  RenderConfig
+struct RenderConfig
 {
 	int Width = 1920;
 	int Height = 1080;

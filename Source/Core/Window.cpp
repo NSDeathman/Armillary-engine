@@ -27,7 +27,7 @@ void CWindow::Initialize(const Config& config)
 {
 	if (m_initialized)
 	{
-		Log("Window already initialized");
+		Print("Window already initialized");
 		return;
 	}
 
@@ -37,7 +37,7 @@ void CWindow::Initialize(const Config& config)
 	ApplyCursorMode();
 	m_initialized = true;
 
-	Log("Window created: %s (%dx%d)", m_config.Name.c_str(), m_config.Width, m_config.Height);
+	Print("Window created: %s (%dx%d)", m_config.Name.c_str(), m_config.Width, m_config.Height);
 }
 
 void CWindow::Destroy()
@@ -58,7 +58,7 @@ void CWindow::Destroy()
 	}
 
 	m_initialized = false;
-	Log("Window destroyed");
+	Print("Window destroyed");
 }
 
 void CWindow::Create()
@@ -76,7 +76,7 @@ void CWindow::Create()
 
 	if (!m_window)
 	{
-		Log("! Failed to create window: %s", SDL_GetError());
+		Print("! Failed to create window: %s", SDL_GetError());
 		return;
 	}
 
@@ -86,7 +86,7 @@ void CWindow::Create()
 	SDL_VERSION(&m_windowInfo.version);
 	if (!SDL_GetWindowWMInfo(m_window, &m_windowInfo))
 	{
-		Log("! Failed to get window info: %s", SDL_GetError());
+		Print("! Failed to get window info: %s", SDL_GetError());
 	}
 }
 
@@ -117,7 +117,7 @@ void CWindow::ApplyWindowMode()
 
 	if (result < 0)
 	{
-		Log("! Failed to set window mode: %s", SDL_GetError());
+		Print("! Failed to set window mode: %s", SDL_GetError());
 	}
 }
 
@@ -154,13 +154,13 @@ void CWindow::UpdateDisplayMode()
 	int displayIndex = SDL_GetWindowDisplayIndex(m_window);
 	if (displayIndex < 0)
 	{
-		Log("! Failed to get window display index: %s", SDL_GetError());
+		Print("! Failed to get window display index: %s", SDL_GetError());
 		return;
 	}
 
 	if (SDL_GetCurrentDisplayMode(displayIndex, &m_displayMode) != 0)
 	{
-		Log("! Failed to get display mode: %s", SDL_GetError());
+		Print("! Failed to get display mode: %s", SDL_GetError());
 	}
 }
 
@@ -490,7 +490,7 @@ void CWindow::LoadWindowIcon(const std::string& path)
 	else
 #endif
 	{
-		Log("! Failed to load icon: %s");//, IMG_GetError());
+		Print("! Failed to load icon: %s");//, IMG_GetError());
 	}
 }
 

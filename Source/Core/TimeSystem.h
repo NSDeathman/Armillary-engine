@@ -41,13 +41,11 @@ struct TimeScale
 	bool active;
 };
 
-class CTimeSystem : public Patterns::Singleton<CTimeSystem>
+class CTimeSystem
 {
-	friend class Patterns::Singleton<CTimeSystem>;
-
   public:
-	CTimeSystem();
-	~CTimeSystem();
+	CTimeSystem() = default;
+	~CTimeSystem() = default;
 
 	// Основные методы
 	void Initialize();
@@ -144,7 +142,4 @@ class CTimeSystem : public Patterns::Singleton<CTimeSystem>
 	Impl* m_Impl;
 };
 } // namespace Core
-///////////////////////////////////////////////////////////////
-#define TIME_API_INIT() Core::CTimeSystem::GetInstance().Initialize()
-#define TIME_API Core::CTimeSystem::GetInstance()
 ///////////////////////////////////////////////////////////////
