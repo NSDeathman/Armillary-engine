@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 
-namespace Core::Components
+namespace Core::ECS::Components
 {
 class TransformComponent : public Core::ECS::Component<TransformComponent>
 {

@@ -166,11 +166,14 @@
     <ClInclude Include="Scene.h">
       <Filter>World\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Components.h">
-      <Filter>World\Entity component system\Components</Filter>
-    </ClInclude>
     <ClInclude Include="CoreMacros.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>World\Entity component system\Components\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialComponent.h">
+      <Filter>World\Entity component system\Components\Material</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -343,6 +346,12 @@
     </Filter>
     <Filter Include="World\Entity component system\Components\Mesh">
       <UniqueIdentifier>{f3c1da36-d40d-4fae-a933-73339e790cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Entity component system\Components\Camera">
+      <UniqueIdentifier>{5a4cf764-f2e1-4c35-8478-217607cb26a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Entity component system\Components\Material">
+      <UniqueIdentifier>{587dc8f8-14a4-4b67-b749-b2ef34eb7e8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

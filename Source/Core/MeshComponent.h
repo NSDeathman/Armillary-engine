@@ -6,7 +6,7 @@
 #include <memory>
 #include <cfloat>
 
-namespace Core::Components
+namespace Core::ECS::Components
 {
 // —труктура AABB (Axis-Aligned Bounding Box)
 // ¬ будущем можно вынести в MathAPI, но пока пусть живет р€дом с геометрией

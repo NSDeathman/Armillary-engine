@@ -1,15 +1,15 @@
 ﻿#include "stdafx.h"
 #include "Game.h"
 #include <ECSCore.h>
-#include <Components.h>
-#include <MathAPI/MathAPI.h>
 #include <MeshComponent.h>
+#include <CameraComponent.h>
+#include <MaterialComponent.h>
 
+using namespace Math;
 using namespace Core;
 using namespace Core::World;
-using namespace Core::Components;
 using namespace Core::ECS;
-using namespace Math;
+using namespace Core::ECS::Components;
 
 // Указатель на сущность куба для доступа в Update (для вращения или GUI)
 Entity* m_CubeEntity = nullptr;

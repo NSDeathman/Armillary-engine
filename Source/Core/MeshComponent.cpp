@@ -2,7 +2,7 @@
 #include "MeshComponent.h"
 #include <iostream>
 
-namespace Core::Components
+namespace Core::ECS::Components
 {
 bool MeshComponent::LoadFromFile(const std::string& filepath)
 {

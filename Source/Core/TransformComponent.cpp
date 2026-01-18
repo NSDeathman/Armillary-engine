@@ -2,7 +2,7 @@
 #include "TransformComponent.h"
 #include "ECSCore.h"
 
-namespace Core::Components
+namespace Core::ECS::Components
 {
 using namespace Math;
 

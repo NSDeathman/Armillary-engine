@@ -42,8 +42,8 @@
     <ClInclude Include="AsyncExecutor.h" />
     <ClInclude Include="build_identificator.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraController.h" />
-    <ClInclude Include="Components.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="CoreMacros.h" />
     <ClInclude Include="cpu_identificator.h" />
@@ -67,6 +67,7 @@
     <ClInclude Include="IniWatchDog.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="MaterialComponent.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="OptickAPI.h" />
     <ClInclude Include="Render.h" />

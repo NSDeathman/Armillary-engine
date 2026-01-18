@@ -1,14 +1,15 @@
 #include "stdafx.h"
 #include "Scene.h"
-#include "Components.h"
 #include "TransformComponent.h"
+#include "CameraComponent.h"
+#include "MaterialComponent.h"
 #include "MeshComponent.h"
 #include "Render.h"
 
 namespace Core::World
 {
-using namespace Core::Components;
 using namespace Core::ECS;
+using namespace Core::ECS::Components;
 
 CScene::CScene()
 {
