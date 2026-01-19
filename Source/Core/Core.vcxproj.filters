@@ -145,15 +145,6 @@
     <ClInclude Include="Render.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>World\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraController.h">
-      <Filter>World\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="FlyingCameraController.h">
-      <Filter>World\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="ECSCore.h">
       <Filter>World\Entity component system\Core</Filter>
     </ClInclude>
@@ -169,11 +160,14 @@
     <ClInclude Include="CoreMacros.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="CameraComponent.h">
-      <Filter>World\Entity component system\Components\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="MaterialComponent.h">
       <Filter>World\Entity component system\Components\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>World\Entity component system\Components\Camera\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyingCameraControllerComponent.h">
+      <Filter>World\Entity component system\Components\Camera\Camera controllers\Flying camera controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -225,12 +219,6 @@
     <ClCompile Include="Render.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>World\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="FlyingCameraController.cpp">
-      <Filter>World\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="TransformComponent.cpp">
       <Filter>World\Entity component system\Components\Transform %283D%29</Filter>
     </ClCompile>
@@ -242,6 +230,12 @@
     </ClCompile>
     <ClCompile Include="cpu_identificator.cpp">
       <Filter>Utils\CPUID</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>World\Entity component system\Components\Camera\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyingCameraControllerComponent.cpp">
+      <Filter>World\Entity component system\Components\Camera\Camera controllers\Flying camera controller</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -323,9 +317,6 @@
     <Filter Include="World">
       <UniqueIdentifier>{81a4c255-6125-492b-9dab-d2d000b757e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="World\Camera">
-      <UniqueIdentifier>{f8b930cc-db1d-44f9-a457-582a19553d6f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="World\Object">
       <UniqueIdentifier>{7d868232-7c19-46f9-8102-e0bfe64a3c4b}</UniqueIdentifier>
     </Filter>
@@ -352,6 +343,15 @@
     </Filter>
     <Filter Include="World\Entity component system\Components\Material">
       <UniqueIdentifier>{587dc8f8-14a4-4b67-b749-b2ef34eb7e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Entity component system\Components\Camera\Camera controllers">
+      <UniqueIdentifier>{54476b4d-3f35-40cb-9ec3-8ebe53f3a8d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Entity component system\Components\Camera\Core">
+      <UniqueIdentifier>{ebb2c5b7-5854-4e3d-ade1-c7726ae4bd91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Entity component system\Components\Camera\Camera controllers\Flying camera controller">
+      <UniqueIdentifier>{b83d19f9-142a-4771-b4ee-d47892565e4c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

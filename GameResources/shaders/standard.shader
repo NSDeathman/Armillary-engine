@@ -5,16 +5,17 @@
 // Данные кадра (обновляются 1 раз за кадр) - регистр b0
 cbuffer FrameBuffer : register(b0)
 {
-    row_major float4x4 View;       // 64 bytes
-    row_major float4x4 Projection; // 64 bytes
-    float3 CameraPos;              // 12 bytes
-    float Padding;                 // 4 bytes (для выравнивания 16 байт)
+    row_major float4x4 View;            // 64 bytes
+    row_major float4x4 Projection;      // 64 bytes
+    row_major float4x4 ViewProjection;  // 64 bytes
+    float3 CameraPos;                   // 12 bytes
+    float Padding;                      // 4 bytes (для выравнивания 16 байт)
 };
 
 // Данные объекта (обновляются для каждого меша) - регистр b1
 cbuffer ObjectBuffer : register(b1)
 {
-    row_major float4x4 World;      // 64 bytes
+    row_major float4x4 World;           // 64 bytes
 };
 
 // =================================================================================

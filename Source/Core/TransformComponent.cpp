@@ -243,19 +243,23 @@ void TransformComponent::LookAt(const float3& target, const float3& worldUp)
 	MarkWorldDirty();
 }
 
-float3 TransformComponent::GetForward()
+Math::float3 TransformComponent::GetForward()
 {
-	return GetWorldRotation().transform_vector(float3::forward());
+    const Math::float4x4& world = GetWorldMatrix();
+    Math::quaternion rotation = GetWorldRotation();
+    return rotation.transform_vector(Math::float3(0, 0, 1)); // Z-forward
 }
 
-float3 TransformComponent::GetRight()
+Math::float3 TransformComponent::GetRight()
 {
-	return GetWorldRotation().transform_vector(float3::right());
+    Math::quaternion rotation = GetWorldRotation();
+    return rotation.transform_vector(Math::float3(1, 0, 0)); // X-right
 }
 
-float3 TransformComponent::GetUp()
+Math::float3 TransformComponent::GetUp()
 {
-	return GetWorldRotation().transform_vector(float3::up());
+    Math::quaternion rotation = GetWorldRotation();
+    return rotation.transform_vector(Math::float3(0, 1, 0)); // Y-up
 }
 
 std::unique_ptr<Core::ECS::IComponent> TransformComponent::Clone() const

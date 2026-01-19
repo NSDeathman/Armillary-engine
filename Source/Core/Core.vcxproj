@@ -41,9 +41,7 @@
     <ClInclude Include="architect_pattern_singleton.h" />
     <ClInclude Include="AsyncExecutor.h" />
     <ClInclude Include="build_identificator.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
-    <ClInclude Include="CameraController.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="CoreMacros.h" />
     <ClInclude Include="cpu_identificator.h" />
@@ -60,7 +58,7 @@
     <ClInclude Include="debug_stack_walker.h" />
     <ClInclude Include="ECSCore.h" />
     <ClInclude Include="filesystem.h" />
-    <ClInclude Include="FlyingCameraController.h" />
+    <ClInclude Include="FlyingCameraControllerComponent.h" />
     <ClInclude Include="IGame.h" />
     <ClInclude Include="imgui_api.h" />
     <ClInclude Include="IniParser.h" />
@@ -81,13 +79,13 @@
   <ItemGroup>
     <ClCompile Include="AsyncExecutor.cpp" />
     <ClCompile Include="build_identificator.cpp" />
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="cpu_identificator.cpp" />
     <ClCompile Include="debug_exeption_error_handler.cpp" />
     <ClCompile Include="debug_stack_walker.cpp" />
     <ClCompile Include="filesystem.cpp" />
-    <ClCompile Include="FlyingCameraController.cpp" />
+    <ClCompile Include="FlyingCameraControllerComponent.cpp" />
     <ClCompile Include="imgui_api.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>

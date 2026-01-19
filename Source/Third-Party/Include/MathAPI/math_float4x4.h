@@ -655,7 +655,9 @@ namespace Math
          * @return Rotation quaternion
          * @note Removes scaling and extracts pure rotation
          */
-        quaternion get_rotation() const noexcept;
+		quaternion get_rotation() const noexcept;
+
+		float3 get_rotation_euler_angles() const noexcept;
 
         /**
          * @brief Set translation component
@@ -757,8 +759,10 @@ namespace Math
          * @return D3DXMATRIX equivalent
          * @note Converts to DirectX row-major format
          */
-        operator D3DXMATRIX() const noexcept;
+		operator D3DXMATRIX() const noexcept;
 #endif
+
+          float4x4 slerp(const float4x4& a, const float4x4& b, float t) noexcept;
     };
 
     // ============================================================================

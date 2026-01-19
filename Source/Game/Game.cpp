@@ -3,6 +3,7 @@
 #include <ECSCore.h>
 #include <MeshComponent.h>
 #include <CameraComponent.h>
+#include <FlyingCameraControllerComponent.h>
 #include <MaterialComponent.h>
 
 using namespace Math;
@@ -21,8 +22,64 @@ IGame* CreateGame()
 	return new CGame();
 }
 
+void TestQuaternionMath()
+{
+	Print("\n=== Quaternion Math Test ===");
+
+	// Тест 1: 45 градусов вокруг Y
+	{
+		Math::quaternion q1 = Math::quaternion::rotation_y(Math::FastMath::to_radians(45.0f));
+		Math::float3 euler1 = q1.to_euler();
+		Print("Test 1 - 45° Y rotation:");
+		Print("  Quaternion: (%.3f, %.3f, %.3f, %.3f)", q1.x, q1.y, q1.z, q1.w);
+		Print("  Euler Angles: X=%.2f°, Y=%.2f°, Z=%.2f°", Math::FastMath::to_degrees(euler1.x),
+			  Math::FastMath::to_degrees(euler1.y), Math::FastMath::to_degrees(euler1.z));
+
+		// Проверяем преобразование вектора
+		Math::float3 forward = q1.transform_vector(Math::float3(0, 0, 1));
+		Print("  Forward after 45° Y: (%.3f, %.3f, %.3f) - expected (0.707, 0, 0.707)", forward.x, forward.y,
+			  forward.z);
+	}
+
+	// Тест 2: from_euler
+	{
+		float pitch = Math::FastMath::to_radians(30.0f);
+		float yaw = Math::FastMath::to_radians(45.0f);
+		float roll = 0.0f;
+
+		Math::quaternion q2 = Math::quaternion::from_euler(pitch, yaw, roll);
+		Math::float3 euler2 = q2.to_euler();
+		Print("\nTest 2 - from_euler(30°, 45°, 0°):");
+		Print("  Quaternion: (%.3f, %.3f, %.3f, %.3f)", q2.x, q2.y, q2.z, q2.w);
+		Print("  Euler Angles: X=%.2f°, Y=%.2f°, Z=%.2f°", Math::FastMath::to_degrees(euler2.x),
+			  Math::FastMath::to_degrees(euler2.y), Math::FastMath::to_degrees(euler2.z));
+	}
+
+	// Тест 3: Порядок умножения
+	{
+		Math::quaternion qY = Math::quaternion::rotation_y(Math::FastMath::to_radians(45.0f));
+		Math::quaternion qX = Math::quaternion::rotation_x(Math::FastMath::to_radians(30.0f));
+
+		// Способ 1: Yaw then Pitch
+		Math::quaternion q3a = qY * qX;
+		Math::float3 euler3a = q3a.to_euler();
+
+		// Способ 2: Pitch then Yaw
+		Math::quaternion q3b = qX * qY;
+		Math::float3 euler3b = q3b.to_euler();
+
+		Print("\nTest 3 - Multiplication order:");
+		Print("  qY * qX (Yaw then Pitch): X=%.2f°, Y=%.2f°, Z=%.2f°", Math::FastMath::to_degrees(euler3a.x),
+			  Math::FastMath::to_degrees(euler3a.y), Math::FastMath::to_degrees(euler3a.z));
+		Print("  qX * qY (Pitch then Yaw): X=%.2f°, Y=%.2f°, Z=%.2f°", Math::FastMath::to_degrees(euler3b.x),
+			  Math::FastMath::to_degrees(euler3b.y), Math::FastMath::to_degrees(euler3b.z));
+	}
+}
+
 bool CGame::Initialize()
 {
+	TestQuaternionMath();
+
 	// 1. Создаем сцену
 	m_Scene = std::make_shared<CScene>();
 	if (!m_Scene->Initialize())
@@ -42,20 +99,24 @@ bool CGame::Initialize()
 	standardShader.PixelShaderEntryPoint = "PS";
 	RenderBackend.CompilePass(standardShader);
 
-	// 3. Создаем КАМЕРУ
+	 // 3. Создаем КАМЕРУ (полностью в ECS)
 	m_CameraEntity = m_Scene->CreateEntity("MainCamera");
 
-	// --- ИСПРАВЛЕНИЕ 1: Добавляем и получаем компоненты раздельно ---
-	m_CameraEntity->Add<TransformComponent>();
-	auto* camTrans = m_CameraEntity->Get<TransformComponent>();
-	camTrans->SetPosition(float3(0.0f, 0.0f, -5.0f));
+	// Transform
+	auto* camTrans = m_CameraEntity->GetOrAdd<TransformComponent>();
+	camTrans->SetPosition(Math::float3(0.0f, 0.0f, -5.0f));
 
-	m_CameraEntity->Add<CameraComponent>();
-	auto* camComp = m_CameraEntity->Get<CameraComponent>();
-
+	// Camera
+	auto* camComp = m_CameraEntity->GetOrAdd<CameraComponent>();
 	RenderConfig cfg = Renderer.GetConfig();
 	float aspect = (float)cfg.Width / (float)cfg.Height;
-	camComp->GetCamera().SetPerspective(60.0f, aspect, 0.01f, 1000.0f);
+	camComp->SetPerspective(60.0f, aspect, 0.01f, 1000.0f);
+	camComp->SetMainCamera(true);
+
+	// Controller
+	auto* controller = m_CameraEntity->GetOrAdd<FlyingCameraControllerComponent>();
+	controller->MoveSpeed = 5.0f;
+	controller->MouseSensitivity = 0.5f;
 
 	m_Scene->SetMainCameraEntity(m_CameraEntity);
 
@@ -77,11 +138,6 @@ bool CGame::Initialize()
 	auto* matComp = m_CubeEntity->GetOrAdd<MaterialComponent>();
 	matComp->Pass = standardShader;
 
-	// 5. Контроллер
-	auto flyController = std::make_unique<CFlyingCameraController>();
-	flyController->MoveSpeed = 5.0f;
-	m_CameraController = std::move(flyController);
-
 	Renderer.SetCurrentScene(m_Scene);
 
 	return true;
@@ -96,50 +152,21 @@ void CGame::Update()
 {
 	float dt = CoreAPI.TimeSystem.GetDeltaTime();
 
-	// 1. Логика камеры
+	// Управление мышью теперь полностью в компоненте FlyingCameraController
 	bool isRMBDown = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0;
-
-	if (isRMBDown && m_CameraEntity)
-	{
-		SDL_SetRelativeMouseMode(SDL_TRUE);
-
-		// ВАЖНО: Контроллер хочет CCamera&, но в ECS мы должны двигать Transform!
-		// Вариант А: Контроллер двигает CCamera внутри компонента, а мы должны
-		// синхронизировать Transform ОБРАТНО. Это костыль.
-		// Вариант Б (Правильный): Переписать Controller, чтобы он принимал TransformComponent.
-
-		// Временное решение (Вариант А с синхронизацией):
-		auto* camComp = m_CameraEntity->Get<CameraComponent>();
-		auto* camTrans = m_CameraEntity->Get<TransformComponent>();
-
-		if (camComp && camTrans)
-		{
-			// Контроллер обновляет внутреннее состояние CCamera
-			m_CameraController->Update(camComp->GetCamera(), dt);
-
-			// Синхронизируем Transform ECS с тем, что насчитал контроллер
-			// (Потому что в ECS позиция хранится в Transform)
-			camTrans->SetPosition(camComp->GetCamera().GetPosition());
-			camTrans->SetRotation(camComp->GetCamera().GetRotation());
-		}
-	}
-	else
+	if (!isRMBDown)
 	{
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
 
-	// Вращение куба (пример логики)
+	// Вращение куба
 	if (m_CubeEntity)
 	{
 		auto* t = m_CubeEntity->Get<TransformComponent>();
-		t->Rotate(Math::float3(0, dt * 0.5f, 0)); // Крутим по Y
+		if (t)
+			t->Rotate(Math::float3(0, dt * 0.5f, 0));
 	}
 
-	// 2. Update сцены (обновляет Transform matrices и т.д.)
+	// Обновление сцены (автоматически обновит все компоненты, включая FlyingCameraController)
 	m_Scene->Update(dt);
-
-	// 2. Интерфейс
-	ImGui::Begin("Object Editor");
-
-	ImGui::End();
 }

@@ -39,31 +39,33 @@ void CScene::Update(float dt)
 
 void CScene::Render()
 {
-	// 1. Проверки камеры...
-	if (!m_MainCameraEntity || !m_MainCameraEntity->IsActive())
-		return;
-	auto* cameraComp = m_MainCameraEntity->Get<CameraComponent>();
-	if (!cameraComp)
+	// 1. Находим главную камеру
+	Entity* mainCamera = GetMainCameraEntity();
+	if (!mainCamera || !mainCamera->IsActive())
 		return;
 
-	auto& camera = cameraComp->GetCamera();
+	auto* cameraComp = mainCamera->Get<CameraComponent>();
+	auto* transformComp = mainCamera->Get<TransformComponent>();
 
-	// 2. ОТПРАВКА FRAME BUFFER (b0)
+	if (!cameraComp || !transformComp)
+		return;
+
+	// 2. Отправка Frame Buffer
 	struct FrameConstants
 	{
 		Math::float4x4 View;
 		Math::float4x4 Projection;
+		Math::float4x4 ViewProjection;
 		Math::float3 CameraPos;
-		float Padding; // Важно для выравнивания
+		float Padding;
 	} frameData;
 
-	// НЕ транспонируем, так как в HLSL стоит row_major
-	frameData.View = camera.GetViewMatrix();
-	frameData.Projection = camera.GetProjectionMatrix();
-	frameData.CameraPos = camera.GetPosition();
+	frameData.View = cameraComp->GetViewMatrix();
+	frameData.Projection = cameraComp->GetProjectionMatrix();
+	frameData.ViewProjection = frameData.View * frameData.Projection;
+	frameData.CameraPos = transformComp->GetWorldPosition();
 	frameData.Padding = 0.0f;
 
-	// Имя должно совпадать с cbuffer FrameBuffer в шейдере
 	RenderBackend.SetCustomConstant("FrameBuffer", frameData);
 
 	// 3. РИСУЕМ ОБЪЕКТЫ

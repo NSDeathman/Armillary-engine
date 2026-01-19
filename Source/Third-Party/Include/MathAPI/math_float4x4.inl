@@ -1,4 +1,4 @@
-#ifndef MATH_FLOAT4X4_INL
+﻿#ifndef MATH_FLOAT4X4_INL
 #define MATH_FLOAT4X4_INL
 
 #include "math_float4x4.h"
@@ -81,99 +81,61 @@ namespace Math
       * @note Creates homogeneous rotation matrix with no translation
       * @note Uses full SSE optimization with minimal memory access
       */
-    inline float4x4::float4x4(const quaternion& q) noexcept {
-        // Load quaternion [x, y, z, w]
-        __m128 q_simd = q.get_simd();
+	inline float4x4::float4x4(const quaternion& q) noexcept
+	{
+		// Нормализуем кватернион на всякий случай
+		quaternion norm_q = q.normalize();
 
-        // Broadcast components
-        __m128 xxxx = _mm_shuffle_ps(q_simd, q_simd, _MM_SHUFFLE(0, 0, 0, 0));
-        __m128 yyyy = _mm_shuffle_ps(q_simd, q_simd, _MM_SHUFFLE(1, 1, 1, 1));
-        __m128 zzzz = _mm_shuffle_ps(q_simd, q_simd, _MM_SHUFFLE(2, 2, 2, 2));
-        __m128 wwww = _mm_shuffle_ps(q_simd, q_simd, _MM_SHUFFLE(3, 3, 3, 3));
+		float x = norm_q.x;
+		float y = norm_q.y;
+		float z = norm_q.z;
+		float w = norm_q.w;
 
-        // Compute 2q and broadcast
-        const __m128 two = _mm_set1_ps(2.0f);
-        __m128 q2 = _mm_mul_ps(q_simd, two);
+		// Вычисляем элементы матрицы вращения
+		// Формула для row-major матрицы:
+		// M = [ right.x, right.y, right.z, 0 ]
+		//     [ up.x,    up.y,    up.z,    0 ]
+		//     [ forward.x, forward.y, forward.z, 0 ]
+		//     [ 0,       0,       0,       1 ]
 
-        __m128 x2 = _mm_shuffle_ps(q2, q2, _MM_SHUFFLE(0, 0, 0, 0));
-        __m128 y2 = _mm_shuffle_ps(q2, q2, _MM_SHUFFLE(1, 1, 1, 1));
-        __m128 z2 = _mm_shuffle_ps(q2, q2, _MM_SHUFFLE(2, 2, 2, 2));
+		float xx = x * x;
+		float yy = y * y;
+		float zz = z * z;
+		float xy = x * y;
+		float xz = x * z;
+		float yz = y * z;
+		float wx = w * x;
+		float wy = w * y;
+		float wz = w * z;
 
-        // Compute products
-        __m128 xx = _mm_mul_ps(xxxx, x2);
-        __m128 yy = _mm_mul_ps(yyyy, y2);
-        __m128 zz = _mm_mul_ps(zzzz, z2);
+		// Правильные формулы для row-major матрицы вращения:
+		// В row-major, умножаем вектор справа: v' = v * M
+		// Поэтому M должна содержать оси в строках
 
-        __m128 xy = _mm_mul_ps(xxxx, y2);
-        __m128 xz = _mm_mul_ps(xxxx, z2);
-        __m128 yz = _mm_mul_ps(yyyy, z2);
+		// Row0: right vector (X-axis after rotation)
+		row0_ = float4(1.0f - 2.0f * (yy + zz), // m00
+					   2.0f * (xy + wz),		// m01
+					   2.0f * (xz - wy),		// m02
+					   0.0f						// m03
+		);
 
-        __m128 wx = _mm_mul_ps(wwww, x2);
-        __m128 wy = _mm_mul_ps(wwww, y2);
-        __m128 wz = _mm_mul_ps(wwww, z2);
+		// Row1: up vector (Y-axis after rotation)
+		row1_ = float4(2.0f * (xy - wz),		// m10
+					   1.0f - 2.0f * (xx + zz), // m11
+					   2.0f * (yz + wx),		// m12
+					   0.0f						// m13
+		);
 
-        // Extract first components efficiently
-        float xx_f = _mm_cvtss_f32(xx);
-        float yy_f = _mm_cvtss_f32(_mm_shuffle_ps(yy, yy, _MM_SHUFFLE(0, 0, 0, 0)));
-        float zz_f = _mm_cvtss_f32(_mm_shuffle_ps(zz, zz, _MM_SHUFFLE(0, 0, 0, 0)));
+		// Row2: forward vector (Z-axis after rotation)
+		row2_ = float4(2.0f * (xz + wy),		// m20
+					   2.0f * (yz - wx),		// m21
+					   1.0f - 2.0f * (xx + yy), // m22
+					   0.0f						// m23
+		);
 
-        float xy_f = _mm_cvtss_f32(_mm_shuffle_ps(xy, xy, _MM_SHUFFLE(0, 0, 0, 0)));
-        float xz_f = _mm_cvtss_f32(_mm_shuffle_ps(xz, xz, _MM_SHUFFLE(0, 0, 0, 0)));
-        float yz_f = _mm_cvtss_f32(_mm_shuffle_ps(yz, yz, _MM_SHUFFLE(0, 0, 0, 0)));
-
-        float wx_f = _mm_cvtss_f32(_mm_shuffle_ps(wx, wx, _MM_SHUFFLE(0, 0, 0, 0)));
-        float wy_f = _mm_cvtss_f32(_mm_shuffle_ps(wy, wy, _MM_SHUFFLE(0, 0, 0, 0)));
-        float wz_f = _mm_cvtss_f32(_mm_shuffle_ps(wz, wz, _MM_SHUFFLE(0, 0, 0, 0)));
-
-        // Compute final values using SSE where possible
-        const __m128 one = _mm_set1_ps(1.0f);
-        const __m128 zero = _mm_set1_ps(0.0f);
-
-        // Row 0: [1 - (yy + zz), xy + wz, xz - wy, 0]
-        __m128 yy_zz = _mm_add_ps(_mm_set1_ps(yy_f), _mm_set1_ps(zz_f));
-        __m128 m00 = _mm_sub_ps(one, yy_zz);
-        __m128 m01 = _mm_add_ps(_mm_set1_ps(xy_f), _mm_set1_ps(wz_f));
-        __m128 m02 = _mm_sub_ps(_mm_set1_ps(xz_f), _mm_set1_ps(wy_f));
-
-        // Combine row 0
-        __m128 row0 = _mm_set_ps(0.0f,
-            _mm_cvtss_f32(m02),
-            _mm_cvtss_f32(m01),
-            _mm_cvtss_f32(m00));
-
-        // Row 1: [xy - wz, 1 - (xx + zz), yz + wx, 0]
-        __m128 m10 = _mm_sub_ps(_mm_set1_ps(xy_f), _mm_set1_ps(wz_f));
-        __m128 xx_zz = _mm_add_ps(_mm_set1_ps(xx_f), _mm_set1_ps(zz_f));
-        __m128 m11 = _mm_sub_ps(one, xx_zz);
-        __m128 m12 = _mm_add_ps(_mm_set1_ps(yz_f), _mm_set1_ps(wx_f));
-
-        // Combine row 1
-        __m128 row1 = _mm_set_ps(0.0f,
-            _mm_cvtss_f32(m12),
-            _mm_cvtss_f32(m11),
-            _mm_cvtss_f32(m10));
-
-        // Row 2: [xz + wy, yz - wx, 1 - (xx + yy), 0]
-        __m128 m20 = _mm_add_ps(_mm_set1_ps(xz_f), _mm_set1_ps(wy_f));
-        __m128 m21 = _mm_sub_ps(_mm_set1_ps(yz_f), _mm_set1_ps(wx_f));
-        __m128 xx_yy = _mm_add_ps(_mm_set1_ps(xx_f), _mm_set1_ps(yy_f));
-        __m128 m22 = _mm_sub_ps(one, xx_yy);
-
-        // Combine row 2
-        __m128 row2 = _mm_set_ps(0.0f,
-            _mm_cvtss_f32(m22),
-            _mm_cvtss_f32(m21),
-            _mm_cvtss_f32(m20));
-
-        // Row 3: [0, 0, 0, 1]
-        __m128 row3 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
-
-        // Store results
-        row0_.set_simd(row0);
-        row1_.set_simd(row1);
-        row2_.set_simd(row2);
-        row3_.set_simd(row3);
-    }
+		// Row3: translation (none) and homogeneous coordinate
+		row3_ = float4(0.0f, 0.0f, 0.0f, 1.0f);
+	}
 
 #if defined(MATH_SUPPORT_D3DX)
     /**
@@ -246,13 +208,61 @@ namespace Math
         );
     }
 
-    inline float4x4 float4x4::rotation_euler(const float3& a) noexcept {
-        return rotation_z(a.z) * rotation_y(a.y) * rotation_x(a.x);
-    }
+    inline float4x4 float4x4::rotation_euler(const float3& angles) noexcept
+	{
+		// Нормализуем углы в диапазон [-π, π]
+		float3 norm_angles = angles;
+		const float PI = 3.14159265358979323846f;
+		const float TWO_PI = 2.0f * PI;
 
-    inline float4x4 float4x4::TRS(const float3& t, const quaternion& r, const float3& s) noexcept {
-        return scaling(s) * float4x4(r) * translation(t);
-    }
+		norm_angles.x = fmodf(norm_angles.x, TWO_PI);
+		norm_angles.y = fmodf(norm_angles.y, TWO_PI);
+		norm_angles.z = fmodf(norm_angles.z, TWO_PI);
+
+		if (norm_angles.x > PI)
+			norm_angles.x -= TWO_PI;
+		if (norm_angles.y > PI)
+			norm_angles.y -= TWO_PI;
+		if (norm_angles.z > PI)
+			norm_angles.z -= TWO_PI;
+		if (norm_angles.x < -PI)
+			norm_angles.x += TWO_PI;
+		if (norm_angles.y < -PI)
+			norm_angles.y += TWO_PI;
+		if (norm_angles.z < -PI)
+			norm_angles.z += TWO_PI;
+
+		// Проверка на сингулярность (gimbal lock)
+		// Если угол Y близок к ±90°, используем альтернативное представление
+		if (fabsf(fabsf(norm_angles.y) - PI * 0.5f) < 0.001f)
+		{
+			// При gimbal lock, угол X и Z не независимы
+			// Складываем их в один угол вращения вокруг оси Y
+			float combined_angle = norm_angles.x + norm_angles.z;
+			return rotation_y(combined_angle);
+		}
+
+		// Стандартное вычисление
+		return rotation_z(norm_angles.z) * rotation_y(norm_angles.y) * rotation_x(norm_angles.x);
+	}
+
+    inline float4x4 float4x4::TRS(const float3& t, const quaternion& r, const float3& s) noexcept
+	{
+		// Нормализуем кватернион
+		quaternion norm_r = r.normalize();
+
+		// Проверяем масштаб на нулевые значения
+		float3 safe_s = s;
+		if (fabsf(safe_s.x) < 1e-6f)
+			safe_s.x = 1e-6f;
+		if (fabsf(safe_s.y) < 1e-6f)
+			safe_s.y = 1e-6f;
+		if (fabsf(safe_s.z) < 1e-6f)
+			safe_s.z = 1e-6f;
+
+		// Создаем матрицу с четким порядком: M = T * R * S
+		return translation(t) * float4x4(norm_r) * scaling(safe_s);
+	}
 
     // --- Projections ---
 
@@ -461,41 +471,38 @@ namespace Math
             m02 * m10 * m21 * m33 - m00 * m12 * m21 * m33 - m01 * m10 * m22 * m33 + m00 * m11 * m22 * m33;
     }
 
-    inline float4x4 float4x4::inverted_affine() const noexcept {
-        const float3 r0 = row0_.xyz();
-        const float3 r1 = row1_.xyz();
-        const float3 r2 = row2_.xyz();
-        const float3 translation = get_translation();
+    inline float4x4 float4x4::inverted_affine() const noexcept
+	{
+		const float3 r0 = row0_.xyz();
+		const float3 r1 = row1_.xyz();
+		const float3 r2 = row2_.xyz();
+		const float3 translation = get_translation();
 
-        const float3 cross_12 = r1.cross(r2);
-        const float3 cross_20 = r2.cross(r0);
-        const float3 cross_01 = r0.cross(r1);
+		const float3 cross_12 = r1.cross(r2);
+		const float3 cross_20 = r2.cross(r0);
+		const float3 cross_01 = r0.cross(r1);
 
-        const float det = r0.dot(cross_12);
+		const float det = r0.dot(cross_12);
 
-        if (std::abs(det) < Constants::Constants<float>::Epsilon) {
-            return identity();
-        }
+		if (std::abs(det) < Constants::Constants<float>::Epsilon)
+		{
+			// Вырожденная матрица - возвращаем псевдообратную
+			return transposed(); // Или identity(), в зависимости от требований
+		}
 
-        const float inv_det = 1.0f / det;
+		const float inv_det = 1.0f / det;
 
-        const float3 inv_col0 = cross_12 * inv_det;
-        const float3 inv_col1 = cross_20 * inv_det;
-        const float3 inv_col2 = cross_01 * inv_det;
+		const float3 inv_col0 = cross_12 * inv_det;
+		const float3 inv_col1 = cross_20 * inv_det;
+		const float3 inv_col2 = cross_01 * inv_det;
 
-        // R^-1 * Translation
-        // InvT = -(Inv * T)
-        float x = -(inv_col0.x * translation.x + inv_col1.x * translation.y + inv_col2.x * translation.z);
-        float y = -(inv_col0.y * translation.x + inv_col1.y * translation.y + inv_col2.y * translation.z);
-        float z = -(inv_col0.z * translation.x + inv_col1.z * translation.y + inv_col2.z * translation.z);
+		float x = -(inv_col0.x * translation.x + inv_col1.x * translation.y + inv_col2.x * translation.z);
+		float y = -(inv_col0.y * translation.x + inv_col1.y * translation.y + inv_col2.y * translation.z);
+		float z = -(inv_col0.z * translation.x + inv_col1.z * translation.y + inv_col2.z * translation.z);
 
-        return float4x4(
-            inv_col0.x, inv_col1.x, inv_col2.x, 0.0f,
-            inv_col0.y, inv_col1.y, inv_col2.y, 0.0f,
-            inv_col0.z, inv_col1.z, inv_col2.z, 0.0f,
-            x, y, z, 1.0f
-        );
-    }
+		return float4x4(inv_col0.x, inv_col1.x, inv_col2.x, 0.0f, inv_col0.y, inv_col1.y, inv_col2.y, 0.0f, inv_col0.z,
+						inv_col1.z, inv_col2.z, 0.0f, x, y, z, 1.0f);
+	}
 
     inline float4x4 float4x4::inverted() const noexcept {
         if (is_affine(Constants::Constants<float>::Epsilon)) {
@@ -854,14 +861,64 @@ namespace Math
         );
     }
 
-    inline quaternion float4x4::get_rotation() const noexcept {
-        float3 col0_norm = float3(row0_.x, row1_.x, row2_.x).normalize();
-        float3 col1_norm = float3(row0_.y, row1_.y, row2_.y).normalize();
-        float3 col2_norm = float3(row0_.z, row1_.z, row2_.z).normalize();
+    inline quaternion float4x4::get_rotation() const noexcept
+	{
+		float3 col0_norm = float3(row0_.x, row1_.x, row2_.x).normalize();
+		float3 col1_norm = float3(row0_.y, row1_.y, row2_.y).normalize();
+		float3 col2_norm = float3(row0_.z, row1_.z, row2_.z).normalize();
 
-        float3x3 rot_matrix(col0_norm, col1_norm, col2_norm);
-        return quaternion::from_matrix(rot_matrix);
-    }
+		float3x3 rot_matrix(col0_norm, col1_norm, col2_norm);
+		quaternion result = quaternion::from_matrix(rot_matrix);
+
+		// Нормализуем знак: делаем w неотрицательным
+		// Это помогает избежать мерцания при интерполяции
+		if (result.w < 0.0f)
+		{
+			result = quaternion(-result.x, -result.y, -result.z, -result.w);
+		}
+
+		return result;
+	}
+
+    inline float3 float4x4::get_rotation_euler_angles() const noexcept
+	{
+		float3 angles;
+
+		// Извлекаем углы из матрицы вращения (порядок ZYX)
+		float sy = sqrtf(row0_.x * row0_.x + row0_.y * row0_.y);
+
+		if (sy > 1e-6f)
+		{
+			angles.x = atan2f(row2_.y, row2_.z);
+			angles.y = atan2f(-row2_.x, sy);
+			angles.z = atan2f(row1_.x, row0_.x);
+		}
+		else
+		{
+			// Сингулярность (gimbal lock)
+			angles.x = atan2f(-row1_.z, row1_.y);
+			angles.y = atan2f(-row2_.x, sy);
+			angles.z = 0.0f;
+		}
+
+		// Нормализуем углы в диапазон [-π, π]
+		const float PI = 3.14159265358979323846f;
+
+		if (angles.x > PI)
+			angles.x -= 2.0f * PI;
+		if (angles.x < -PI)
+			angles.x += 2.0f * PI;
+		if (angles.y > PI)
+			angles.y -= 2.0f * PI;
+		if (angles.y < -PI)
+			angles.y += 2.0f * PI;
+		if (angles.z > PI)
+			angles.z -= 2.0f * PI;
+		if (angles.z < -PI)
+			angles.z += 2.0f * PI;
+
+		return angles;
+	}
 
     inline void float4x4::set_translation(const float3& t) noexcept {
         row3_.x = t.x;
@@ -1024,6 +1081,26 @@ namespace Math
         }
         return res;
     }
+
+    inline float4x4 float4x4::slerp(const float4x4& a, const float4x4& b, float t) noexcept
+	{
+		quaternion qa = a.get_rotation();
+		quaternion qb = b.get_rotation();
+
+		// Убеждаемся, что интерполяция идет по кратчайшей дуге
+		if (qa.dot(qb) < 0.0f)
+		{
+			qb = quaternion(-qb.x, -qb.y, -qb.z, -qb.w);
+		}
+
+		quaternion result = quaternion::slerp(qa, qb, t);
+
+		// Интерполируем позицию и масштаб линейно
+		float3 pos = lerp(a.get_translation(), b.get_translation(), t);
+		float3 scale = lerp(a.get_scale(), b.get_scale(), t);
+
+		return TRS(pos, result, scale);
+	}
 
     // ============================================================================
     // Useful Constants

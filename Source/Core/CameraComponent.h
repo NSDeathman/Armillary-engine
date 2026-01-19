@@ -1,46 +1,89 @@
 #pragma once
-
 #include "ECSCore.h"
-#include "Camera.h"
+#include <MathAPI/MathAPI.h>
 #include "TransformComponent.h"
+
+namespace Core::ECS::Components
+{
+enum class CameraProjectionType
+{
+	Perspective,
+	Orthographic
+};
 
 class CameraComponent : public Core::ECS::Component<CameraComponent>
 {
   public:
-	CameraComponent() = default;
+	CameraComponent();
+	virtual ~CameraComponent() = default;
 
-	// Доступ к внутренней камере для настройки (FOV и т.д.)
-	Core::World::CCamera& GetCamera()
+	// --- Основные параметры камеры ---
+	void SetPerspective(float fovDeg, float aspect, float zNear, float zFar);
+	void SetOrthographic(float size, float zNear, float zFar);
+	void SetAspectRatio(float aspect);
+
+	// Геттеры параметров проекции
+	float GetFOV() const
 	{
-		return m_Camera;
+		return m_Fov;
 	}
-	const Core::World::CCamera& GetCamera() const
+	float GetAspectRatio() const
 	{
-		return m_Camera;
+		return m_AspectRatio;
+	}
+	float GetNearPlane() const
+	{
+		return m_Near;
+	}
+	float GetFarPlane() const
+	{
+		return m_Far;
+	}
+	CameraProjectionType GetProjectionType() const
+	{
+		return m_Type;
 	}
 
-	// Основной метод обновления: синхронизирует ECS Transform с камерой
-	void OnUpdate(float dt) override
+	// --- Матрицы ---
+	Math::float4x4 GetViewMatrix() const;
+	Math::float4x4 GetProjectionMatrix() const;
+	Math::float4x4 GetViewProjectionMatrix() const;
+
+	// --- Векторы направлений (из Transform) ---
+	Math::float3 GetForward() const;
+	Math::float3 GetRight() const;
+	Math::float3 GetUp() const;
+
+	// --- Геттер позиции камеры ---
+	Math::float3 GetPosition() const;
+
+	// --- Утилиты ---
+	bool IsMainCamera() const
 	{
-		if (m_Owner)
-		{
-			auto* transform = m_Owner->Get<Core::ECS::Components::TransformComponent>();
-			if (transform)
-			{
-				// Синхронизируем позицию и поворот
-				m_Camera.SetPosition(transform->GetWorldPosition());
-				m_Camera.SetRotation(transform->GetWorldRotation());
-			}
-		}
+		return m_IsMainCamera;
+	}
+	void SetMainCamera(bool isMain)
+	{
+		m_IsMainCamera = isMain;
 	}
 
-	std::unique_ptr<Core::ECS::IComponent> Clone() const override
-	{
-		auto clone = std::make_unique<CameraComponent>();
-		clone->m_Camera = m_Camera; // CCamera должна поддерживать копирование
-		return clone;
-	}
+	std::unique_ptr<Core::ECS::IComponent> Clone() const override;
 
   private:
-	Core::World::CCamera m_Camera;
+	CameraProjectionType m_Type = CameraProjectionType::Perspective;
+	float m_Fov = Math::Constants::PI / 3.0f; // 60 градусов
+	float m_AspectRatio = 16.0f / 9.0f;
+	float m_Near = 0.1f;
+	float m_Far = 1000.0f;
+	float m_OrthoSize = 10.0f;
+
+	bool m_IsMainCamera = false;
+
+	// Кэшированные матрицы
+	mutable Math::float4x4 m_ProjectionMatrix;
+	mutable bool m_ProjectionDirty = true;
+
+	// Метод для обновления проекционной матрицы
+	void UpdateProjectionMatrix() const;
 };
+} // namespace Core::ECS::Components
