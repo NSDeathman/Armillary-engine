@@ -9,7 +9,7 @@ using namespace Core;
 ///////////////////////////////////////////////////////////////
 void CEngine::Start()
 {
-	Core::CSplashScreen::GetInstance().Show();
+	CSplashScreen::GetInstance().Show();
 
 	g_bNeedCloseApplication = false;
 
@@ -28,7 +28,7 @@ void CEngine::Start()
 
 	Print("Engine started\n");
 
-	Core::CSplashScreen::GetInstance().Hide();
+	CSplashScreen::GetInstance().Hide();
 }
 
 bool CEngine::LoadGameModule()
@@ -108,9 +108,6 @@ void CEngine::Destroy()
 	Renderer.SetCurrentCamera(nullptr);
 
 	// 2. Уничтожаем игру.
-	// Если игра держала последний shared_ptr на сцену, то СЦЕНА УДАЛИТСЯ ПРЯМО ЗДЕСЬ.
-	// Entity вызовут свои деструкторы, удалят компоненты.
-	// Менеджер компонентов в этот момент ЕЩЕ ЖИВ, поэтому всё пройдет гладко.
 	if (m_Game)
 	{
 		m_Game->Shutdown();

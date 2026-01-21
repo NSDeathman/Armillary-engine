@@ -22,64 +22,8 @@ IGame* CreateGame()
 	return new CGame();
 }
 
-void TestQuaternionMath()
-{
-	Print("\n=== Quaternion Math Test ===");
-
-	// Тест 1: 45 градусов вокруг Y
-	{
-		Math::quaternion q1 = Math::quaternion::rotation_y(Math::FastMath::to_radians(45.0f));
-		Math::float3 euler1 = q1.to_euler();
-		Print("Test 1 - 45° Y rotation:");
-		Print("  Quaternion: (%.3f, %.3f, %.3f, %.3f)", q1.x, q1.y, q1.z, q1.w);
-		Print("  Euler Angles: X=%.2f°, Y=%.2f°, Z=%.2f°", Math::FastMath::to_degrees(euler1.x),
-			  Math::FastMath::to_degrees(euler1.y), Math::FastMath::to_degrees(euler1.z));
-
-		// Проверяем преобразование вектора
-		Math::float3 forward = q1.transform_vector(Math::float3(0, 0, 1));
-		Print("  Forward after 45° Y: (%.3f, %.3f, %.3f) - expected (0.707, 0, 0.707)", forward.x, forward.y,
-			  forward.z);
-	}
-
-	// Тест 2: from_euler
-	{
-		float pitch = Math::FastMath::to_radians(30.0f);
-		float yaw = Math::FastMath::to_radians(45.0f);
-		float roll = 0.0f;
-
-		Math::quaternion q2 = Math::quaternion::from_euler(pitch, yaw, roll);
-		Math::float3 euler2 = q2.to_euler();
-		Print("\nTest 2 - from_euler(30°, 45°, 0°):");
-		Print("  Quaternion: (%.3f, %.3f, %.3f, %.3f)", q2.x, q2.y, q2.z, q2.w);
-		Print("  Euler Angles: X=%.2f°, Y=%.2f°, Z=%.2f°", Math::FastMath::to_degrees(euler2.x),
-			  Math::FastMath::to_degrees(euler2.y), Math::FastMath::to_degrees(euler2.z));
-	}
-
-	// Тест 3: Порядок умножения
-	{
-		Math::quaternion qY = Math::quaternion::rotation_y(Math::FastMath::to_radians(45.0f));
-		Math::quaternion qX = Math::quaternion::rotation_x(Math::FastMath::to_radians(30.0f));
-
-		// Способ 1: Yaw then Pitch
-		Math::quaternion q3a = qY * qX;
-		Math::float3 euler3a = q3a.to_euler();
-
-		// Способ 2: Pitch then Yaw
-		Math::quaternion q3b = qX * qY;
-		Math::float3 euler3b = q3b.to_euler();
-
-		Print("\nTest 3 - Multiplication order:");
-		Print("  qY * qX (Yaw then Pitch): X=%.2f°, Y=%.2f°, Z=%.2f°", Math::FastMath::to_degrees(euler3a.x),
-			  Math::FastMath::to_degrees(euler3a.y), Math::FastMath::to_degrees(euler3a.z));
-		Print("  qX * qY (Pitch then Yaw): X=%.2f°, Y=%.2f°, Z=%.2f°", Math::FastMath::to_degrees(euler3b.x),
-			  Math::FastMath::to_degrees(euler3b.y), Math::FastMath::to_degrees(euler3b.z));
-	}
-}
-
 bool CGame::Initialize()
 {
-	TestQuaternionMath();
-
 	// 1. Создаем сцену
 	m_Scene = std::make_shared<CScene>();
 	if (!m_Scene->Initialize())

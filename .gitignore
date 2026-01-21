@@ -18,3 +18,4 @@ Legacy/*
 Armillary.lnk
 *.dmp
 Source/.vs/Armillary/v16/.suo
+/Source/.vs
