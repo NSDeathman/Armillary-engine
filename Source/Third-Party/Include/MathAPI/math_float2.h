@@ -15,10 +15,6 @@
 #include "math_constants.h"
 #include "math_functions.h"
 
-#if defined(MATH_SUPPORT_D3DX)
-#include <d3dx9.h>
-#endif
-
 namespace Math
 {
     /**
@@ -33,7 +29,7 @@ namespace Math
      * @note All operations are optimized and constexpr where possible
      * @note Includes comprehensive HLSL-like function set
      */
-    class MATH_API float2 {
+    class float2 {
     public:
         // ============================================================================
         // Data Members (Public for Direct Access)
@@ -81,26 +77,6 @@ namespace Math
          */
         explicit float2(__m128 simd_) noexcept;
 
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Construct from D3DXVECTOR2
-         * @param vec DirectX 2D vector
-         */
-        float2(const D3DXVECTOR2& vec) noexcept;
-
-        /**
-         * @brief Construct from D3DXVECTOR4 (extracts x, y)
-         * @param vec DirectX 4D vector
-         */
-        float2(const D3DXVECTOR4& vec) noexcept;
-
-        /**
-         * @brief Construct from D3DCOLOR (extracts R, G channels)
-         * @param color DirectX color value
-         */
-        explicit float2(D3DCOLOR color) noexcept;
-#endif
-
         // ============================================================================
         // Assignment Operators
         // ============================================================================
@@ -115,20 +91,6 @@ namespace Math
          * @param scalar Value for all components
          */
         float2& operator=(float scalar) noexcept;
-
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Assignment from D3DXVECTOR2
-         * @param vec DirectX 2D vector
-         */
-        float2& operator=(const D3DXVECTOR2& vec) noexcept;
-
-        /**
-         * @brief Assignment from D3DCOLOR
-         * @param color DirectX color value
-         */
-        float2& operator=(D3DCOLOR color) noexcept;
-#endif
 
         // ============================================================================
         // Compound Assignment Operators
@@ -263,14 +225,6 @@ namespace Math
          * @return SSE register containing vector data
          */
         operator __m128() const noexcept;
-
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Convert to D3DXVECTOR2
-         * @return D3DXVECTOR2 equivalent
-         */
-        operator D3DXVECTOR2() const noexcept;
-#endif
 
         // ============================================================================
         // Static Constructors
@@ -824,51 +778,6 @@ namespace Math
      * @return Component-wise maximum
      */
     float2 max(const float2& a, const float2& b) noexcept;
-
-    // ============================================================================
-    // D3D Compatibility Functions
-    // ============================================================================
-
-#if defined(MATH_SUPPORT_D3DX)
-
-    /**
-     * @brief Convert float2 to D3DXVECTOR2
-     * @param vec float2 vector to convert
-     * @return D3DXVECTOR2 equivalent
-     */
-    D3DXVECTOR2 ToD3DXVECTOR2(const float2& vec) noexcept;
-
-    /**
-     * @brief Convert D3DXVECTOR2 to float2
-     * @param vec D3DXVECTOR2 to convert
-     * @return float2 equivalent
-     */
-    float2 FromD3DXVECTOR2(const D3DXVECTOR2& vec) noexcept;
-
-    /**
-     * @brief Convert float2 to D3DCOLOR (uses x,y as R,G channels)
-     * @param color float2 representing color (x=R, y=G)
-     * @return D3DCOLOR equivalent (blue=0, alpha=255)
-     */
-    D3DCOLOR ToD3DCOLOR(const float2& color) noexcept;
-
-    /**
-     * @brief Convert array of float2 to array of D3DXVECTOR2
-     * @param source Source float2 array
-     * @param destination Destination D3DXVECTOR2 array
-     * @param count Number of elements to convert
-     */
-    void float2ArrayToD3D(const float2* source, D3DXVECTOR2* destination, size_t count) noexcept;
-
-    /**
-     * @brief Convert array of D3DXVECTOR2 to array of float2
-     * @param source Source D3DXVECTOR2 array
-     * @param destination Destination float2 array
-     * @param count Number of elements to convert
-     */
-    void D3DArrayTofloat2(const D3DXVECTOR2* source, float2* destination, size_t count) noexcept;
-
-#endif
 
     // ============================================================================
     // Utility Functions

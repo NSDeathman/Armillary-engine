@@ -41,7 +41,7 @@ namespace Math
      * @note Provides seamless interoperability with float3 and comprehensive mathematical operations
      * @note Includes advanced color operations and geometric functions
      */
-    class MATH_API half3
+    class half3
     {
     public:
         // ============================================================================

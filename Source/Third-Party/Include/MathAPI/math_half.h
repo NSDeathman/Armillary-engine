@@ -40,7 +40,7 @@ namespace Math
      * @note Optimized for memory bandwidth and GPU compatibility
      * @note Fully compatible with half2, half3, half4 vector types
      */
-    class MATH_API half
+    class half
     {
     public:
         using storage_type = std::uint16_t;

@@ -28,11 +28,6 @@
 #include "math_half3.h"
 #include "math_float4.h"
 
-// Platform-specific support
-#if defined(MATH_SUPPORT_D3DX)
-#include <d3dx9.h>  // D3DXVECTOR4, D3DXVECTOR3, D3DXVECTOR2, D3DCOLOR
-#endif
-
 namespace Math
 {
     /**
@@ -48,7 +43,7 @@ namespace Math
      * @note Provides seamless interoperability with float4 and comprehensive mathematical operations
      * @note Includes advanced color operations, geometric functions, and homogeneous coordinate support
      */
-    class MATH_API half4
+    class half4
     {
     public:
         // ============================================================================

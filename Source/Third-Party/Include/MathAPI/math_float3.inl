@@ -43,20 +43,6 @@ namespace Math
         set_simd(simd_val);
     }
 
-#if defined(MATH_SUPPORT_D3DX)
-    inline float3::float3(const D3DXVECTOR3& vec) noexcept : x(vec.x), y(vec.y), z(vec.z) {}
-
-    inline float3::float3(const D3DXVECTOR4& vec) noexcept : x(vec.x), y(vec.y), z(vec.z) {}
-
-    inline float3::float3(const D3DXVECTOR2& vec, float z) noexcept : x(vec.x), y(vec.y), z(z) {}
-
-    inline float3::float3(D3DCOLOR color) noexcept {
-        x = static_cast<float>((color >> 16) & 0xFF) / 255.0f;
-        y = static_cast<float>((color >> 8) & 0xFF) / 255.0f;
-        z = static_cast<float>(color & 0xFF) / 255.0f;
-    }
-#endif
-
     // ============================================================================
     // Assignment Operators Implementation
     // ============================================================================
@@ -65,20 +51,6 @@ namespace Math
         x = y = z = scalar;
         return *this;
     }
-
-#if defined(MATH_SUPPORT_D3DX)
-    inline float3& float3::operator=(const D3DXVECTOR3& vec) noexcept {
-        x = vec.x; y = vec.y; z = vec.z;
-        return *this;
-    }
-
-    inline float3& float3::operator=(D3DCOLOR color) noexcept {
-        x = static_cast<float>((color >> 16) & 0xFF) / 255.0f;
-        y = static_cast<float>((color >> 8) & 0xFF) / 255.0f;
-        z = static_cast<float>(color & 0xFF) / 255.0f;
-        return *this;
-    }
-#endif
 
     // ============================================================================
     // Compound Assignment Operators Implementation
@@ -147,12 +119,6 @@ namespace Math
     inline float3::operator float* () noexcept { return &x; }
 
     inline float3::operator __m128() const noexcept { return get_simd(); }
-
-#if defined(MATH_SUPPORT_D3DX)
-    inline float3::operator D3DXVECTOR3() const noexcept {
-        return D3DXVECTOR3(x, y, z);
-    }
-#endif
 
     // ============================================================================
     // Static Constructors Implementation
@@ -553,22 +519,6 @@ namespace Math
         if (dot_val < -1.0f) dot_val = -1.0f;
         return std::acos(dot_val);
     }
-
-    // ============================================================================
-    // D3D Compatibility Functions Implementation
-    // ============================================================================
-
-#if defined(MATH_SUPPORT_D3DX)
-    inline D3DXVECTOR3 ToD3DXVECTOR3(const float3& vec) noexcept { return D3DXVECTOR3(vec.x, vec.y, vec.z); }
-    inline float3 FromD3DXVECTOR3(const D3DXVECTOR3& vec) noexcept { return float3(vec.x, vec.y, vec.z); }
-    inline D3DCOLOR ToD3DCOLOR(const float3& color) noexcept { return D3DCOLOR_COLORVALUE(color.x, color.y, color.z, 1.0f); }
-    inline void float3ArrayToD3D(const float3* source, D3DXVECTOR3* destination, size_t count) noexcept {
-        for (size_t i = 0; i < count; ++i) destination[i] = ToD3DXVECTOR3(source[i]);
-    }
-    inline void D3DArrayTofloat3(const D3DXVECTOR3* source, float3* destination, size_t count) noexcept {
-        for (size_t i = 0; i < count; ++i) destination[i] = FromD3DXVECTOR3(source[i]);
-    }
-#endif
 
     // ============================================================================
     // Global Constants Implementation

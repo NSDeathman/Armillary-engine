@@ -27,24 +27,6 @@ namespace Math
 
     inline float4::float4(__m128 simd_val) noexcept : simd_(simd_val) {}
 
-#if defined(MATH_SUPPORT_D3DX)
-    inline float4::float4(const D3DXVECTOR4& vec) noexcept : simd_(_mm_loadu_ps(&vec.x)) {}
-
-    inline float4::float4(const D3DXVECTOR3& vec, float w) noexcept
-        : simd_(_mm_set_ps(w, vec.z, vec.y, vec.x)) {}
-
-    inline float4::float4(const D3DXVECTOR2& vec, float z, float w) noexcept
-        : simd_(_mm_set_ps(w, z, vec.y, vec.x)) {}
-
-    inline float4::float4(D3DCOLOR color) noexcept {
-        float r = static_cast<float>((color >> 16) & 0xFF) / 255.0f;
-        float g = static_cast<float>((color >> 8) & 0xFF) / 255.0f;
-        float b = static_cast<float>(color & 0xFF) / 255.0f;
-        float a = static_cast<float>((color >> 24) & 0xFF) / 255.0f;
-        simd_ = _mm_set_ps(a, b, g, r);
-    }
-#endif
-
     // ============================================================================
     // Assignment Operators Implementation
     // ============================================================================
@@ -60,22 +42,6 @@ namespace Math
         simd_ = _mm_blend_ps(xyz_vec, simd_, 0x8); // сохраняем w из текущего значения
         return *this;
     }
-
-#if defined(MATH_SUPPORT_D3DX)
-    inline float4& float4::operator=(const D3DXVECTOR4& vec) noexcept {
-        simd_ = _mm_loadu_ps(&vec.x);
-        return *this;
-    }
-
-    inline float4& float4::operator=(D3DCOLOR color) noexcept {
-        float r = static_cast<float>((color >> 16) & 0xFF) / 255.0f;
-        float g = static_cast<float>((color >> 8) & 0xFF) / 255.0f;
-        float b = static_cast<float>(color & 0xFF) / 255.0f;
-        float a = static_cast<float>((color >> 24) & 0xFF) / 255.0f;
-        simd_ = _mm_set_ps(a, b, g, r);
-        return *this;
-    }
-#endif
 
     // ============================================================================
     // Compound Assignment Operators Implementation
@@ -147,14 +113,6 @@ namespace Math
     inline float4::operator float* () noexcept { return &x; }
 
     inline float4::operator __m128() const noexcept { return simd_; }
-
-#if defined(MATH_SUPPORT_D3DX)
-    inline float4::operator D3DXVECTOR4() const noexcept {
-        D3DXVECTOR4 result;
-        _mm_storeu_ps(&result.x, simd_);
-        return result;
-    }
-#endif
 
     // ============================================================================
     // Static Constructors Implementation
@@ -770,36 +728,6 @@ namespace Math
     inline float4 to_homogeneous(const float4& vec) noexcept {
         return vec.to_homogeneous();
     }
-
-    // ============================================================================
-    // D3D Compatibility Functions Implementation
-    // ============================================================================
-
-#if defined(MATH_SUPPORT_D3DX)
-
-    inline D3DXVECTOR4 ToD3DXVECTOR4(const float4& vec) noexcept {
-        return D3DXVECTOR4(vec.x, vec.y, vec.z, vec.w);
-    }
-
-    inline float4 FromD3DXVECTOR4(const D3DXVECTOR4& vec) noexcept {
-        return float4(vec.x, vec.y, vec.z, vec.w);
-    }
-
-    inline D3DCOLOR ToD3DCOLOR(const float4& color) noexcept {
-        return D3DCOLOR_COLORVALUE(color.x, color.y, color.z, color.w);
-    }
-
-    inline void float4ArrayToD3D(const float4* source, D3DXVECTOR4* destination, size_t count) noexcept {
-        for (size_t i = 0; i < count; ++i)
-            destination[i] = ToD3DXVECTOR4(source[i]);
-    }
-
-    inline void D3DArrayToFloat4(const D3DXVECTOR4* source, float4* destination, size_t count) noexcept {
-        for (size_t i = 0; i < count; ++i)
-            destination[i] = FromD3DXVECTOR4(source[i]);
-    }
-
-#endif
 
     // ============================================================================
     // Global Constants Implementation

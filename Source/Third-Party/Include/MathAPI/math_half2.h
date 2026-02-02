@@ -36,7 +36,7 @@ namespace Math
      * @note Provides seamless interoperability with float2 and comprehensive HLSL-like functions
      * @note All operations maintain half-precision accuracy while providing performance benefits
      */
-    class MATH_API half2
+    class half2
     {
     public:
         // ============================================================================

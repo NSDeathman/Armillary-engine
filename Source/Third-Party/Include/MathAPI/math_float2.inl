@@ -16,25 +16,8 @@ namespace Math {
         x = data[0]; y = data[1];
     }
 
-#if defined(MATH_SUPPORT_D3DX)
-    inline float2::float2(const D3DXVECTOR2& vec) noexcept : x(vec.x), y(vec.y) {}
-    inline float2::float2(const D3DXVECTOR4& vec) noexcept : x(vec.x), y(vec.y) {}
-    inline float2::float2(D3DCOLOR color) noexcept {
-        x = ((color >> 16) & 0xFF) / 255.0f;
-        y = ((color >> 8) & 0xFF) / 255.0f;
-    }
-#endif
-
     // --- Assignment ---
     inline float2& float2::operator=(float scalar) noexcept { x = y = scalar; return *this; }
-#if defined(MATH_SUPPORT_D3DX)
-    inline float2& float2::operator=(const D3DXVECTOR2& vec) noexcept { x = vec.x; y = vec.y; return *this; }
-    inline float2& float2::operator=(D3DCOLOR color) noexcept {
-        x = ((color >> 16) & 0xFF) / 255.0f;
-        y = ((color >> 8) & 0xFF) / 255.0f;
-        return *this;
-    }
-#endif
 
     // --- Operators ---
     inline float2& float2::operator+=(const float2& rhs) noexcept { x += rhs.x; y += rhs.y; return *this; }
@@ -59,9 +42,6 @@ namespace Math {
     inline float2::operator const float* () const noexcept { return &x; }
     inline float2::operator float* () noexcept { return &x; }
     inline float2::operator __m128() const noexcept { return _load_float2_fast(&x); }
-#if defined(MATH_SUPPORT_D3DX)
-    inline float2::operator D3DXVECTOR2() const noexcept { return D3DXVECTOR2(x, y); }
-#endif
 
     // --- Math ---
     inline float float2::length() const noexcept {
@@ -196,15 +176,6 @@ namespace Math {
     inline float2 min(const float2& a, const float2& b) noexcept { return float2(std::min(a.x, b.x), std::min(a.y, b.y)); }
     inline float2 max(const float2& a, const float2& b) noexcept { return float2(std::max(a.x, b.x), std::max(a.y, b.y)); }
     inline float2 clamp(const float2& v, const float2& mi, const float2& ma) noexcept { return min(max(v, mi), ma); }
-
-    // D3D Wrappers
-#if defined(MATH_SUPPORT_D3DX)
-    inline D3DXVECTOR2 ToD3DXVECTOR2(const float2& v) noexcept { return D3DXVECTOR2(v.x, v.y); }
-    inline float2 FromD3DXVECTOR2(const D3DXVECTOR2& v) noexcept { return float2(v.x, v.y); }
-    inline D3DCOLOR ToD3DCOLOR(const float2& v) noexcept { return D3DCOLOR_COLORVALUE(v.x, v.y, 0.f, 1.f); }
-    inline void float2ArrayToD3D(const float2* s, D3DXVECTOR2* d, size_t c) noexcept { for (size_t i = 0; i < c; ++i) d[i] = ToD3DXVECTOR3(s[i]); } // Fix typo in next iteration if needed, assuming ToD3DXVECTOR2
-    inline void D3DArrayTofloat2(const D3DXVECTOR2* s, float2* d, size_t c) noexcept { for (size_t i = 0; i < c; ++i) d[i] = FromD3DXVECTOR2(s[i]); }
-#endif
 
     // Utils
     inline float distance_to_line_segment(const float2& p, const float2& a, const float2& b) noexcept {

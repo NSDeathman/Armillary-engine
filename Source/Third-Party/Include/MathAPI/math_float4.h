@@ -25,11 +25,6 @@
 #include "math_float2.h"
 #include "math_float3.h"
 
- // Platform-specific support
-#if defined(MATH_SUPPORT_D3DX)
-#include <d3dx9.h>  // D3DXVECTOR4, D3DXVECTOR3, D3DXVECTOR2, D3DCOLOR
-#endif
-
 ///////////////////////////////////////////////////////////////
 namespace Math
 {
@@ -37,7 +32,7 @@ namespace Math
     // Fwd Declaration
     // ============================================================================
 
-    class MATH_API float4;
+    class float4;
 
     /**
      * @brief Vector addition operator
@@ -108,7 +103,7 @@ namespace Math
      * @note Includes comprehensive HLSL-like function set and color operations
      * @note Supports both aligned and unaligned memory operations
      */
-    class MATH_API float4
+    class float4
     {
     public:
         // ============================================================================
@@ -189,39 +184,6 @@ namespace Math
          */
         explicit float4(__m128 simd_val) noexcept;
 
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Construct from D3DXVECTOR4
-         * @param vec DirectX 4D vector
-         * @note Provides seamless interoperability with DirectX
-         */
-        explicit float4(const D3DXVECTOR4& vec) noexcept;
-
-        /**
-         * @brief Construct from D3DXVECTOR3 and w component
-         * @param vec DirectX 3D vector
-         * @param w W component (default: 1.0f)
-         * @note Sets w=1.0f by default for homogeneous coordinates
-         */
-        float4(const D3DXVECTOR3& vec, float w = 1.0f) noexcept;
-
-        /**
-         * @brief Construct from D3DXVECTOR2 and z, w components
-         * @param vec DirectX 2D vector
-         * @param z Z component (default: 0.0f)
-         * @param w W component (default: 1.0f)
-         * @note Convenient for DirectX interoperability
-         */
-        float4(const D3DXVECTOR2& vec, float z = 0.0f, float w = 1.0f) noexcept;
-
-        /**
-         * @brief Construct from D3DCOLOR (RGBA components)
-         * @param color DirectX color value
-         * @note Automatically converts from 8-bit per channel to float [0,1]
-         */
-        explicit float4(D3DCOLOR color) noexcept;
-#endif
-
         // ============================================================================
         // Assignment Operators
         // ============================================================================
@@ -246,23 +208,6 @@ namespace Math
          * @note Preserves existing w component value
          */
         float4& operator=(const float3& xyz) noexcept;
-
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Assignment from D3DXVECTOR4
-         * @param vec DirectX 4D vector
-         * @return Reference to this vector
-         */
-        float4& operator=(const D3DXVECTOR4& vec) noexcept;
-
-        /**
-         * @brief Assignment from D3DCOLOR
-         * @param color DirectX color value
-         * @return Reference to this vector
-         * @note Converts color format automatically
-         */
-        float4& operator=(D3DCOLOR color) noexcept;
-#endif
 
         // ============================================================================
         // Compound Assignment Operators
@@ -377,15 +322,6 @@ namespace Math
          * @note For advanced SSE optimization scenarios
          */
         operator __m128() const noexcept;
-
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Convert to D3DXVECTOR4
-         * @return D3DXVECTOR4 equivalent
-         * @note Provides seamless interoperability with DirectX
-         */
-        operator D3DXVECTOR4() const noexcept;
-#endif
 
         // ============================================================================
         // Static Constructors
@@ -1330,51 +1266,6 @@ namespace Math
      * @return Homogeneous coordinates
      */
     inline float4 to_homogeneous(const float4& vec) noexcept;
-
-    // ============================================================================
-    // D3D Compatibility Functions (Declarations)
-    // ============================================================================
-
-#if defined(MATH_SUPPORT_D3DX)
-
-    /**
-     * @brief Convert float4 to D3DXVECTOR4
-     * @param vec float4 vector to convert
-     * @return D3DXVECTOR4 equivalent
-     */
-    inline D3DXVECTOR4 ToD3DXVECTOR4(const float4& vec) noexcept;
-
-    /**
-     * @brief Convert D3DXVECTOR4 to float4
-     * @param vec D3DXVECTOR4 to convert
-     * @return float4 equivalent
-     */
-    inline float4 FromD3DXVECTOR4(const D3DXVECTOR4& vec) noexcept;
-
-    /**
-     * @brief Convert float4 to D3DCOLOR (uses x,y,z,w as R,G,B,A channels)
-     * @param color float4 representing color (x=R, y=G, z=B, w=A)
-     * @return D3DCOLOR equivalent
-     */
-    inline D3DCOLOR ToD3DCOLOR(const float4& color) noexcept;
-
-    /**
-     * @brief Convert array of float4 to array of D3DXVECTOR4
-     * @param source Source float4 array
-     * @param destination Destination D3DXVECTOR4 array
-     * @param count Number of elements to convert
-     */
-    inline void float4ArrayToD3D(const float4* source, D3DXVECTOR4* destination, size_t count) noexcept;
-
-    /**
-     * @brief Convert array of D3DXVECTOR4 to array of float4
-     * @param source Source D3DXVECTOR4 array
-     * @param destination Destination float4 array
-     * @param count Number of elements to convert
-     */
-    inline void D3DArrayToFloat4(const D3DXVECTOR4* source, float4* destination, size_t count) noexcept;
-
-#endif
 
     // ============================================================================
     // Useful Constants (Declarations)

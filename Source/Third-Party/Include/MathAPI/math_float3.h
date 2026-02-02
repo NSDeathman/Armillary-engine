@@ -16,11 +16,6 @@
 #include "math_functions.h"
 #include "math_float2.h"
 
-// Platform-specific support
-#if defined(MATH_SUPPORT_D3DX)
-#include <d3dx9.h>  // D3DXVECTOR3, D3DXVECTOR4, D3DCOLOR
-#endif
-
 namespace Math
 {
     /**
@@ -35,7 +30,7 @@ namespace Math
      * @note Size is exactly 12 bytes.
      * @note Includes comprehensive HLSL-like function set
      */
-    class MATH_API float3
+    class float3
     {
     public:
         // ============================================================================
@@ -94,33 +89,6 @@ namespace Math
          */
         explicit float3(__m128 simd_val) noexcept;
 
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Construct from D3DXVECTOR3
-         * @param vec DirectX 3D vector
-         */
-        float3(const D3DXVECTOR3& vec) noexcept;
-
-        /**
-         * @brief Construct from D3DXVECTOR4 (extracts x, y, z)
-         * @param vec DirectX 4D vector
-         */
-        float3(const D3DXVECTOR4& vec) noexcept;
-
-        /**
-         * @brief Construct from D3DXVECTOR2 and z component
-         * @param vec DirectX 2D vector
-         * @param z Z component
-         */
-        float3(const D3DXVECTOR2& vec, float z = 0.0f) noexcept;
-
-        /**
-         * @brief Construct from D3DCOLOR (RGB components)
-         * @param color DirectX color value
-         */
-        explicit float3(D3DCOLOR color) noexcept;
-#endif
-
         // ============================================================================
         // Assignment Operators
         // ============================================================================
@@ -135,20 +103,6 @@ namespace Math
          * @param scalar Value for all components
          */
         float3& operator=(float scalar) noexcept;
-
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Assignment from D3DXVECTOR3
-         * @param vec DirectX 3D vector
-         */
-        float3& operator=(const D3DXVECTOR3& vec) noexcept;
-
-        /**
-         * @brief Assignment from D3DCOLOR
-         * @param color DirectX color value
-         */
-        float3& operator=(D3DCOLOR color) noexcept;
-#endif
 
         // ============================================================================
         // Compound Assignment Operators
@@ -251,14 +205,6 @@ namespace Math
          * @return SSE register containing vector data
          */
         operator __m128() const noexcept;
-
-#if defined(MATH_SUPPORT_D3DX)
-        /**
-         * @brief Convert to D3DXVECTOR3
-         * @return D3DXVECTOR3 equivalent
-         */
-        operator D3DXVECTOR3() const noexcept;
-#endif
 
         // ============================================================================
         // Static Constructors
@@ -712,18 +658,6 @@ namespace Math
     inline float3 project(const float3& vec, const float3& onto) noexcept;
     inline float3 reject(const float3& vec, const float3& from) noexcept;
     inline float angle_between(const float3& a, const float3& b) noexcept;
-
-    // ============================================================================
-    // D3D Compatibility Functions
-    // ============================================================================
-
-#if defined(MATH_SUPPORT_D3DX)
-    inline D3DXVECTOR3 ToD3DXVECTOR3(const float3& vec) noexcept;
-    inline float3 FromD3DXVECTOR3(const D3DXVECTOR3& vec) noexcept;
-    inline D3DCOLOR ToD3DCOLOR(const float3& color) noexcept;
-    inline void float3ArrayToD3D(const float3* source, D3DXVECTOR3* destination, size_t count) noexcept;
-    inline void D3DArrayTofloat3(const D3DXVECTOR3* source, float3* destination, size_t count) noexcept;
-#endif
 
     // ============================================================================
     // Useful Constants
