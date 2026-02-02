@@ -1,24 +1,22 @@
-#include "stdafx.h"
+Ôªø#include "stdafx.h"
 #include "FlyingCameraControllerComponent.h"
 #include "TransformComponent.h"
 #include "Core.h"
 #include <algorithm>
+#include <cmath>
 
 namespace Core::ECS::Components
 {
 FlyingCameraControllerComponent::FlyingCameraControllerComponent()
 {
-	// »ÌËˆË‡ÎËÁ‡ˆËˇ
-	m_Yaw = 0.0f;
-	m_Pitch = 0.0f;
-	m_SmoothedRotY = 0.0f;
-	m_SmoothedRotX = 0.0f;
-	m_CurrentVelocity = Math::float3::zero();
-	m_CurrentSpeed = MoveSpeed;
-	m_LastMovementDirection = Math::float3(0, 0, 1); // forward
-	m_BobTime = 0.0f;
-	m_BobAmount = 0.0f;
-	m_Trauma = 0.0f;
+	m_TargetPosition = Math::float3::zero();
+	m_SmoothedPosition = Math::float3::zero();
+	m_TargetYaw = 0.0f;
+	m_TargetPitch = 0.0f;
+	m_SmoothedYaw = 0.0f;
+	m_SmoothedPitch = 0.0f;
+	m_IsControlling = false;
+	m_IsFirstUpdate = true;
 }
 
 void FlyingCameraControllerComponent::OnCreate()
@@ -26,281 +24,304 @@ void FlyingCameraControllerComponent::OnCreate()
 	auto* transform = m_Owner->Get<TransformComponent>();
 	if (transform)
 	{
-		// »ÌËˆË‡ÎËÁËÛÂÏ Û„Î˚ ËÁ ÚÂÍÛ˘Â„Ó ‚‡˘ÂÌËˇ Í‡ÏÂ˚
+		// –ò–Ω–∏—Ü–∏–∞–ª–∏–∑–∏—Ä—É–µ–º –∏–∑ —Ç–µ–∫—É—â–µ–π —Ç—Ä–∞–Ω—Å—Ñ–æ—Ä–º–∞—Ü–∏–∏
 		Math::float3 euler = transform->GetLocalRotation().to_euler();
-		m_Pitch = Math::FastMath::to_degrees(euler.x);
-		m_Yaw = Math::FastMath::to_degrees(euler.y);
+		m_TargetPitch = euler.x;
+		m_TargetYaw = euler.y;
+		m_TargetPosition = transform->GetLocalPosition();
+
+		// –£—Å—Ç–∞–Ω–∞–≤–ª–∏–≤–∞–µ–º –Ω–∞—á–∞–ª—å–Ω—ã–µ —Å–≥–ª–∞–∂–µ–Ω–Ω—ã–µ –∑–Ω–∞—á–µ–Ω–∏—è
+		m_SmoothedPitch = m_TargetPitch;
+		m_SmoothedYaw = m_TargetYaw;
+		m_SmoothedPosition = m_TargetPosition;
+
+		// –ù–µ–º–µ–¥–ª–µ–Ω–Ω–æ –ø—Ä–∏–º–µ–Ω—è–µ–º –Ω–∞—á–∞–ª—å–Ω—ã–µ –∑–Ω–∞—á–µ–Ω–∏—è
+		transform->SetPosition(m_SmoothedPosition);
+		Math::quaternion rotation =
+			Math::quaternion::rotation_y(m_SmoothedYaw) * Math::quaternion::rotation_x(m_SmoothedPitch);
+		transform->SetRotation(rotation);
 	}
 }
 
 void FlyingCameraControllerComponent::OnUpdate(float dt)
 {
-	if (!m_Owner || !m_Owner->IsActive())
+	if (!m_Owner || !m_Owner->IsActive() || dt <= 0.0f)
 		return;
 
-	// œÓ‚ÂˇÂÏ, ÂÒÚ¸ ÎË ÌÂÓ·ıÓ‰ËÏ˚Â ÍÓÏÔÓÌÂÌÚ˚
 	auto* transform = m_Owner->Get<TransformComponent>();
 	if (!transform)
 		return;
 
-	// œÓ‚ÂˇÂÏ, Á‡Ê‡Ú‡ ÎË Ô‡‚‡ˇ ÍÌÓÔÍ‡ Ï˚¯Ë ‰Îˇ ÛÔ‡‚ÎÂÌËˇ
+	// –ü—Ä–æ–≤–µ—Ä—è–µ–º –∞–∫—Ç–∏–≤–Ω–æ—Å—Ç—å —É–ø—Ä–∞–≤–ª–µ–Ω–∏—è (–ü–ö–ú –∏–ª–∏ –≥–µ–π–º–ø–∞–¥)
 	bool isRMBDown = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0;
+	float leftStickX = 0.0f, leftStickY = 0.0f;
+	CoreAPI.Input.GetLeftStick(leftStickX, leftStickY);
+	bool isGamepadActive = (std::abs(leftStickX) > GamepadDeadZone || std::abs(leftStickY) > GamepadDeadZone);
 
-	if (isRMBDown)
+	bool wasControlling = m_IsControlling;
+	m_IsControlling = isRMBDown || isGamepadActive;
+
+	// –í–∫–ª—é—á–µ–Ω–∏–µ/–≤—ã–∫–ª—é—á–µ–Ω–∏–µ –æ—Ç–Ω–æ—Å–∏—Ç–µ–ª—å–Ω–æ–≥–æ —Ä–µ–∂–∏–º–∞ –º—ã—à–∏
+	if (m_IsControlling && SDL_GetRelativeMouseMode() != SDL_TRUE)
 	{
-		// ¬ÍÎ˛˜‡ÂÏ ÓÚÌÓÒËÚÂÎ¸Ì˚È ÂÊËÏ Ï˚¯Ë
-		if (SDL_GetRelativeMouseMode() != SDL_TRUE)
-		{
-			SDL_SetRelativeMouseMode(SDL_TRUE);
-			// ƒ‡ÂÏ SDL Ó‰ËÌ Í‡‰ Ì‡ ‡ÍÚË‚‡ˆË˛ ÂÊËÏ‡
-			return;
-		}
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	}
+	else if (!m_IsControlling && SDL_GetRelativeMouseMode() == SDL_TRUE)
+	{
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	}
 
+	if (m_IsControlling)
+	{
 		HandleRotation(dt, transform);
 		HandleMovement(dt, transform);
-
-		// ŒÔˆËÓÌ‡Î¸Ì˚Â ˝ÙÙÂÍÚ˚
-		if (EnableResponseCurve)
-			ApplyCameraBobbing(dt, transform);
-		if (EnableSlopeAdjustment)
-			ApplyHeadBob(dt, transform);
 	}
 	else
 	{
-		// ¬˚ÍÎ˛˜‡ÂÏ ÓÚÌÓÒËÚÂÎ¸Ì˚È ÂÊËÏ Ï˚¯Ë
-		if (SDL_GetRelativeMouseMode() == SDL_TRUE)
-		{
-			SDL_SetRelativeMouseMode(SDL_FALSE);
-		}
-
-		// —·‡Ò˚‚‡ÂÏ ÒÓÒÚÓˇÌËÂ ÔÎ‡‚ÌÓÒÚË ÔË ÓÚÔÛÒÍ‡ÌËË ÍÌÓÔÍË
-		m_CurrentVelocity = Math::float3::zero();
-
-		// ÕÂ Ò·‡Ò˚‚‡ÂÏ Û„Î˚ ‚‡˘ÂÌËˇ - Í‡ÏÂ‡ ‰ÓÎÊÌ‡ ÒÓı‡ÌˇÚ¸ ÓËÂÌÚ‡ˆË˛
+		// –ü—Ä–∏ –æ—Ç—Å—É—Ç—Å—Ç–≤–∏–∏ —É–ø—Ä–∞–≤–ª–µ–Ω–∏—è —Å–±—Ä–∞—Å—ã–≤–∞–µ–º —Ü–µ–ª–µ–≤—É—é —Å–∫–æ—Ä–æ—Å—Ç—å –¥–≤–∏–∂–µ–Ω–∏—è
+		// –ù–æ –ø—Ä–æ–¥–æ–ª–∂–∞–µ–º —Å–≥–ª–∞–∂–∏–≤–∞–Ω–∏–µ –∫ —Ç–µ–∫—É—â–µ–π –ø–æ–∑–∏—Ü–∏–∏
 	}
+
+	// –í—Å–µ–≥–¥–∞ –ø—Ä–∏–º–µ–Ω—è–µ–º —Å–≥–ª–∞–∂–∏–≤–∞–Ω–∏–µ (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+	ApplySmoothing(dt, transform);
+
+	m_IsFirstUpdate = false;
 }
 
 void FlyingCameraControllerComponent::HandleRotation(float dt, TransformComponent* transform)
 {
-	// œÓÎÛ˜‡ÂÏ ‚‚Ó‰ Ï˚¯Ë
-	int mouseDx = 0, mouseDy = 0;
+	float yawDelta = 0.0f;
+	float pitchDelta = 0.0f;
 
-	// ¬ÒÂ„‰‡ ËÒÔÓÎ¸ÁÛÂÏ ÓÚÌÓÒËÚÂÎ¸ÌÓÂ ‰‚ËÊÂÌËÂ, ÂÒÎË ÂÊËÏ ‚ÍÎ˛˜ÂÌ
-	if (SDL_GetRelativeMouseMode() == SDL_TRUE)
+	// 1. –í—Ä–∞—â–µ–Ω–∏–µ –º—ã—à—å—é (—Ç–æ–ª—å–∫–æ –ø—Ä–∏ –∑–∞–∂–∞—Ç–æ–π –ü–ö–ú) - –ë–û–õ–ï–ï –ß–£–í–°–¢–í–ò–¢–ï–õ–¨–ù–û–ï!
+	if ((SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0)
 	{
-		SDL_GetRelativeMouseState(&mouseDx, &mouseDy);
-	}
+		int mouseX = 0, mouseY = 0;
+		SDL_GetRelativeMouseState(&mouseX, &mouseY);
 
-	// ≈ÒÎË ‰ÂÎ¸Ú‡ ÒÎË¯ÍÓÏ ·ÓÎ¸¯‡ˇ (˚‚ÓÍ), Ë„ÌÓËÛÂÏ Â∏
-	const int MAX_DELTA_PER_FRAME = 50; // Ã‡ÍÒËÏ‡Î¸Ì‡ˇ ‡ÁÛÏÌ‡ˇ ‰ÂÎ¸Ú‡ Á‡ Í‡‰
-	if (abs(mouseDx) > MAX_DELTA_PER_FRAME || abs(mouseDy) > MAX_DELTA_PER_FRAME)
-	{
-		Print("Ignoring mouse spike: dx=%d, dy=%d", mouseDx, mouseDy);
-		mouseDx = 0;
-		mouseDy = 0;
-	}
-
-	// œÓÎÛ˜‡ÂÏ ‚‚Ó‰ „ÂÈÏÔ‡‰‡
-	float stickX = 0.0f, stickY = 0.0f;
-	CoreAPI.Input.GetRightStick(stickX, stickY);
-
-	//  ÓÏ·ËÌËÛÂÏ ‚‚Ó‰
-	float yawDelta = (float)mouseDx * MouseSensitivity;
-	float pitchDelta = (float)mouseDy * MouseSensitivity;
-
-	yawDelta += stickX * GamepadSensitivity;
-	pitchDelta += stickY * GamepadSensitivity;
-
-	// œËÏÂÌˇÂÏ ÙËÎ¸Ú Ò„Î‡ÊË‚‡ÌËˇ
-	m_MouseFilter.AddSample(yawDelta, pitchDelta);
-	auto filtered = m_MouseFilter.GetFiltered();
-
-	yawDelta = filtered.first;
-	pitchDelta = filtered.second;
-
-	// œËÏÂÌˇÂÏ Ò Û˜ÂÚÓÏ ‚ÂÏÂÌË Í‡‰‡
-	yawDelta *= dt * 60.0f;
-	pitchDelta *= dt * 60.0f;
-
-	// œÓÎÛ˜‡ÂÏ ÚÂÍÛ˘ËÂ Û„Î˚ ›ÈÎÂ‡ ËÁ ‚‡˘ÂÌËˇ Í‡ÏÂ˚
-	Math::quaternion currentRot = transform->GetLocalRotation();
-	Math::float3 currentEuler = currentRot.to_euler();
-
-	// “ÂÍÛ˘ËÂ Û„Î˚ ‚ „‡‰ÛÒ‡ı
-	float currentYawDeg = Math::FastMath::to_degrees(currentEuler.y);
-	float currentPitchDeg = Math::FastMath::to_degrees(currentEuler.x);
-
-	// Œ·ÌÓ‚ÎˇÂÏ Û„Î˚
-	float newYawDeg = currentYawDeg + yawDelta;
-	float newPitchDeg = currentPitchDeg + pitchDelta;
-
-	// Œ„‡ÌË˜Ë‚‡ÂÏ pitch
-	newPitchDeg = std::clamp(newPitchDeg, -89.0f, 89.0f);
-
-	// —ÓÁ‰‡ÂÏ ÌÓ‚ÓÂ ‚‡˘ÂÌËÂ ËÁ Û„ÎÓ‚ ›ÈÎÂ‡
-	Math::quaternion newRotation =
-		Math::quaternion::from_euler(Math::FastMath::to_radians(newPitchDeg), Math::FastMath::to_radians(newYawDeg),
-									 Math::FastMath::to_radians(0.0f));
-
-	// œËÏÂÌˇÂÏ ‚‡˘ÂÌËÂ
-	transform->SetRotation(newRotation);
-
-	// ŒÚÎ‡‰Ó˜Ì˚È ‚˚‚Ó‰
-	if (ShowDebugInfo)
-	{
-		static int frameCount = 0;
-		frameCount++;
-
-		if (frameCount % 10 == 0) //  ‡Ê‰˚È 10-È Í‡‰
+		if (mouseX != 0 || mouseY != 0)
 		{
-			Print("Camera Rotation Debug:");
-			Print("  Mouse Delta: dx=%d, dy=%d", mouseDx, mouseDy);
-			Print("  Processed Delta: Yaw=%.2f, Pitch=%.2f", yawDelta, pitchDelta);
-			Print("  dt=%.4f, FPS=%.1f", dt, 1.0f / dt);
-			Print("  New Angles: Yaw=%.2f∞, Pitch=%.2f∞", newYawDeg, newPitchDeg);
+			// –ò–°–ü–†–ê–í–õ–ï–ù–ò–ï: –£–≤–µ–ª–∏—á–∏–≤–∞–µ–º —á—É–≤—Å—Ç–≤–∏—Ç–µ–ª—å–Ω–æ—Å—Ç—å –º—ã—à–∏ (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+			yawDelta += mouseX * MouseSensitivity * 0.01f; // –ë—ã–ª–æ 0.001f, —Ç–µ–ø–µ—Ä—å 0.01f
+			pitchDelta += (InvertY ? -mouseY : mouseY) * MouseSensitivity * 0.01f;
 		}
+	}
+
+	// 2. –í—Ä–∞—â–µ–Ω–∏–µ –≥–µ–π–º–ø–∞–¥–æ–º (–ø—Ä–∞–≤—ã–π —Å—Ç–∏–∫) - –æ—Å—Ç–∞–≤–ª—è–µ–º –∫–∞–∫ –±—ã–ª–æ
+	float rightStickX = 0.0f, rightStickY = 0.0f;
+	CoreAPI.Input.GetRightStick(rightStickX, rightStickY);
+
+	if (std::abs(rightStickX) > GamepadDeadZone || std::abs(rightStickY) > GamepadDeadZone)
+	{
+		// –õ–∏–Ω–µ–π–Ω–∞—è –∑–∞–≤–∏—Å–∏–º–æ—Å—Ç—å –¥–ª—è –≥–µ–π–º–ø–∞–¥–∞ (–ø—Ä–æ—â–µ –∏ –ø—Ä–µ–¥—Å–∫–∞–∑—É–µ–º–µ–µ)
+		yawDelta += rightStickX * GamepadSensitivity * dt;
+		pitchDelta += (InvertY ? -rightStickY : rightStickY) * GamepadSensitivity * dt;
+	}
+
+	// 3. –û–±–Ω–æ–≤–ª—è–µ–º —Ü–µ–ª–µ–≤—ã–µ —É–≥–ª—ã (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+	if (yawDelta != 0.0f || pitchDelta != 0.0f)
+	{
+		m_TargetYaw += yawDelta;
+		m_TargetPitch += pitchDelta;
+
+		// –û–≥—Ä–∞–Ω–∏—á–∏–≤–∞–µ–º pitch (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+		const float maxPitch = Math::Constants::HALF_PI - 0.01f;
+		m_TargetPitch = Math::MathFunctions::clamp(m_TargetPitch, -maxPitch, maxPitch);
 	}
 }
 
 void FlyingCameraControllerComponent::HandleMovement(float dt, TransformComponent* transform)
 {
-	if (dt <= 0.0f)
-		return;
-
-	// œÓÎÛ˜‡ÂÏ ÎÓÍ‡Î¸Ì˚Â ÓÒË ËÁ ÚÂÍÛ˘Â„Ó ‚‡˘ÂÌËˇ
-	Math::quaternion rotation = transform->GetLocalRotation();
-
-	// ÀÓÍ‡Î¸Ì˚Â Ì‡Ô‡‚ÎÂÌËˇ (‚ ÒËÒÚÂÏÂ ÍÓÓ‰ËÌ‡Ú Í‡ÏÂ˚)
-	// ¬ ÎÂ‚ÓÒÚÓÓÌÌÂÈ ÒËÒÚÂÏÂ:
-	// - forward: ÓÒ¸ Z+ (0, 0, 1)
-	// - right: ÓÒ¸ X+ (1, 0, 0)
-	// - up: ÓÒ¸ Y+ (0, 1, 0)
-	Math::float3 localForward = Math::float3(0, 0, 1);
-	Math::float3 localRight = Math::float3(1, 0, 0);
-	Math::float3 localUp = Math::float3(0, 1, 0);
-
-	// œÂÓ·‡ÁÛÂÏ ‚ ÏËÓ‚˚Â Ì‡Ô‡‚ÎÂÌËˇ
-	Math::float3 forward = rotation.transform_vector(localForward);
-	Math::float3 right = rotation.transform_vector(localRight);
-	Math::float3 up = rotation.transform_vector(localUp);
-
-	// ÕÓÏ‡ÎËÁÛÂÏ (Ì‡ ‚ÒˇÍËÈ ÒÎÛ˜‡È)
-	forward = forward.normalize();
-	right = right.normalize();
-	up = up.normalize();
-
-	// ¬˚˜ËÒÎˇÂÏ Ì‡Ô‡‚ÎÂÌËÂ ‰‚ËÊÂÌËˇ
 	Math::float3 moveDirection = Math::float3::zero();
 
-	// Œ·‡·ÓÚÍ‡ ‚‚Ó‰‡
+	// –î–≤–∏–∂–µ–Ω–∏–µ –∫–ª–∞–≤–∏–∞—Ç—É—Ä–æ–π (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
 	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_W))
-		moveDirection += forward;
+		moveDirection.z += 1.0f;
 	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_S))
-		moveDirection -= forward;
+		moveDirection.z -= 1.0f;
 	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_A))
-		moveDirection -= right;
+		moveDirection.x -= 1.0f;
 	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_D))
-		moveDirection += right;
+		moveDirection.x += 1.0f;
 	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_E))
-		moveDirection += up;
+		moveDirection.y += 1.0f;
 	if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_Q))
-		moveDirection -= up;
+		moveDirection.y -= 1.0f;
 
-	// ≈ÒÎË ÂÒÚ¸ Ì‡Ô‡‚ÎÂÌËÂ ‰‚ËÊÂÌËˇ, ÌÓÏ‡ÎËÁÛÂÏ
-	float moveLength = moveDirection.length();
-	if (moveLength > 0.0001f)
+	// –î–≤–∏–∂–µ–Ω–∏–µ –≥–µ–π–º–ø–∞–¥–æ–º (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+	float leftStickX = 0.0f, leftStickY = 0.0f;
+	CoreAPI.Input.GetLeftStick(leftStickX, leftStickY);
+
+	if (std::abs(leftStickX) > GamepadDeadZone || std::abs(leftStickY) > GamepadDeadZone)
 	{
-		moveDirection = moveDirection / moveLength;
+		moveDirection.x += leftStickX;
+		moveDirection.z -= leftStickY; // –û–±—Ä–∞—Ç–∏—Ç–µ –≤–Ω–∏–º–∞–Ω–∏–µ –Ω–∞ –º–∏–Ω—É—Å (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+	}
 
-		// —ÍÓÓÒÚ¸
-		float currentSpeed = MoveSpeed;
+	// –í—ã—á–∏—Å–ª—è–µ–º –º–∏—Ä–æ–≤–æ–µ –Ω–∞–ø—Ä–∞–≤–ª–µ–Ω–∏–µ –¥–≤–∏–∂–µ–Ω–∏—è
+	if (!moveDirection.approximately_zero())
+	{
+		moveDirection = moveDirection.normalize();
+		Math::quaternion rotation = transform->GetLocalRotation();
+		Math::float3 worldDirection = rotation.transform_vector(moveDirection);
+
+		// –†–µ–≥—É–ª–∏—Ä–æ–≤–∫–∞ —Å–∫–æ—Ä–æ—Å—Ç–∏ (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+		float currentSpeed = MoveSpeed * SpeedMultiplier;
+
+		// –£—Å–∫–æ—Ä–µ–Ω–∏–µ/–∑–∞–º–µ–¥–ª–µ–Ω–∏–µ
 		if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_LSHIFT))
-			currentSpeed *= SprintMultiplier;
+			currentSpeed *= 4.0f;
+		else if (CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_LCTRL))
+			currentSpeed *= 0.25f;
 
-		// œËÏÂÌˇÂÏ ‰‚ËÊÂÌËÂ Í ÔÓÁËˆËË
-		Math::float3 position = transform->GetLocalPosition();
-		position += moveDirection * (currentSpeed * dt);
-		transform->SetPosition(position);
+		// –û–±–Ω–æ–≤–ª—è–µ–º —Ü–µ–ª–µ–≤—É—é –ø–æ–∑–∏—Ü–∏—é (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+		Math::float3 moveDelta = worldDirection * currentSpeed * dt;
+		m_TargetPosition += moveDelta;
+	}
+}
 
-		// ŒÚÎ‡‰Ó˜Ì˚È ‚˚‚Ó‰
-		//if (ShowDebugInfo)
+void FlyingCameraControllerComponent::ApplySmoothing(float dt, TransformComponent* transform)
+{
+	// –ü—Ä–∏–º–µ–Ω—è–µ–º —Å–≥–ª–∞–∂–∏–≤–∞–Ω–∏–µ –≤—Ä–∞—â–µ–Ω–∏—è (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+	if (SmoothRotation)
+	{
+		float smoothTime = RotationSmoothTime;
+
+		// –ü—Ä–∏ –ø–µ—Ä–≤–æ–º –∫–∞–¥—Ä–µ –º–≥–Ω–æ–≤–µ–Ω–Ω–æ –ø—Ä–∏–º–µ–Ω—è–µ–º –∑–Ω–∞—á–µ–Ω–∏—è
+		if (m_IsFirstUpdate)
 		{
-			Print("Camera Movement Debug:");
-			Print("  Position: (%.2f, %.2f, %.2f)", position.x, position.y, position.z);
-			Print("  Move Dir: (%.2f, %.2f, %.2f)", moveDirection.x, moveDirection.y, moveDirection.z);
-			Print("  Forward:  (%.2f, %.2f, %.2f)", forward.x, forward.y, forward.z);
+			m_SmoothedYaw = m_TargetYaw;
+			m_SmoothedPitch = m_TargetPitch;
 		}
+		else
+		{
+			// –≠–∫—Å–ø–æ–Ω–µ–Ω—Ü–∏–∞–ª—å–Ω–æ–µ —Å–≥–ª–∞–∂–∏–≤–∞–Ω–∏–µ (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+			m_SmoothedYaw = SmoothDamp(m_SmoothedYaw, m_TargetYaw, m_YawVelocity, smoothTime, dt);
+			m_SmoothedPitch = SmoothDamp(m_SmoothedPitch, m_TargetPitch, m_PitchVelocity, smoothTime, dt);
+		}
+
+		// –ü—Ä–∏–º–µ–Ω—è–µ–º —Å–≥–ª–∞–∂–µ–Ω–Ω–æ–µ –≤—Ä–∞—â–µ–Ω–∏–µ
+		Math::quaternion rotation =
+			Math::quaternion::rotation_y(m_SmoothedYaw) * Math::quaternion::rotation_x(m_SmoothedPitch);
+		transform->SetRotation(rotation);
 	}
-}
-
-void FlyingCameraControllerComponent::ApplyCameraBobbing(float dt, TransformComponent* transform)
-{
-	float speed = m_CurrentVelocity.length();
-	float targetBobAmount = speed > 0.1f ? std::min(speed / MoveSpeed, 1.0f) * 0.05f : 0.0f;
-
-	float alpha = 1.0f - expf(-dt * 5.0f);
-	m_BobAmount = Math::lerp(m_BobAmount, targetBobAmount, alpha);
-
-	if (m_BobAmount > 0.001f)
-	{
-		m_BobTime += dt * speed * 10.0f;
-		float bobX = sinf(m_BobTime * 2.0f) * m_BobAmount * 0.5f;
-		float bobY = fabsf(sinf(m_BobTime)) * m_BobAmount;
-
-		// œËÏÂÌˇÂÏ ÒÏÂ˘ÂÌËÂ Í ÔÓÁËˆËË (‚ ÎÓÍ‡Î¸ÌÓÏ ÔÓÒÚ‡ÌÒÚ‚Â)
-		Math::float3 pos = transform->GetLocalPosition();
-		pos.x += bobX;
-		pos.y += bobY;
-		transform->SetPosition(pos);
-	}
-}
-
-void FlyingCameraControllerComponent::ApplyHeadBob(float dt, TransformComponent* transform)
-{
-	bool isSprinting = CoreAPI.Input.IsKeyHeld(SDL_SCANCODE_LSHIFT) ||
-					   CoreAPI.Input.IsGamepadButtonHeld(SDL_CONTROLLER_BUTTON_LEFTSTICK);
-
-	if (isSprinting)
-		m_Trauma = std::min(m_Trauma + dt * 0.5f, 1.0f);
 	else
-		m_Trauma = std::max(m_Trauma - dt * 0.3f, 0.0f);
-
-	if (m_Trauma > 0.01f)
 	{
-		float time = CoreAPI.TimeSystem.GetTotalTime();
-		float shake = m_Trauma * m_Trauma;
-
-		float offsetX = (sinf(time * 15.7f) + sinf(time * 13.3f) * 0.5f) * shake * 0.05f;
-		float offsetY = (cosf(time * 14.3f) + cosf(time * 11.7f) * 0.5f) * shake * 0.05f;
-
-		Math::quaternion currentRot = transform->GetLocalRotation();
-		Math::quaternion shakeRot = Math::quaternion::from_euler(Math::float3(offsetY, offsetX, 0));
-		transform->SetRotation(currentRot * shakeRot);
+		// –ë–µ–∑ —Å–≥–ª–∞–∂–∏–≤–∞–Ω–∏—è
+		Math::quaternion rotation =
+			Math::quaternion::rotation_y(m_TargetYaw) * Math::quaternion::rotation_x(m_TargetPitch);
+		transform->SetRotation(rotation);
 	}
+
+	// –ü—Ä–∏–º–µ–Ω—è–µ–º —Å–≥–ª–∞–∂–∏–≤–∞–Ω–∏–µ –ø–æ–∑–∏—Ü–∏–∏ (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+	if (SmoothMovement)
+	{
+		if (m_IsFirstUpdate)
+		{
+			m_SmoothedPosition = m_TargetPosition;
+		}
+		else
+		{
+			// SmoothDamp –¥–ª—è –ø–æ–∑–∏—Ü–∏–∏ —Å –æ–≥—Ä–∞–Ω–∏—á–µ–Ω–∏–µ–º –º–∞–∫—Å–∏–º–∞–ª—å–Ω–æ–π —Å–∫–æ—Ä–æ—Å—Ç–∏
+			Math::float3 newPosition =
+				SmoothDamp(m_SmoothedPosition, m_TargetPosition, m_PositionVelocity, PositionSmoothTime, dt);
+
+			// –û–≥—Ä–∞–Ω–∏—á–∏–≤–∞–µ–º –º–∞–∫—Å–∏–º–∞–ª—å–Ω—É—é —Å–∫–æ—Ä–æ—Å—Ç—å (–∫–∞–∫ –≤ —Å—Ç–∞—Ä–æ–º –∫–æ–¥–µ)
+			float currentSpeed = m_PositionVelocity.length();
+			if (currentSpeed > MaxSpeed)
+			{
+				m_PositionVelocity = m_PositionVelocity * (MaxSpeed / currentSpeed);
+			}
+
+			m_SmoothedPosition = newPosition;
+		}
+
+		transform->SetPosition(m_SmoothedPosition);
+	}
+	else
+	{
+		// –ë–µ–∑ —Å–≥–ª–∞–∂–∏–≤–∞–Ω–∏—è
+		transform->SetPosition(m_TargetPosition);
+	}
+}
+
+// –†–µ–∞–ª–∏–∑–∞—Ü–∏—è SmoothDamp –¥–ª—è float3 (–∫–∞–∫ –≤ Unity)
+Math::float3 FlyingCameraControllerComponent::SmoothDamp(const Math::float3& current, const Math::float3& target,
+														 Math::float3& currentVelocity, float smoothTime, float dt)
+{
+	// –°—Å—ã–ª–∫–∞: https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Mathf.cs#L324
+	float omega = 2.0f / smoothTime;
+	float x = omega * dt;
+	float exp = 1.0f / (1.0f + x + 0.48f * x * x + 0.235f * x * x * x);
+
+	Math::float3 change = current - target;
+	Math::float3 temp = (currentVelocity + omega * change) * dt;
+	currentVelocity = (currentVelocity - omega * temp) * exp;
+
+	Math::float3 result = target + (change + temp) * exp;
+
+	// –ü—Ä–µ–¥–æ—Ç–≤—Ä–∞—â–∞–µ–º –ø—Ä–µ–≤—ã—à–µ–Ω–∏–µ —Ü–µ–ª–∏
+	if ((target - current).dot(result - target) > 0.0f)
+	{
+		result = target;
+		currentVelocity = Math::float3::zero();
+	}
+
+	return result;
+}
+
+// –†–µ–∞–ª–∏–∑–∞—Ü–∏—è SmoothDamp –¥–ª—è float (–∫–∞–∫ –≤ Unity)
+float FlyingCameraControllerComponent::SmoothDamp(float current, float target, float& currentVelocity, float smoothTime,
+												  float dt)
+{
+	float omega = 2.0f / smoothTime;
+	float x = omega * dt;
+	float exp = 1.0f / (1.0f + x + 0.48f * x * x + 0.235f * x * x * x);
+
+	float change = current - target;
+	float temp = (currentVelocity + omega * change) * dt;
+	currentVelocity = (currentVelocity - omega * temp) * exp;
+
+	float result = target + (change + temp) * exp;
+
+	// –ü—Ä–µ–¥–æ—Ç–≤—Ä–∞—â–∞–µ–º –ø—Ä–µ–≤—ã—à–µ–Ω–∏–µ —Ü–µ–ª–∏
+	if ((target - current) * (result - target) > 0.0f)
+	{
+		result = target;
+		currentVelocity = 0.0f;
+	}
+
+	return result;
 }
 
 std::unique_ptr<Core::ECS::IComponent> FlyingCameraControllerComponent::Clone() const
 {
 	auto clone = std::make_unique<FlyingCameraControllerComponent>();
 	clone->MoveSpeed = MoveSpeed;
-	clone->SprintMultiplier = SprintMultiplier;
 	clone->MouseSensitivity = MouseSensitivity;
 	clone->GamepadSensitivity = GamepadSensitivity;
-	clone->Smoothness = Smoothness;
-	clone->MovementSmoothness = MovementSmoothness;
-	clone->EnableResponseCurve = EnableResponseCurve;
-	clone->EnableSlopeAdjustment = EnableSlopeAdjustment;
-	clone->ShowDebugInfo = ShowDebugInfo;
-	clone->m_Yaw = m_Yaw;
-	clone->m_Pitch = m_Pitch;
-	clone->m_SmoothedRotY = m_SmoothedRotY;
-	clone->m_SmoothedRotX = m_SmoothedRotX;
-	clone->m_CurrentVelocity = m_CurrentVelocity;
-	clone->m_CurrentSpeed = m_CurrentSpeed;
-	clone->m_LastMovementDirection = m_LastMovementDirection;
-	clone->m_BobTime = m_BobTime;
-	clone->m_BobAmount = m_BobAmount;
-	clone->m_Trauma = m_Trauma;
+	clone->GamepadDeadZone = GamepadDeadZone;
+	clone->InvertY = InvertY;
+	clone->PositionSmoothTime = PositionSmoothTime;
+	clone->RotationSmoothTime = RotationSmoothTime;
+	clone->MaxSpeed = MaxSpeed;
+	clone->SpeedMultiplier = SpeedMultiplier;
+	clone->SmoothMovement = SmoothMovement;
+	clone->SmoothRotation = SmoothRotation;
+
+	// –ö–æ–ø–∏—Ä—É–µ–º —Å–æ—Å—Ç–æ—è–Ω–∏–µ
+	clone->m_TargetPosition = m_TargetPosition;
+	clone->m_TargetYaw = m_TargetYaw;
+	clone->m_TargetPitch = m_TargetPitch;
+	clone->m_SmoothedPosition = m_SmoothedPosition;
+	clone->m_SmoothedYaw = m_SmoothedYaw;
+	clone->m_SmoothedPitch = m_SmoothedPitch;
+	clone->m_PositionVelocity = m_PositionVelocity;
+	clone->m_YawVelocity = m_YawVelocity;
+	clone->m_PitchVelocity = m_PitchVelocity;
+	clone->m_IsControlling = m_IsControlling;
+	clone->m_IsFirstUpdate = m_IsFirstUpdate;
+
 	return clone;
 }
 } // namespace Core::ECS::Components

@@ -9,85 +9,56 @@ class FlyingCameraControllerComponent : public Core::ECS::Component<FlyingCamera
 {
   public:
 	FlyingCameraControllerComponent();
-
-	void OnCreate();
-
-	// Жизненный цикл компонента
+	void OnCreate() override;
 	void OnUpdate(float dt) override;
 
-	// Настройки
+	// Настройки управления
 	float MoveSpeed = 5.0f;
-	float SprintMultiplier = 2.5f;
 	float MouseSensitivity = 0.5f;
 	float GamepadSensitivity = 2.0f;
-	float Smoothness = 10.0f;		 // Для плавности вращения
-	float MovementSmoothness = 8.0f; // Для плавности движения
+	float GamepadDeadZone = 0.15f;
+	bool InvertY = false;
 
-	bool EnableResponseCurve = true;
-	bool EnableSlopeAdjustment = false;
-	bool ShowDebugInfo = false;
+	// Настройки сглаживания (взяты из старого кода)
+	float PositionSmoothTime = 0.1f;  // Время сглаживания позиции
+	float RotationSmoothTime = 0.05f; // Время сглаживания вращения
+	float MaxSpeed = 50.0f;			  // Максимальная скорость движения
 
+	// Дополнительные настройки
+	float SpeedMultiplier = 1.0f; // Общий множитель скорости
+	bool SmoothMovement = true;	  // Включить сглаживание движения
+	bool SmoothRotation = true;	  // Включить сглаживание вращения
+
+	bool IsControlling() const
+	{
+		return m_IsControlling;
+	}
 	std::unique_ptr<Core::ECS::IComponent> Clone() const override;
 
   private:
 	void HandleRotation(float dt, TransformComponent* transform);
 	void HandleMovement(float dt, TransformComponent* transform);
-	void ApplyCameraBobbing(float dt, TransformComponent* transform);
-	void ApplyHeadBob(float dt, TransformComponent* transform);
+	void ApplySmoothing(float dt, TransformComponent* transform);
+	Math::float3 SmoothDamp(const Math::float3& current, const Math::float3& target, Math::float3& currentVelocity, float smoothTime, float dt);
+	float SmoothDamp(float current, float target, float& currentVelocity, float smoothTime, float dt);
 
-	// Состояние вращения
-	float m_Yaw = 0.0f;
-	float m_Pitch = 0.0f;
-	float m_SmoothedRotY = 0.0f;
-	float m_SmoothedRotX = 0.0f;
+	// Целевые значения для сглаживания
+	Math::float3 m_TargetPosition;
+	float m_TargetYaw = 0.0f;
+	float m_TargetPitch = 0.0f;
 
-	// Состояние движения
-	Math::float3 m_CurrentVelocity = Math::float3::zero();
-	float m_CurrentSpeed = 5.0f;
-	Math::float3 m_LastMovementDirection = Math::float3::forward();
+	// Текущие сглаженные значения
+	Math::float3 m_SmoothedPosition;
+	float m_SmoothedYaw = 0.0f;
+	float m_SmoothedPitch = 0.0f;
 
-	// Для эффектов
-	float m_BobTime = 0.0f;
-	float m_BobAmount = 0.0f;
-	float m_Trauma = 0.0f;
+	// Векторы скорости для сглаживания
+	Math::float3 m_PositionVelocity = Math::float3::zero();
+	float m_YawVelocity = 0.0f;
+	float m_PitchVelocity = 0.0f;
 
-	struct MouseFilter
-	{
-		std::array<float, 5> historyYaw;
-		std::array<float, 5> historyPitch;
-		int index = 0;
-
-		MouseFilter()
-		{
-			historyYaw.fill(0.0f);
-			historyPitch.fill(0.0f);
-		}
-
-		void AddSample(float yaw, float pitch)
-		{
-			historyYaw[index] = yaw;
-			historyPitch[index] = pitch;
-			index = (index + 1) % historyYaw.size();
-		}
-
-		std::pair<float, float> GetFiltered()
-		{
-			float avgYaw = 0.0f;
-			float avgPitch = 0.0f;
-
-			for (size_t i = 0; i < historyYaw.size(); ++i)
-			{
-				avgYaw += historyYaw[i];
-				avgPitch += historyPitch[i];
-			}
-
-			avgYaw /= historyYaw.size();
-			avgPitch /= historyPitch.size();
-
-			return {avgYaw, avgPitch};
-		}
-	};
-
-	MouseFilter m_MouseFilter;
+	// Состояние управления
+	bool m_IsControlling = false;
+	bool m_IsFirstUpdate = true;
 };
 } // namespace Core::ECS::Components

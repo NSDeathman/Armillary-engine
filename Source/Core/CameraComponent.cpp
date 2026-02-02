@@ -50,16 +50,12 @@ Math::float4x4 CameraComponent::GetViewMatrix() const
 	if (!transform)
 		return Math::float4x4::identity();
 
-	const Math::float3 position = transform->GetWorldPosition();
-	const Math::float3 forward = GetForward();
-	const Math::float3 up = GetUp();
-	const Math::float3 target = position + forward;
+	const Math::float4x4& worldMatrix = transform->GetWorldMatrix();
 
-	// Проверка на нулевые векторы
-	if (forward.length_sq() < 0.0001f || up.length_sq() < 0.0001f)
-		return Math::float4x4::identity();
-
-	return Math::float4x4::look_at_lh(position, target, up);
+	if (worldMatrix.is_affine())
+		return worldMatrix.inverted_affine();
+	else
+		return worldMatrix.inverted();
 }
 
 Math::float4x4 CameraComponent::GetProjectionMatrix() const
