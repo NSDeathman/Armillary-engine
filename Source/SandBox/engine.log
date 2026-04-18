@@ -1,0 +1,33 @@
+[2026-04-19 00:52:21.114] [INFO] CEngine constructor called
+[2026-04-19 00:52:21.115] [INFO] Initializing CEngine...
+[2026-04-19 00:52:21.116] [INFO] CEngine initialized successfully
+[2026-04-19 00:52:21.116] [INFO] CEngine main loop started
+[2026-04-19 00:52:51.679] [INFO] CEngine constructor called
+[2026-04-19 00:52:51.682] [INFO] Initializing CEngine...
+[2026-04-19 00:52:51.682] [INFO] CEngine initialized successfully
+[2026-04-19 00:52:51.683] [INFO] CEngine main loop started
+[2026-04-19 00:52:52.113] [INFO] CEngine main loop finished
+[2026-04-19 00:52:52.113] [INFO] Shutting down CEngine...
+[2026-04-19 00:52:52.114] [INFO] CEngine shutdown complete
+[2026-04-19 00:52:52.114] [INFO] CEngine destructor called
+[2026-04-19 00:53:14.539] [INFO] CEngine constructor called
+[2026-04-19 00:53:14.540] [INFO] Initializing CEngine...
+[2026-04-19 00:53:14.540] [INFO] CEngine initialized successfully
+[2026-04-19 00:53:14.540] [INFO] CEngine main loop started
+[2026-04-19 00:53:23.496] [INFO] CEngine main loop finished
+[2026-04-19 00:53:23.497] [INFO] Shutting down CEngine...
+[2026-04-19 00:53:23.497] [INFO] CEngine shutdown complete
+[2026-04-19 00:53:23.497] [INFO] CEngine destructor called
+[2026-04-19 00:56:28.948] [INFO] CEngine constructor called
+[2026-04-19 00:56:28.949] [INFO] Initializing CEngine...
+[2026-04-19 00:56:28.949] [INFO] CEngine initialized successfully
+[2026-04-19 00:56:28.949] [INFO] CEngine main loop started
+[2026-04-19 00:56:30.120] [INFO] CEngine main loop finished
+[2026-04-19 00:56:30.121] [INFO] Shutting down CEngine...
+[2026-04-19 00:56:30.121] [INFO] CEngine shutdown complete
+[2026-04-19 00:56:30.121] [INFO] CEngine destructor called
+[2026-04-19 01:03:12.754] [INFO] CEngine constructor called
+[2026-04-19 01:03:12.755] [INFO] Initializing CEngine...
+[2026-04-19 01:03:12.755] [INFO] CEngine initialized successfully
+[2026-04-19 01:03:12.940] [INFO] SDL2 initialized and window created successfully!
+[2026-04-19 01:03:15.945] [INFO] CEngine main loop started

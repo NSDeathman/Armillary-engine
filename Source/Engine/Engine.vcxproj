@@ -81,11 +81,15 @@
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(SolutionDir)..\build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IncludePath>$(SolutionDir)Third-Party\Include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Third-Party\Libraries\x64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(SolutionDir)..\build\intermediate\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)..\build\libraries\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
+    <IncludePath>$(SolutionDir)Third-Party\Include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Third-Party\Libraries\x64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,6 +140,9 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -156,6 +163,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
