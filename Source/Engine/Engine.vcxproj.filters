@@ -7,6 +7,12 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{b49a91bf-e1f0-4305-9b38-93cbd23c6f5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{4e7c18af-e614-4396-97ae-76c3430430da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Logging">
+      <UniqueIdentifier>{9bb68211-8480-4c68-ab58-4eb869932cb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -15,6 +21,9 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Core\Logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -22,6 +31,9 @@
     </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Core\Logging</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

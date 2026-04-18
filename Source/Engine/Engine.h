@@ -1,15 +1,20 @@
 #pragma once
 
-class CEngine
+namespace Armillary
 {
-public:
-	CEngine();
-	~CEngine();
 
-	Initialize();
-	Run();
-	Shutdown();
+	class Engine
+	{
+	public:
+		Engine();
+		~Engine();
 
-private:
-	bool m_bIsRunning = false;
-};
+		bool Initialize();
+		void Run();
+		void Shutdown();
+
+	private:
+		bool m_bIsRunning = false;
+	};
+
+} // namespace Armillary
