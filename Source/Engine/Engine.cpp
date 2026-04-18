@@ -1,130 +1,22 @@
-///////////////////////////////////////////////////////////////
-// Created: 20.09.2025
-// Author: NS_Deathman
-///////////////////////////////////////////////////////////////
-#include "stdafx.h"
+п»ї#include "pch.h"
 #include "Engine.h"
-///////////////////////////////////////////////////////////////
-using namespace Core;
-///////////////////////////////////////////////////////////////
-void CEngine::Start()
+
+CEngine::CEngine()
 {
-	CSplashScreen::GetInstance().Show();
-
-	g_bNeedCloseApplication = false;
-
-	SDL_Init(SDL_INIT_EVERYTHING);
-
-	CoreAPI.Initialize();
-
-	CoreAPI.TimeSystem.SetTargetFPS(60);
-	CoreAPI.TimeSystem.EnableFPSCap(true);
-
-	LoadRender();
-
-	IMGUI.Initialize();
-
-	LoadGameModule();
-
-	Print("Engine started\n");
-
-	CSplashScreen::GetInstance().Hide();
 }
 
-bool CEngine::LoadGameModule()
+CEngine::~CEngine()
 {
-	m_Game.reset(CreateGame());
-
-	if (!m_Game)
-	{
-		THROW_ENGINE("Failed to create game instance");
-		return false;
-	}
-
-	if (!m_Game->Initialize())
-	{
-		THROW_ENGINE("Game initialization failed");
-		return false;
-	}
-
-	Print("Game successfully initialized");
-	return true;
 }
 
-void CEngine::LoadRender()
+CEngine::Initialize()
 {
-	RenderConfig Config;
-	Config.API = RenderAPI::DirectX11;
-	Config.Height = 720;
-	Config.Width = 1280;
-	Config.ScreenMode = ScreenMode::Windowed;
-	Renderer.Initialize(Config);
 }
 
-void CEngine::Process()
+CEngine::Run()
 {
-	Start();
-
-	while (!g_bNeedCloseApplication)
-		Update();
-
-	Destroy();
 }
 
-void CEngine::HandleSDLEvents()
+CEngine::Shutdown()
 {
-	SDL_Event SDLEvent;
-	while (SDL_PollEvent(&SDLEvent))
-	{
-		IMGUI.ProcessEvent(&SDLEvent);
-
-		if (SDLEvent.type == SDL_QUIT)
-			g_bNeedCloseApplication = true;
-	}
 }
-
-void CEngine::Update()
-{
-	HandleSDLEvents();
-
-	CoreAPI.TimeSystem.Update();
-
-	CoreAPI.Input.BeginFrame();
-
-	IMGUI.OnFrameBegin();
-
-	m_Game->Update();
-
-	Renderer.DrawFrame();
-
-	CoreAPI.Input.EndFrame();
-}
-
-void CEngine::Destroy()
-{
-	// 1. Сначала говорим рендеру забыть про сцену.
-	// Это уменьшит счетчик ссылок shared_ptr сцены.
-	Renderer.SetCurrentScene(nullptr);
-	Renderer.SetCurrentCamera(nullptr);
-
-	// 2. Уничтожаем игру.
-	if (m_Game)
-	{
-		m_Game->Shutdown();
-		m_Game.reset();
-	}
-
-	// 3. Теперь, когда все Entity мертвы, можно безопасно чистить остатки в менеджере.
-	Core::ECS::Entity::ReleaseAllComponents();
-
-	// 4. Уничтожаем остальные подсистемы
-	IMGUI.Destroy();
-
-	// Можно явно вызвать Shutdown рендера, чтобы освободить окно и бекенд
-	Renderer.Shutdown();
-
-	CoreAPI.Destroy();
-
-	SDL_Quit();
-}
-///////////////////////////////////////////////////////////////
