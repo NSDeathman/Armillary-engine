@@ -13,6 +13,9 @@
     <Filter Include="Core\Logging">
       <UniqueIdentifier>{9bb68211-8480-4c68-ab58-4eb869932cb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{706bd31e-a1ec-491e-9e88-84548efe290e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -23,6 +26,72 @@
     </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Core\Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\AfterMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\AfterMathInternal.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_aabb.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_config.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_constants.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_custom_template_vector.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_fast_functions.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_float2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_float2x2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_float3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_float3x3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_float4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_float4x4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_functions.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_half.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_half2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_half3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_half4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_quaternion.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_template_vector2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_template_vector3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Third-Party\Include\AfterMath\math_template_vector4.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -35,5 +104,10 @@
     <ClCompile Include="Logger.cpp">
       <Filter>Core\Logging</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Third-Party\Include\AfterMath\math_aabb.inl">
+      <Filter>Math</Filter>
+    </None>
   </ItemGroup>
 </Project>

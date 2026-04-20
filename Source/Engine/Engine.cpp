@@ -67,6 +67,7 @@ namespace Armillary
 			std::cin.get();
 			m_bIsRunning = false;
 		}
+
 		LOG_INFO("CEngine main loop finished");
 	}
 

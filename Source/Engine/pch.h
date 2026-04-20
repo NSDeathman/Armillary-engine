@@ -5,3 +5,5 @@
 #endif
 
 #include <SDL\SDL.h>
+
+#include <AfterMath\AfterMath.h>

@@ -31,3 +31,60 @@
 [2026-04-19 01:03:12.755] [INFO] CEngine initialized successfully
 [2026-04-19 01:03:12.940] [INFO] SDL2 initialized and window created successfully!
 [2026-04-19 01:03:15.945] [INFO] CEngine main loop started
+[2026-04-19 01:03:56.110] [INFO] CEngine constructor called
+[2026-04-19 01:03:56.112] [INFO] Initializing CEngine...
+[2026-04-19 01:03:56.112] [INFO] CEngine initialized successfully
+[2026-04-19 01:03:56.161] [INFO] SDL2 initialized and window created successfully!
+[2026-04-19 01:03:59.162] [INFO] CEngine main loop started
+[2026-04-19 10:39:07.416] [INFO] CEngine constructor called
+[2026-04-19 10:39:07.417] [INFO] Initializing CEngine...
+[2026-04-19 10:39:07.417] [INFO] CEngine initialized successfully
+[2026-04-19 10:39:07.464] [INFO] SDL2 initialized and window created successfully!
+[2026-04-19 10:39:10.466] [INFO] CEngine main loop started
+[2026-04-19 10:39:34.229] [INFO] CEngine main loop finished
+[2026-04-19 10:39:34.229] [INFO] Shutting down CEngine...
+[2026-04-19 10:39:34.230] [INFO] CEngine shutdown complete
+[2026-04-19 10:39:34.230] [INFO] CEngine destructor called
+[2026-04-19 10:40:18.640] [INFO] CEngine constructor called
+[2026-04-19 10:40:18.640] [INFO] Initializing CEngine...
+[2026-04-19 10:40:18.641] [INFO] CEngine initialized successfully
+[2026-04-19 10:40:18.695] [INFO] SDL2 initialized and window created successfully!
+[2026-04-19 10:40:21.698] [INFO] CEngine main loop started
+[2026-04-19 10:40:27.209] [INFO] CEngine main loop finished
+[2026-04-19 10:40:27.209] [INFO] Shutting down CEngine...
+[2026-04-19 10:40:27.210] [INFO] CEngine shutdown complete
+[2026-04-19 10:40:27.210] [INFO] CEngine destructor called
+[2026-04-19 10:40:42.945] [INFO] CEngine constructor called
+[2026-04-19 10:40:42.946] [INFO] Initializing CEngine...
+[2026-04-19 10:40:42.946] [INFO] CEngine initialized successfully
+[2026-04-19 10:40:42.991] [INFO] SDL2 initialized and window created successfully!
+[2026-04-19 10:40:45.994] [INFO] CEngine main loop started
+[2026-04-19 10:40:46.136] [INFO] CEngine main loop finished
+[2026-04-19 10:40:46.137] [INFO] Shutting down CEngine...
+[2026-04-19 10:40:46.137] [INFO] CEngine shutdown complete
+[2026-04-19 10:40:46.138] [INFO] CEngine destructor called
+[2026-04-19 11:42:53.548] [INFO] CEngine constructor called
+[2026-04-19 11:42:53.549] [INFO] Initializing CEngine...
+[2026-04-19 11:42:53.549] [INFO] CEngine initialized successfully
+[2026-04-19 11:42:53.594] [INFO] SDL2 initialized and window created successfully!
+[2026-04-19 11:42:56.596] [INFO] CEngine main loop started
+[2026-04-19 11:42:57.992] [INFO] CEngine main loop finished
+[2026-04-19 11:42:57.993] [INFO] Shutting down CEngine...
+[2026-04-19 11:42:57.993] [INFO] CEngine shutdown complete
+[2026-04-19 11:42:57.993] [INFO] CEngine destructor called
+[2026-04-20 17:33:30.613] [INFO] CEngine constructor called
+[2026-04-20 17:33:30.638] [INFO] Initializing CEngine...
+[2026-04-20 17:33:30.639] [INFO] CEngine initialized successfully
+[2026-04-20 17:33:31.022] [INFO] SDL2 initialized and window created successfully!
+[2026-04-20 17:33:34.030] [INFO] CEngine main loop started
+[2026-04-20 17:33:41.213] [INFO] Cross product: 0.000000, 0.000000, 1.000000
+[2026-04-20 17:33:41.214] [INFO] CEngine main loop finished
+[2026-04-20 17:33:41.214] [INFO] Shutting down CEngine...
+[2026-04-20 17:33:41.214] [INFO] CEngine shutdown complete
+[2026-04-20 17:33:41.214] [INFO] CEngine destructor called
+[2026-04-20 17:34:39.041] [INFO] CEngine constructor called
+[2026-04-20 17:34:39.042] [INFO] Initializing CEngine...
+[2026-04-20 17:34:39.043] [INFO] CEngine initialized successfully
+[2026-04-20 17:34:39.127] [INFO] SDL2 initialized and window created successfully!
+[2026-04-20 17:34:42.161] [INFO] Vector addition: (5.000000, 7.000000, 9.000000)
+[2026-04-20 17:34:42.162] [INFO] CEngine main loop started
